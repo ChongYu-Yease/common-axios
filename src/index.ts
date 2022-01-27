@@ -1,5 +1,3 @@
-import axios from 'axios'
-
 import {
     createAxiosInstance,
     createParamsInParamsHelper,
@@ -17,18 +15,27 @@ import { CreateAxios, AxiosHelpers, AxiosRequestConfigs } from './types'
  */
 export const createAxios: CreateAxios = (initAxiosRequestConfig) => {
     const successKey = initAxiosRequestConfig.successKey || 'code'
+
     const successKeyValue = initAxiosRequestConfig.successKeyValue || 200
+
+    const messageKey = initAxiosRequestConfig.messageKey || 'message'
+
+    const dataKey = initAxiosRequestConfig.dataKey || 'data'
     let temSuccessKey: string
     let temSuccessKeyValue: string | number
+    let temMessageKey: string
+    let temDataKey: string
     /* 创建axios实例 */
     const axiosInstance = createAxiosInstance(initAxiosRequestConfig)
 
     /** 添加请求拦截器 **/
     axiosInstance.interceptors.request.use(
         (config: AxiosRequestConfigs) => {
-            const { successKey, successKeyValue } = config
+            const { successKey, successKeyValue, messageKey, dataKey } = config
             temSuccessKey = successKey ? successKey : ''
             temSuccessKeyValue = successKeyValue ? successKeyValue : ''
+            temMessageKey = messageKey ? messageKey : ''
+            temDataKey = dataKey ? dataKey : ''
             return axiosRequestCallback(config)
         },
         (error) => axiosRequestErrorCallback(error)
@@ -42,6 +49,8 @@ export const createAxios: CreateAxios = (initAxiosRequestConfig) => {
                 successKeyValue: temSuccessKeyValue
                     ? temSuccessKeyValue
                     : successKeyValue,
+                dataKey: temDataKey ? temDataKey : dataKey,
+                messageKey: temMessageKey ? temMessageKey : messageKey,
             }),
         (error) => axiosResponseErrorCallback(error)
     )

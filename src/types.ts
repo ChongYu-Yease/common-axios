@@ -31,6 +31,8 @@ export interface AxiosRequestConfigs extends AxiosRequestConfig {
         | ' multipart/form-data'
     successKey?: string
     successKeyValue?: string | number
+    messageKey?: string
+    dataKey?: string
 }
 /**
  * 创建axios实例
@@ -69,6 +71,8 @@ export type AxiosResponseCallback = (
     axiosResponseConfig: {
         successKey: string
         successKeyValue: number | string
+        dataKey: string
+        messageKey: string
     }
 ) => Promise<{
     code: number

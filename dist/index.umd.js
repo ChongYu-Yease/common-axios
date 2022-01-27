@@ -37,6 +37,29 @@
         return __assign.apply(this, arguments);
     };
 
+    var getValueByKeyInOpject = function (key, object) {
+        if (!key)
+            return object;
+        if (key.includes('.')) {
+            var keys = key.split('.');
+            var index = 0;
+            var temValue = void 0;
+            while (index < keys.length) {
+                var key_1 = keys[index];
+                if (!temValue) {
+                    temValue = object[key_1];
+                }
+                else {
+                    temValue = temValue[key_1];
+                }
+                index++;
+            }
+            return temValue;
+        }
+        else {
+            return object[key];
+        }
+    };
     /*遮罩层节点*/
     var loadingNode;
     /**
@@ -157,13 +180,16 @@
      * @returns
      */
     var axiosResponseCallback = function (axiosResponse, _a) {
-        var successKey = _a.successKey, successKeyValue = _a.successKeyValue;
-        removeLoadingNode();
-        if (axiosResponse.data[successKey] == successKeyValue) {
-            return Promise.resolve(axiosResponse.data);
+        var successKey = _a.successKey, successKeyValue = _a.successKeyValue, messageKey = _a.messageKey, dataKey = _a.dataKey;
+        // removeLoadingNode()
+        var codeValue = getValueByKeyInOpject(successKey, axiosResponse.data);
+        if (codeValue == successKeyValue) {
+            var data = getValueByKeyInOpject(dataKey, axiosResponse.data);
+            return Promise.resolve(data);
         }
         else {
-            return Promise.reject(axiosResponse.data.message);
+            var message = getValueByKeyInOpject(messageKey, axiosResponse.data);
+            return Promise.reject(message);
         }
     };
     /**
@@ -172,7 +198,7 @@
      * @returns
      */
     var axiosResponseErrorCallback = function (error) {
-        removeLoadingNode();
+        // removeLoadingNode()
         if (axios__default['default'].isCancel(error)) ;
         return Promise.reject(error);
     };
@@ -223,15 +249,21 @@
     var createAxios = function (initAxiosRequestConfig) {
         var successKey = initAxiosRequestConfig.successKey || 'code';
         var successKeyValue = initAxiosRequestConfig.successKeyValue || 200;
+        var messageKey = initAxiosRequestConfig.messageKey || 'message';
+        var dataKey = initAxiosRequestConfig.dataKey || 'data';
         var temSuccessKey;
         var temSuccessKeyValue;
+        var temMessageKey;
+        var temDataKey;
         /* 创建axios实例 */
         var axiosInstance = createAxiosInstance(initAxiosRequestConfig);
         /** 添加请求拦截器 **/
         axiosInstance.interceptors.request.use(function (config) {
-            var successKey = config.successKey, successKeyValue = config.successKeyValue;
+            var successKey = config.successKey, successKeyValue = config.successKeyValue, messageKey = config.messageKey, dataKey = config.dataKey;
             temSuccessKey = successKey ? successKey : '';
             temSuccessKeyValue = successKeyValue ? successKeyValue : '';
+            temMessageKey = messageKey ? messageKey : '';
+            temDataKey = dataKey ? dataKey : '';
             return axiosRequestCallback(config);
         }, function (error) { return axiosRequestErrorCallback(error); });
         /** 添加响应拦截器  **/
@@ -242,6 +274,8 @@
                 successKeyValue: temSuccessKeyValue
                     ? temSuccessKeyValue
                     : successKeyValue,
+                dataKey: temDataKey ? temDataKey : dataKey,
+                messageKey: temMessageKey ? temMessageKey : messageKey,
             });
         }, function (error) { return axiosResponseErrorCallback(error); });
         var axiosHelpers = {

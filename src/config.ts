@@ -11,6 +11,30 @@ import {
     AxiosMethods,
 } from './types'
 
+const getValueByKeyInOpject = (
+    key: string,
+    object: { [k: string]: any }
+): any => {
+    if (!key) return object
+    if (key.includes('.')) {
+        const keys: Array<string> = key.split('.')
+        let index = 0
+        let temValue: any
+        while (index < keys.length) {
+            const key = keys[index]
+            if (!temValue) {
+                temValue = object[key]
+            } else {
+                temValue = temValue[key]
+            }
+            index++
+        }
+        return temValue
+    } else {
+        return object[key]
+    }
+}
+
 /*遮罩层节点*/
 let loadingNode: HTMLDivElement
 /**
@@ -166,13 +190,16 @@ export const axiosRequestErrorCallback: AxiosErrorCallback = (error) => {
  */
 export const axiosResponseCallback: AxiosResponseCallback = (
     axiosResponse,
-    { successKey, successKeyValue }
+    { successKey, successKeyValue, messageKey, dataKey }
 ) => {
-    removeLoadingNode()
-    if (axiosResponse.data[successKey] == successKeyValue) {
-        return Promise.resolve(axiosResponse.data)
+    // removeLoadingNode()
+    const codeValue = getValueByKeyInOpject(successKey, axiosResponse.data)
+    if (codeValue == successKeyValue) {
+        const data = getValueByKeyInOpject(dataKey, axiosResponse.data)
+        return Promise.resolve(data)
     } else {
-        return Promise.reject(axiosResponse.data.message)
+        const message = getValueByKeyInOpject(messageKey, axiosResponse.data)
+        return Promise.reject(message)
     }
 }
 /**
@@ -181,7 +208,7 @@ export const axiosResponseCallback: AxiosResponseCallback = (
  * @returns
  */
 export const axiosResponseErrorCallback: AxiosErrorCallback = (error) => {
-    removeLoadingNode()
+    // removeLoadingNode()
     if (axios.isCancel(error)) {
     } else {
     }
