@@ -9,6 +9,7 @@ import {
     AxiosResponseCallback,
     LogMap,
     AxiosMethods,
+    // CreateParamsInParamsHelper,
 } from './types'
 
 const getValueByKeyInOpject = (
@@ -91,19 +92,16 @@ export const createAxiosInstance: CreateAxiosInstance = (config) => {
  * @param method 请求方法
  * @returns (url: string, params?: any, config?: AxiosRequestConfigs)=> Promise<AxiosResponse<T>>
  */
-export const createParamsInParamsHelper = (
-    axiosInstance: AxiosInstance,
-    method: AxiosMethods
-) => {
-    return (url: string, params?: any, config?: AxiosRequestConfigs) => {
-        return axiosInstance[method](url, {
+// CreateParamsInParamsHelper
+export const createParamsInParamsHelper =
+    (axiosInstance: AxiosInstance, method: AxiosMethods) =>
+    (url: string, params?: any, config?: AxiosRequestConfigs) =>
+        axiosInstance[method](url, {
             params,
             ...config,
         }).catch((error) => {
             return error
         })
-    }
-}
 /**
  * 请求参数在pramas字段或者在data字段 的axios请求
  * @param axiosInstance axios实例
@@ -145,6 +143,7 @@ export const createParamsInDataHelper = (
         }).catch((error) => error)
     }
 }
+
 /**
  * 请求前的配置
  * @param config

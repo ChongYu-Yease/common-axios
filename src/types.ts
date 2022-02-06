@@ -83,7 +83,7 @@ export type AxiosResponseCallback = (
 /**
  * 参数在params的声明
  */
-export type CreateParamsInParamsHelper = <T = any, R = AxiosResponse<T>>(
+export type ParamsInParamsHelper = <T = any, R = AxiosResponse<T>>(
     url: string,
     params?: any,
     config?: AxiosRequestConfigs
@@ -92,7 +92,7 @@ export type CreateParamsInParamsHelper = <T = any, R = AxiosResponse<T>>(
 /**
  * 参数在data字段中的声明
  */
-export type CreateParamsInDataHelper = <T = any, R = AxiosResponse<T>>(
+export type ParamsInDataHelper = <T = any, R = AxiosResponse<T>>(
     url: string,
     data?: any,
     config?: AxiosRequestConfigs
@@ -101,23 +101,31 @@ export type CreateParamsInDataHelper = <T = any, R = AxiosResponse<T>>(
 /**
  * 参数既可以在params也可以在data的声明
  */
-export type CreateParamsInParamsOrDataHelper = <T = any, R = AxiosResponse<T>>(
+export type ParamsInParamsOrDataHelper = <T = any, R = AxiosResponse<T>>(
     url: string,
     params: { params?: any; data?: any },
     config?: AxiosRequestConfigs
 ) => Promise<R>
 
+// export type CreateParamsInParamsHelper = (
+//     axiosInstance: AxiosInstance,
+//     method: AxiosMethods
+// ) => (
+//     url: string,
+//     params?: any,
+//     config?: AxiosRequestConfigs
+// ) => ParamsInParamsHelper
 /**
  * 执行方法返回的对象所包含的属性
  */
 export interface AxiosHelpers {
-    get: CreateParamsInParamsHelper
-    head: CreateParamsInParamsHelper
-    options: CreateParamsInParamsOrDataHelper
-    delete: CreateParamsInParamsOrDataHelper
-    put: CreateParamsInDataHelper
-    post: CreateParamsInDataHelper
-    patch: CreateParamsInDataHelper
+    get: ParamsInParamsHelper
+    head: ParamsInParamsHelper
+    options: ParamsInParamsOrDataHelper
+    delete: ParamsInParamsOrDataHelper
+    put: ParamsInDataHelper
+    post: ParamsInDataHelper
+    patch: ParamsInDataHelper
 }
 
 export type CreateAxios = (

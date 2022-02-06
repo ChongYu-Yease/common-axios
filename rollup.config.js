@@ -24,6 +24,7 @@ const initConfig = () => {
             name: 'commonAxios',
             globals: {
                 axios: 'axios',
+                qs: 'qs',
             },
         })
         // 发布压缩代码

@@ -110,6 +110,7 @@
      * @param method 请求方法
      * @returns (url: string, params?: any, config?: AxiosRequestConfigs)=> Promise<AxiosResponse<T>>
      */
+    // CreateParamsInParamsHelper
     var createParamsInParamsHelper = function (axiosInstance, method) {
         return function (url, params, config) {
             return axiosInstance[method](url, __assign({ params: params }, config)).catch(function (error) {
@@ -279,34 +280,13 @@
             });
         }, function (error) { return axiosResponseErrorCallback(error); });
         var axiosHelpers = {
-            // get 请求 参数在 params 里
-            get: function (url, params, config) {
-                return createParamsInParamsHelper(axiosInstance, 'get')(url, params, config);
-            },
-            // head 请求 参数在 params 里
-            head: function (url, data, config) {
-                return createParamsInParamsHelper(axiosInstance, 'head')(url, data, config);
-            },
-            // delete 请求 params 和 data 里面都可以传递参数
-            delete: function (url, params, config) {
-                return createParamsInParamsOrDataHelper(axiosInstance, 'delete')(url, params, config);
-            },
-            // options 请求 params 和 data里面都可以传递参数
-            options: function (url, params, config) {
-                return createParamsInParamsOrDataHelper(axiosInstance, 'options')(url, params, config);
-            },
-            // post 请求参数在 data里
-            post: function (url, data, config) {
-                return createParamsInDataHelper(axiosInstance, 'post')(url, data, config);
-            },
-            // put 请求参数在 data里
-            put: function (url, data, config) {
-                return createParamsInDataHelper(axiosInstance, 'put')(url, data, config);
-            },
-            // patch 请求参数在 data里
-            patch: function (url, data, config) {
-                return createParamsInDataHelper(axiosInstance, 'patch')(url, data, config);
-            },
+            get: createParamsInParamsHelper(axiosInstance, 'get'),
+            head: createParamsInParamsHelper(axiosInstance, 'head'),
+            delete: createParamsInParamsOrDataHelper(axiosInstance, 'delete'),
+            options: createParamsInParamsOrDataHelper(axiosInstance, 'options'),
+            post: createParamsInDataHelper(axiosInstance, 'post'),
+            put: createParamsInDataHelper(axiosInstance, 'put'),
+            patch: createParamsInDataHelper(axiosInstance, 'patch'),
         };
         return axiosHelpers;
     };
