@@ -1,26 +1,31 @@
+import { createAxiosInstance } from './create-axios' /* 创建axios实例 */
 import {
-    createAxiosInstance,
     createParamsInParamsHelper,
     createParamsInDataHelper,
     createParamsInParamsOrDataHelper,
+} from './create-helper' /* 创建axioshelper */
+import {
     axiosRequestCallback,
     axiosRequestErrorCallback,
     axiosResponseCallback,
     axiosResponseErrorCallback,
-} from './config'
+} from './axios-callback'
 
 import { CreateAxios, AxiosHelpers, AxiosRequestConfigs } from './types'
+
+// 引入公共样式 主要是body 遮罩层 loading动画的效果
+import './index.css'
 /**
  * @param AxiosRequestConfigs
  */
 export const createAxios: CreateAxios = (initAxiosRequestConfig) => {
-    const successKey = initAxiosRequestConfig.successKey || 'code'
+    const successKey = initAxiosRequestConfig.successKey
 
-    const successKeyValue = initAxiosRequestConfig.successKeyValue || 200
+    const successKeyValue = initAxiosRequestConfig.successKeyValue
 
-    const messageKey = initAxiosRequestConfig.messageKey || 'message'
+    const messageKey = initAxiosRequestConfig.messageKey
 
-    const dataKey = initAxiosRequestConfig.dataKey || 'data'
+    const dataKey = initAxiosRequestConfig.dataKey
 
     let temSuccessKey: string
 

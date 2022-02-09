@@ -1,0 +1,141 @@
+html,
+body {
+    margin: 0;
+    padding: 0;
+    position: relative;
+}
+/* 遮罩层的样式 */
+.common-axios-mask-layer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    /* display: none; */
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    outline: 0;
+    opacity: 0.5;
+    background-color: #000;
+}
+/* 消息的默认样式 */
+.modal-content {
+    min-width: 380px;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #ebeef5;
+    position: fixed;
+    left: 50%;
+    top: 20px;
+    -webkit-transform: translateX(-50%);
+    transform: translateX(-50%);
+    background-color: #edf2fc;
+    -webkit-transition: opacity 0.3s, top 0.4s, -webkit-transform 0.4s;
+    transition: opacity 0.3s, top 0.4s, -webkit-transform 0.4s;
+    transition: opacity 0.3s, transform 0.4s, top 0.4s;
+    transition: opacity 0.3s, transform 0.4s, top 0.4s, -webkit-transform 0.4s;
+    padding: 15px 15px 15px 20px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    border-radius: 4px;
+}
+.modal-content__info {
+    background-color: #f0f9eb;
+    border-color: #e1f3d8;
+}
+.modal-content__success {
+    background-color: #f0f9eb;
+    border-color: #e1f3d8;
+}
+.modal-content__warning {
+    background-color: #fdf6ec;
+    border-color: #faecd8;
+}
+.modal-content__danger {
+    background-color: #fef0f0;
+    border-color: #fde2e2;
+}
+/* 消息节点的默认样式 */
+.modal-content > .modal-body {
+    text-align: center;
+    font-size: 14px;
+}
+
+/* 消息节点的info样式 */
+.modal-content__info > .modal-body {
+    color: #909399;
+}
+/* 消息节点的success样式 */
+.modal-content__success > .modal-body {
+    color: #67c23a;
+}
+/* 消息节点的warning样式 */
+.modal-content__warning > .modal-body {
+    color: #e6a23c;
+}
+/* 消息节点的danger样式 */
+.modal-content__danger > .modal-body {
+    color: #f56c6c;
+}
+/* 遮罩层body */
+.common-axios-loading {
+    font-size: 14px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
+/* 遮罩层文本节点样式 */
+.common-axios-text {
+    color: #409eff;
+}
+/* 遮罩层loading节点样式 */
+.common-axios-dotting {
+    color: #409eff;
+    display: inline-block;
+    min-width: 2px;
+    min-height: 2px;
+    box-shadow: 2px 0 currentColor, 6px 0 currentColor, 10px 0 currentColor;
+    -webkit-animation: dot 2s infinite step-start both;
+    animation: dot 2s infinite step-start both;
+    margin-left: 2px;
+}
+.common-axios-dotting:before {
+    content: '...';
+} /* IE8 */
+.common-axios-dotting::before {
+    content: '';
+}
+:root .common-axios-dotting {
+    margin-right: 8px;
+}
+
+@-webkit-keyframes dot {
+    25% {
+        box-shadow: none;
+    }
+    50% {
+        box-shadow: 2px 0 currentColor;
+    }
+    75% {
+        box-shadow: 2px 0 currentColor, 6px 0 currentColor;
+    }
+}
+@keyframes dot {
+    25% {
+        box-shadow: none;
+    }
+    50% {
+        box-shadow: 2px 0 currentColor;
+    }
+    75% {
+        box-shadow: 2px 0 currentColor, 6px 0 currentColor;
+    }
+}

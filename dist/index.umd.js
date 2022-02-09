@@ -37,64 +37,6 @@
         return __assign.apply(this, arguments);
     };
 
-    var getValueByKeyInOpject = function (key, object) {
-        if (!key)
-            return object;
-        if (key.includes('.')) {
-            var keys = key.split('.');
-            var index = 0;
-            var temValue = void 0;
-            while (index < keys.length) {
-                var key_1 = keys[index];
-                if (!temValue) {
-                    temValue = object[key_1];
-                }
-                else {
-                    temValue = temValue[key_1];
-                }
-                index++;
-            }
-            return temValue;
-        }
-        else {
-            return object[key];
-        }
-    };
-    /*遮罩层节点*/
-    var loadingNode;
-    /**
-     * 创建遮罩层
-     * @param loadingText string loading遮罩层的文字
-     */
-    var createLoadingNode = function (loadingText) {
-        if (document) {
-            var className = "common-axios-loading-node";
-            document.body.style.position = 'relative';
-            loadingNode = document.createElement('div');
-            loadingNode.className = className;
-            loadingNode.textContent = loadingText ? loadingText : '拼命加载中...';
-            loadingNode.style.color = '#409eff';
-            loadingNode.style.fontSize = '14px';
-            loadingNode.style.position = 'absolute';
-            loadingNode.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
-            loadingNode.style.margin = '0';
-            loadingNode.style.top = '0';
-            loadingNode.style.right = '0';
-            loadingNode.style.bottom = '0';
-            loadingNode.style.left = '0';
-            loadingNode.style.transition = 'opacity .3s';
-            document.body.appendChild(loadingNode);
-        }
-    };
-    /**
-     * 移除遮罩层节点
-     */
-    var removeLoadingNode = function () {
-        if (document) {
-            var loadingNode_1 = document.getElementsByClassName('common-axios-loading-node')[0];
-            document.body.removeChild(loadingNode_1);
-        }
-    };
     /**
      * 创建axios实例
      * @param config
@@ -104,13 +46,13 @@
                 ? config.withCredentials
                 : true }));
     };
+
     /**
      * 调用参数为params的axios请求
      * @param axiosInstance axios实例
      * @param method 请求方法
      * @returns (url: string, params?: any, config?: AxiosRequestConfigs)=> Promise<AxiosResponse<T>>
      */
-    // CreateParamsInParamsHelper
     var createParamsInParamsHelper = function (axiosInstance, method) {
         return function (url, params, config) {
             return axiosInstance[method](url, __assign({ params: params }, config)).catch(function (error) {
@@ -142,72 +84,12 @@
             return axiosInstance[method](url, __assign({ data: data }, config)).catch(function (error) { return error; });
         };
     };
-    /**
-     * 请求前的配置
-     * @param config
-     * @returns config
-     */
-    var axiosRequestCallback = function (config) {
-        var needLoading = config.needLoading, loadingText = config.loadingText, axiosDebounce = config.axiosDebounce, contentType = config.contentType;
-        // 如果需要遮罩层 那就创建遮罩层节点
-        if (needLoading) {
-            // 向map里面添加数据
-            // handleAdd
-            createLoadingNode(loadingText);
-        }
-        // 先判断是否需要防抖 如果需要 需要防抖的话 如果接口被取消 就不再需要遮罩层
-        if (axiosDebounce) {
-            handleRemoveResponseLog(config); // 在请求开始前，对之前的请求做检查取消操作
-            handleAddResponseLog(config); // 将当前请求添加到 pending 中
-        }
-        // 修改content-type
-        if (contentType) {
-            config.headers = __assign(__assign({}, config.headers), { 'Content-Type': contentType });
-        }
-        return config;
-    };
-    /**
-     * 请求前错误回调
-     * @param error 错误信息
-     * @returns error
-     */
-    var axiosRequestErrorCallback = function (error) {
-        removeLoadingNode();
-        return Promise.reject(error);
-    };
-    /**
-     *
-     * @param axiosResponse 请求返回的参数
-     * @returns
-     */
-    var axiosResponseCallback = function (axiosResponse, _a) {
-        var successKey = _a.successKey, successKeyValue = _a.successKeyValue, messageKey = _a.messageKey, dataKey = _a.dataKey;
-        // removeLoadingNode()
-        var codeValue = getValueByKeyInOpject(successKey, axiosResponse.data);
-        if (codeValue == successKeyValue) {
-            var data = getValueByKeyInOpject(dataKey, axiosResponse.data);
-            return Promise.resolve(data);
-        }
-        else {
-            var message = getValueByKeyInOpject(messageKey, axiosResponse.data);
-            return Promise.reject(message);
-        }
-    };
-    /**
-     *
-     * @param axiosResponse 请求返回的参数
-     * @returns
-     */
-    var axiosResponseErrorCallback = function (error) {
-        // removeLoadingNode()
-        if (axios__default['default'].isCancel(error)) ;
-        return Promise.reject(error);
-    };
+
     // 声明一个 Map 用于存储每个请求的标识 和 取消函数
     var logMap = new Map();
     /**
      * 添加请求
-     * @param {AxiosRequestConfigs} config
+     * @param  config axios的配置
      */
     var handleAddResponseLog = function (config) {
         var key = [
@@ -240,18 +122,250 @@
             var cancel = logMap.get(key);
             cancel(key);
             logMap.delete(key);
+            //如果 axios 被取消 就不再创建遮罩层了
             config.needLoading = false;
         }
     };
 
     /**
+     * 创建遮罩层
+     * return HTMLDivElement
+     */
+    var createMaskLayerNode = function () {
+        var className = "common-axios-mask-layer";
+        var maskLayerNode = document.createElement('div');
+        maskLayerNode.className = className;
+        return maskLayerNode;
+    };
+    /**
+     * 创建loading节点
+     * @param loadingText loading文本
+     * @returns HTMLSpanElement
+     */
+    var createTextNode = function (loadingText) {
+        if (!loadingText) {
+            loadingText = '拼命加载中';
+        }
+        var span = document.createElement('span');
+        span.className = 'common-axios-text';
+        span.textContent = loadingText;
+        return span;
+    };
+    /**
+     * 创建带loading效果的节点
+     * @returns HTMLSpanElement
+     */
+    var createDottingNode = function () {
+        var span = document.createElement('span');
+        span.className = 'common-axios-dotting';
+        return span;
+    };
+    /**
+     * 创建遮罩层
+     * @param loadingText string loading遮罩层的文字
+     */
+    var createLoadingNode = function (loadingText) {
+        if (document) {
+            // 创建文本节点
+            var textNode = createTextNode(loadingText);
+            // 创建loading节点
+            var dottingNode = createDottingNode();
+            var loadingBody = document.createElement('div');
+            loadingBody.className = 'common-axios-loading';
+            loadingBody.appendChild(textNode);
+            loadingBody.appendChild(dottingNode);
+            // 创建遮罩层节点
+            var maskLayerNode = createMaskLayerNode();
+            maskLayerNode.appendChild(loadingBody);
+            document.body.appendChild(maskLayerNode);
+        }
+    };
+    /**
+     * 移除遮罩层节点
+     */
+    var removeLoadingNode = function () {
+        if (document) {
+            var loadingNode = document.getElementsByClassName('common-axios-mask-layer')[0];
+            if (loadingNode) {
+                document.body.removeChild(loadingNode);
+            }
+        }
+    };
+
+    var requestLog = [];
+    /**
+     * 添加axios请求记录 并返回需不要需要创建遮罩层
+     * @param config axios resquest config
+     * @returns boolean
+     */
+    var addRequestLog = function (config) {
+        var key = [
+            config.method,
+            config.url,
+            qs__default['default'].stringify(config.params),
+            qs__default['default'].stringify(config.data),
+        ].join('&');
+        if (requestLog.length === 0) {
+            requestLog.push(key);
+            return true;
+        }
+        else {
+            requestLog.push(key);
+            return false;
+        }
+    };
+    var removeRequestLog = function () {
+        requestLog.pop();
+        if (requestLog.length === 0)
+            removeLoadingNode();
+    };
+    /**
+     * 通过key查找object里面的值
+     * @param key object的属性
+     * @param object 数据
+     * @returns object[key]
+     */
+    var getValueByKeyInOpject = function (key, object) {
+        if (!key)
+            return object;
+        if (key.includes('.')) {
+            var keys = key.split('.');
+            var index = 0;
+            var temValue = void 0;
+            while (index < keys.length) {
+                var key_1 = keys[index];
+                if (!temValue) {
+                    temValue = object[key_1];
+                }
+                else {
+                    temValue = temValue[key_1];
+                }
+                index++;
+            }
+            return temValue;
+        }
+        else {
+            return object[key];
+        }
+    };
+    /**
+     * 请求拦截器callback
+     * @param config
+     * @returns config
+     */
+    var axiosRequestCallback = function (config) {
+        var needLoading = config.needLoading, loadingText = config.loadingText, axiosDebounce = config.axiosDebounce, contentType = config.contentType;
+        // 先判断是否需要防抖 如果需要 需要防抖的话 如果接口被取消 就不再需要遮罩层
+        if (axiosDebounce) {
+            handleRemoveResponseLog(config); // 在请求开始前，对之前的请求做检查取消操作
+            handleAddResponseLog(config); // 将当前请求添加到 pending 中
+        }
+        // 如果需要遮罩层 那就创建遮罩层节点
+        if (needLoading) {
+            var needLoad = addRequestLog(config);
+            // TODO 向map里面添加数据
+            if (needLoad)
+                createLoadingNode(loadingText);
+        }
+        // 修改content-type
+        if (contentType) {
+            config.headers = __assign(__assign({}, config.headers), { 'Content-Type': contentType });
+        }
+        return config;
+    };
+    /**
+     * 请求前错误回调
+     * @param error 错误信息
+     * @returns error
+     */
+    var axiosRequestErrorCallback = function (error) {
+        removeLoadingNode();
+        return Promise.reject(error);
+    };
+    /**
+     *
+     * @param axiosResponse 请求返回的参数
+     * @returns
+     */
+    var axiosResponseCallback = function (axiosResponse, _a) {
+        var successKey = _a.successKey, successKeyValue = _a.successKeyValue, messageKey = _a.messageKey, dataKey = _a.dataKey;
+        removeRequestLog();
+        // 请求完毕无论成功与否，关闭遮罩层
+        if (successKey && successKeyValue) {
+            var codeValue = getValueByKeyInOpject(successKey, axiosResponse.data);
+            if (codeValue == successKeyValue) {
+                // createMessage('成功了!', 'success')
+                // createMessage('默认的!', 'info')
+                // createMessage('警告的!', 'warning')
+                // createMessage('错误的!', 'danger')
+                if (dataKey) {
+                    return Promise.resolve(getValueByKeyInOpject(dataKey, axiosResponse.data));
+                }
+                else {
+                    return Promise.resolve(axiosResponse.data);
+                }
+            }
+            else {
+                if (messageKey) {
+                    var message = getValueByKeyInOpject(messageKey, axiosResponse.data);
+                    return Promise.reject(message);
+                }
+                return Promise.reject(axiosResponse.data);
+            }
+        }
+        else {
+            return Promise.resolve(axiosResponse);
+        }
+    };
+    /**
+     *
+     * @param axiosResponse 请求返回的参数
+     * @returns
+     */
+    var axiosResponseErrorCallback = function (error) {
+        removeLoadingNode();
+        if (axios__default['default'].isCancel(error)) ;
+        return Promise.reject(error);
+    };
+
+    function styleInject(css, ref) {
+      if ( ref === void 0 ) ref = {};
+      var insertAt = ref.insertAt;
+
+      if (!css || typeof document === 'undefined') { return; }
+
+      var head = document.head || document.getElementsByTagName('head')[0];
+      var style = document.createElement('style');
+      style.type = 'text/css';
+
+      if (insertAt === 'top') {
+        if (head.firstChild) {
+          head.insertBefore(style, head.firstChild);
+        } else {
+          head.appendChild(style);
+        }
+      } else {
+        head.appendChild(style);
+      }
+
+      if (style.styleSheet) {
+        style.styleSheet.cssText = css;
+      } else {
+        style.appendChild(document.createTextNode(css));
+      }
+    }
+
+    var css_248z = "html,\nbody {\n    margin: 0;\n    padding: 0;\n    position: relative;\n}\n/* 遮罩层的样式 */\n.common-axios-mask-layer {\n    position: fixed;\n    top: 0;\n    left: 0;\n    /* display: none; */\n    width: 100%;\n    height: 100%;\n    overflow-x: hidden;\n    overflow-y: auto;\n    outline: 0;\n    opacity: 0.5;\n    background-color: #000;\n}\n/* 消息的默认样式 */\n.modal-content {\n    min-width: 380px;\n    box-sizing: border-box;\n    border-width: 1px;\n    border-style: solid;\n    border-color: #ebeef5;\n    position: fixed;\n    left: 50%;\n    top: 20px;\n    transform: translateX(-50%);\n    background-color: #edf2fc;\n    transition: opacity 0.3s, transform 0.4s, top 0.4s;\n    padding: 15px 15px 15px 20px;\n    display: flex;\n    align-items: center;\n    border-radius: 4px;\n}\n.modal-content__info {\n    background-color: #f0f9eb;\n    border-color: #e1f3d8;\n}\n.modal-content__success {\n    background-color: #f0f9eb;\n    border-color: #e1f3d8;\n}\n.modal-content__warning {\n    background-color: #fdf6ec;\n    border-color: #faecd8;\n}\n.modal-content__danger {\n    background-color: #fef0f0;\n    border-color: #fde2e2;\n}\n/* 消息节点的默认样式 */\n.modal-content > .modal-body {\n    text-align: center;\n    font-size: 14px;\n}\n\n/* 消息节点的info样式 */\n.modal-content__info > .modal-body {\n    color: #909399;\n}\n/* 消息节点的success样式 */\n.modal-content__success > .modal-body {\n    color: #67c23a;\n}\n/* 消息节点的warning样式 */\n.modal-content__warning > .modal-body {\n    color: #e6a23c;\n}\n/* 消息节点的danger样式 */\n.modal-content__danger > .modal-body {\n    color: #f56c6c;\n}\n/* 遮罩层body */\n.common-axios-loading {\n    font-size: 14px;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    height: 100%;\n    width: 100%;\n}\n/* 遮罩层文本节点样式 */\n.common-axios-text {\n    color: #409eff;\n}\n/* 遮罩层loading节点样式 */\n.common-axios-dotting {\n    color: #409eff;\n    display: inline-block;\n    min-width: 2px;\n    min-height: 2px;\n    box-shadow: 2px 0 currentColor, 6px 0 currentColor, 10px 0 currentColor;\n    -webkit-animation: dot 2s infinite step-start both;\n    animation: dot 2s infinite step-start both;\n    margin-left: 2px;\n}\n.common-axios-dotting:before {\n    content: '...';\n} /* IE8 */\n.common-axios-dotting::before {\n    content: '';\n}\n:root .common-axios-dotting {\n    margin-right: 8px;\n}\n\n@-webkit-keyframes dot {\n    25% {\n        box-shadow: none;\n    }\n    50% {\n        box-shadow: 2px 0 currentColor;\n    }\n    75% {\n        box-shadow: 2px 0 currentColor, 6px 0 currentColor;\n    }\n}\n@keyframes dot {\n    25% {\n        box-shadow: none;\n    }\n    50% {\n        box-shadow: 2px 0 currentColor;\n    }\n    75% {\n        box-shadow: 2px 0 currentColor, 6px 0 currentColor;\n    }\n}\n";
+    styleInject(css_248z);
+
+    /**
      * @param AxiosRequestConfigs
      */
     var createAxios = function (initAxiosRequestConfig) {
-        var successKey = initAxiosRequestConfig.successKey || 'code';
-        var successKeyValue = initAxiosRequestConfig.successKeyValue || 200;
-        var messageKey = initAxiosRequestConfig.messageKey || 'message';
-        var dataKey = initAxiosRequestConfig.dataKey || 'data';
+        var successKey = initAxiosRequestConfig.successKey;
+        var successKeyValue = initAxiosRequestConfig.successKeyValue;
+        var messageKey = initAxiosRequestConfig.messageKey;
+        var dataKey = initAxiosRequestConfig.dataKey;
         var temSuccessKey;
         var temSuccessKeyValue;
         var temMessageKey;
