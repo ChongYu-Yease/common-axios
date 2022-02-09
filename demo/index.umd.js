@@ -279,6 +279,7 @@
      * @returns error
      */
     var axiosRequestErrorCallback = function (error) {
+        console.log(1111);
         removeLoadingNode();
         return Promise.reject(error);
     };
@@ -324,7 +325,12 @@
      */
     var axiosResponseErrorCallback = function (error) {
         removeLoadingNode();
-        if (axios__default['default'].isCancel(error)) ;
+        if (axios__default['default'].isCancel(error)) {
+            console.log('axios.isCancel(error)');
+        }
+        else {
+            console.log('else', error);
+        }
         return Promise.reject(error);
     };
 

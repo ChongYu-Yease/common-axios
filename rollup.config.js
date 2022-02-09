@@ -10,7 +10,7 @@ import json from '@rollup/plugin-json'
 import commonjs from '@rollup/plugin-commonjs' //将CommonJS模块转换为ES6, 方便rollup直接调用
 import serve from 'rollup-plugin-serve'
 import livereload from 'rollup-plugin-livereload'
-import vue from 'rollup-plugin-vue'
+
 const isProduction = process.env.NODE_ENV === 'production'
 const initConfig = () => {
     const flexibleOutput = []
@@ -74,16 +74,13 @@ const initConfig = () => {
             del({ targets: ['dist', 'demo/index.umd.js'] }),
             babel({
                 exclude: 'node_modules/**',
-                extensions: ['.js', '.jsx', '.vue'],
+                extensions: ['.js', '.jsx'],
                 babelHelpers: 'bundled',
             }),
             commonjs(),
-            nodeResolve({ browser: true, extensions: ['.vue', '.jsx', '.js'] }),
+            nodeResolve({ browser: true, extensions: ['.jsx', '.js'] }),
             nodePolyfills(),
-            vue({
-                css: true,
-                compileTemplate: true,
-            }),
+
             postcss({
                 plugins: [autoprefixer()],
             }),
