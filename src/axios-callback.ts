@@ -101,8 +101,6 @@ export const axiosRequestCallback: AxiosRequestCallback = (config) => {
  * @returns error
  */
 export const axiosRequestErrorCallback: AxiosErrorCallback = (error) => {
-    console.log(1111)
-
     removeLoadingNode()
     return Promise.reject(error)
 }
@@ -154,10 +152,9 @@ export const axiosResponseCallback: AxiosResponseCallback = (
 export const axiosResponseErrorCallback: AxiosErrorCallback = (error) => {
     removeLoadingNode()
     if (axios.isCancel(error)) {
-        console.log('axios.isCancel(error)')
+        console.log('axios.isCancel')
     } else {
         console.log('else', error)
     }
-
     return Promise.reject(error)
 }

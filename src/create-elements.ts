@@ -7,18 +7,18 @@ import {
     CreateMessage,
     GetTextWith,
 } from './types'
-const getTextWidth: GetTextWith = (message) => {
-    const span: HTMLSpanElement = document.createElement('span')
-    const now = Date.now()
-    const className = `common-axios-get-text-width__${now}`
-    span.innerText = message
-    span.className = className
-    document.body.appendChild(span)
-    const width = (
-        document.getElementsByClassName(className)[0]! as HTMLSpanElement
-    ).offsetWidth
-    return width
-}
+// const getTextWidth: GetTextWith = (message) => {
+//     const span: HTMLSpanElement = document.createElement('span')
+//     const now = Date.now()
+//     const className = `common-axios-get-text-width__${now}`
+//     span.innerText = message
+//     span.className = className
+//     document.body.appendChild(span)
+//     const width = (
+//         document.getElementsByClassName(className)[0]! as HTMLSpanElement
+//     ).offsetWidth
+//     return width
+// }
 /**
  * 创建遮罩层
  * return HTMLDivElement
@@ -90,7 +90,6 @@ export const removeLoadingNode = () => {
 }
 
 const createMessageNode: CreateMessageNode = (message, type) => {
-    // console.log('message, type', message, type)
     if (!type) type = 'info'
     const modalBody = document.createElement('div')
     modalBody.className = 'modal-body'

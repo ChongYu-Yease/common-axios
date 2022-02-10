@@ -127,6 +127,18 @@
         }
     };
 
+    // const getTextWidth: GetTextWith = (message) => {
+    //     const span: HTMLSpanElement = document.createElement('span')
+    //     const now = Date.now()
+    //     const className = `common-axios-get-text-width__${now}`
+    //     span.innerText = message
+    //     span.className = className
+    //     document.body.appendChild(span)
+    //     const width = (
+    //         document.getElementsByClassName(className)[0]! as HTMLSpanElement
+    //     ).offsetWidth
+    //     return width
+    // }
     /**
      * 创建遮罩层
      * return HTMLDivElement
@@ -279,7 +291,6 @@
      * @returns error
      */
     var axiosRequestErrorCallback = function (error) {
-        console.log(1111);
         removeLoadingNode();
         return Promise.reject(error);
     };
@@ -326,7 +337,7 @@
     var axiosResponseErrorCallback = function (error) {
         removeLoadingNode();
         if (axios__default['default'].isCancel(error)) {
-            console.log('axios.isCancel(error)');
+            console.log('axios.isCancel');
         }
         else {
             console.log('else', error);
