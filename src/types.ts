@@ -38,8 +38,14 @@ export type LoadingList = Map<string, Function>
  * successKey 和 successKeyValue配对使用的 要么全部都有 要么一个没有
  */
 type SuccessKeyAndSuccessKeyValue =
-    | { successKey?: never; successKeyValue?: never }
-    | { successKey: string; successKeyValue: string }
+    | {
+          successKey?: never /* 代表成功的参数的key */
+          successKeyValue?: never /* 代表成功的参数的key所对应的值 */
+      }
+    | {
+          successKey: string /* 代表成功的参数的key */
+          successKeyValue: string /* 代表成功的参数的key所对应的值 */
+      }
 /**
  * 自定义 axios 的配置
  * 添加 needLoading 是否需要遮罩层
@@ -51,16 +57,15 @@ type SuccessKeyAndSuccessKeyValue =
  */
 export type AxiosRequestConfigs = AxiosRequestConfig &
     SuccessKeyAndSuccessKeyValue & {
-        needLoading?: boolean
-        loadingText?: string
-        axiosDebounce?: boolean
-        contentType?:
-            | 'application/json'
+        needLoading?: boolean /* 是否创建遮罩层，默认为否 */
+        loadingText?: string /* 遮罩层展示的内容*/
+        axiosDebounce?: boolean /* 接口防抖 应用场景：同一个接口，同一个请求方式，同样的请求参数发起了多次数据请求，当第一次发起请求的接口没有返回数据之前，后续的接口都会被取消 */
+        contentType?: /* 请求参数在request body 请求的contentType 默认为'application/json' */
+        | 'application/json'
             | 'application/x-www-form-urlencoded'
             | ' multipart/form-data'
-
-        messageKey?: string
-        dataKey?: string
+        messageKey?: string /* 消息字段 */
+        dataKey?: string /* 数据的字段 */
     }
 /**
  * 添加请求记录
