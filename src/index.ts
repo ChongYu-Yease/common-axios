@@ -52,8 +52,8 @@ export const createAxios: CreateAxios = (initAxiosRequestConfig) => {
     )
     /** 添加响应拦截器  **/
     axiosInstance.interceptors.response.use(
-        (axiosResponse) =>
-            axiosResponseCallback(axiosResponse, {
+        (axiosResponse) => {
+            return axiosResponseCallback(axiosResponse, {
                 // 临时配置的优先级更高
                 successKey: temSuccessKey ? temSuccessKey : successKey,
                 successKeyValue: temSuccessKeyValue
@@ -61,7 +61,8 @@ export const createAxios: CreateAxios = (initAxiosRequestConfig) => {
                     : successKeyValue,
                 dataKey: temDataKey ? temDataKey : dataKey,
                 messageKey: temMessageKey ? temMessageKey : messageKey,
-            }),
+            })
+        },
         (error) => axiosResponseErrorCallback(error)
     )
 
