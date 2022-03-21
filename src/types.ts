@@ -23,17 +23,21 @@ export type CreateMessageNode = (
 
 export type CreateMaskLayerNode = () => HTMLDivElement
 
+// 创建loading节点
 export type CreateLoadingNode = (loadingText: string | undefined) => void
 
 export type CreateDottingNode = () => HTMLSpanElement
 
+// 创建文本节点
 export type CreateTextNode = (
     loadingText: string | undefined
 ) => HTMLSpanElement
 
+// 移除遮罩层
 export type RemoveLoadingNode = (className: string) => void
 
 export type LoadingList = Map<string, Function>
+
 /**
  * successKey 和 successKeyValue配对使用的 要么全部都有 要么一个没有
  */
@@ -46,6 +50,7 @@ type SuccessKeyAndSuccessKeyValue =
           successKey: string /* 代表成功的参数的key */
           successKeyValue: string /* 代表成功的参数的key所对应的值 */
       }
+
 /**
  * 自定义 axios 的配置
  * 添加 needLoading 是否需要遮罩层
@@ -110,12 +115,8 @@ export type AxiosErrorCallback = (error: Error) => Promise<Error>
  */
 export type AxiosResponseCallback = (
     axiosResponse: AxiosResponse<any>,
-    axiosResponseConfig: {
-        successKey: string | undefined
-        successKeyValue: number | string | undefined
-        dataKey: string | undefined
-        messageKey: string | undefined
-    }
+    initResponseConfig: AxiosRequestConfigs,
+    temResponseConfig: AxiosRequestConfigs
 ) => Promise<{
     code: number
     message: string
@@ -156,6 +157,11 @@ export type GetValueByKeyInOpject = (
     key: string,
     object: { [k: string]: any }
 ) => any
+
+export type GetConfigInConfigs = (
+    temResponseConfig: AxiosRequestConfigs,
+    initResponseConfig: AxiosRequestConfigs
+) => AxiosRequestConfigs
 
 export type HandleAddResponseLog = (config: AxiosRequestConfigs) => void
 

@@ -1,9 +1,12 @@
-import { createAxiosInstance } from './create-axios' /* 创建axios实例 */
+/* 创建axios实例 */
+import { createAxiosInstance } from './create-axios'
+/* 创建axioshelper */
 import {
     createParamsInParamsHelper,
     createParamsInDataHelper,
     createParamsInParamsOrDataHelper,
-} from './create-helper' /* 创建axioshelper */
+} from './create-helper'
+
 import {
     axiosRequestCallback,
     axiosRequestErrorCallback,
@@ -15,25 +18,44 @@ import { CreateAxios, AxiosHelpers, AxiosRequestConfigs } from './types'
 
 // 引入公共样式 主要是body 遮罩层 loading动画的效果
 import './index.css'
+
 /**
  * @param AxiosRequestConfigs
  */
 export const createAxios: CreateAxios = (initAxiosRequestConfig) => {
-    const successKey = initAxiosRequestConfig.successKey
+    // 初始化的用户配置
+    const initResponseConfig: AxiosRequestConfigs = {
+        // 代表成功的key
+        successKey: initAxiosRequestConfig.successKey
+            ? initAxiosRequestConfig.successKey
+            : '',
 
-    const successKeyValue = initAxiosRequestConfig.successKeyValue
+        // 代表成功key的value
+        successKeyValue: initAxiosRequestConfig.successKeyValue
+            ? initAxiosRequestConfig.successKeyValue
+            : '',
 
-    const messageKey = initAxiosRequestConfig.messageKey
+        // 代表信息的key
+        messageKey: initAxiosRequestConfig.messageKey,
 
-    const dataKey = initAxiosRequestConfig.dataKey
+        // 代表数据的key
+        dataKey: initAxiosRequestConfig.dataKey,
+    }
 
-    let temSuccessKey: string
+    // 临时的用户配置
+    const temResponseConfig: AxiosRequestConfigs = {
+        // 临时代表成功的key
+        successKey: '',
 
-    let temSuccessKeyValue: string | number
+        // 临时代表成功的key的值
+        successKeyValue: '',
 
-    let temMessageKey: string
+        // 临时代表信息的key
+        messageKey: '',
 
-    let temDataKey: string
+        // 临时代表数据的key
+        dataKey: '',
+    }
 
     /* 创建axios实例 */
     const axiosInstance = createAxiosInstance(initAxiosRequestConfig)
@@ -41,27 +63,31 @@ export const createAxios: CreateAxios = (initAxiosRequestConfig) => {
     /** 添加请求拦截器 **/
     axiosInstance.interceptors.request.use(
         (config: AxiosRequestConfigs) => {
-            const { successKey, successKeyValue, messageKey, dataKey } = config
-            temSuccessKey = successKey ? successKey : ''
-            temSuccessKeyValue = successKeyValue ? successKeyValue : ''
-            temMessageKey = messageKey ? messageKey : ''
-            temDataKey = dataKey ? dataKey : ''
+            // 将临时配置保存起来，给 添加响应拦截 器使用
+            temResponseConfig.successKey = config.successKey
+                ? config.successKey
+                : ''
+
+            temResponseConfig.successKeyValue = config.successKeyValue
+                ? config.successKeyValue
+                : ''
+
+            temResponseConfig.messageKey = config.messageKey
+
+            temResponseConfig.dataKey = config.dataKey
+
             return axiosRequestCallback(config)
         },
         (error) => axiosRequestErrorCallback(error)
     )
-    /** 添加响应拦截器  **/
+    /** 添加响应拦截器 **/
     axiosInstance.interceptors.response.use(
         (axiosResponse) => {
-            return axiosResponseCallback(axiosResponse, {
-                // 临时配置的优先级更高
-                successKey: temSuccessKey ? temSuccessKey : successKey,
-                successKeyValue: temSuccessKeyValue
-                    ? temSuccessKeyValue
-                    : successKeyValue,
-                dataKey: temDataKey ? temDataKey : dataKey,
-                messageKey: temMessageKey ? temMessageKey : messageKey,
-            })
+            return axiosResponseCallback(
+                axiosResponse,
+                initResponseConfig,
+                temResponseConfig
+            )
         },
         (error) => axiosResponseErrorCallback(error)
     )

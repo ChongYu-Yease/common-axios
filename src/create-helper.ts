@@ -51,8 +51,7 @@ export const createParamsInDataHelper = (
     method: AxiosMethods
 ) => {
     return (url: string, data?: any, config?: AxiosRequestConfigs) => {
-        return axiosInstance[method](url, {
-            data,
+        return axiosInstance[method](url, data, {
             ...config,
         }).catch((error) => error)
     }
