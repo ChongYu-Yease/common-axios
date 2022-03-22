@@ -6,7 +6,8 @@ import {
     CreateMessageNode,
     CreateMessage,
     GetTextWith,
-} from './types'
+} from './create-elements.type'
+
 // const getTextWidth: GetTextWith = (message) => {
 //     const span: HTMLSpanElement = document.createElement('span')
 //     const now = Date.now()
@@ -19,6 +20,7 @@ import {
 //     ).offsetWidth
 //     return width
 // }
+
 /**
  * 创建遮罩层
  * return HTMLDivElement

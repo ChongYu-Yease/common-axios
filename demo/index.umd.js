@@ -42,7 +42,9 @@
      * @param config
      */
     var createAxiosInstance = function (config) {
-        return axios__default['default'].create(__assign(__assign({}, config), { withCredentials: config && config.withCredentials !== undefined
+        return axios__default['default'].create(__assign(__assign({}, config), { 
+            //默认开启携带cookie
+            withCredentials: config && config.withCredentials !== undefined
                 ? config.withCredentials
                 : true }));
     };
@@ -265,7 +267,7 @@
         }
     };
     /**
-     * 请求拦截器callback
+     * 请求前成功回调
      * @param config
      * @returns config
      */
@@ -299,52 +301,15 @@
         return Promise.reject(error);
     };
     /**
-     * 获取用户配置 临时配置优先级高于初始化配置
-     * @param initResponseConfig 用户初始化的配置
-     * @param temResponseConfig 用户临时配置
-     */
-    var getConfigInConfigs = function (initResponseConfig, temResponseConfig) {
-        // 计算 successKey
-        var successKey = temResponseConfig.successKey
-            ? temResponseConfig.successKey
-            : initResponseConfig.successKey
-                ? initResponseConfig.successKey
-                : '';
-        // 计算 successKeyValue
-        var successKeyValue = temResponseConfig.successKeyValue
-            ? temResponseConfig.successKeyValue
-            : initResponseConfig.successKeyValue
-                ? initResponseConfig.successKeyValue
-                : '';
-        // 计算 dataKey
-        var dataKey = temResponseConfig.dataKey
-            ? temResponseConfig.dataKey
-            : initResponseConfig.dataKey
-                ? initResponseConfig.dataKey
-                : '';
-        // 计算 messageKey
-        var messageKey = temResponseConfig.messageKey
-            ? temResponseConfig.messageKey
-            : initResponseConfig.messageKey
-                ? initResponseConfig.messageKey
-                : '';
-        // 重置 临时配置
-        temResponseConfig.successKey = '';
-        temResponseConfig.successKeyValue = '';
-        temResponseConfig.messageKey = '';
-        temResponseConfig.dataKey = '';
-        return { successKey: successKey, successKeyValue: successKeyValue, dataKey: dataKey, messageKey: messageKey };
-    };
-    /**
      *
-     * @param axiosResponse 请求返回的参数
+     * @param axiosResponse 请求返回成功回调
      * @returns
      */
-    var axiosResponseCallback = function (axiosResponse, initResponseConfig, temResponseConfig) {
+    var axiosResponseCallback = function (axiosResponse) {
         // 请求完毕无论成功与否，关闭遮罩层
         removeRequestLog();
-        // 获取用户临时配置
-        var _a = getConfigInConfigs(initResponseConfig, temResponseConfig), successKey = _a.successKey, successKeyValue = _a.successKeyValue, dataKey = _a.dataKey, messageKey = _a.messageKey;
+        console.log('axiosResponse.config', axiosResponse.config);
+        var _a = axiosResponse.config, successKey = _a.successKey, successKeyValue = _a.successKeyValue, dataKey = _a.dataKey, messageKey = _a.messageKey;
         if (successKey && successKeyValue) {
             var _successKeyValue = getValueByKeyInOpject(successKey, axiosResponse.data);
             if (_successKeyValue == successKeyValue) {
@@ -373,7 +338,7 @@
     };
     /**
      *
-     * @param axiosResponse 请求返回的参数
+     * @param axiosResponse 请求返回错误回调
      * @returns
      */
     var axiosResponseErrorCallback = function (error) {
@@ -414,7 +379,7 @@
       }
     }
 
-    var css_248z = "html,\nbody {\n    margin: 0;\n    padding: 0;\n    position: relative;\n}\n/* 遮罩层的样式 */\n.common-axios-mask-layer {\n    position: fixed;\n    top: 0;\n    left: 0;\n    /* display: none; */\n    width: 100%;\n    height: 100%;\n    overflow-x: hidden;\n    overflow-y: auto;\n    outline: 0;\n    opacity: 0.5;\n    background-color: #000;\n}\n/* 消息的默认样式 */\n.modal-content {\n    min-width: 380px;\n    box-sizing: border-box;\n    border-width: 1px;\n    border-style: solid;\n    border-color: #ebeef5;\n    position: fixed;\n    left: 50%;\n    top: 20px;\n    transform: translateX(-50%);\n    background-color: #edf2fc;\n    transition: opacity 0.3s, transform 0.4s, top 0.4s;\n    padding: 15px 15px 15px 20px;\n    display: flex;\n    align-items: center;\n    border-radius: 4px;\n}\n.modal-content__info {\n    background-color: #f0f9eb;\n    border-color: #e1f3d8;\n}\n.modal-content__success {\n    background-color: #f0f9eb;\n    border-color: #e1f3d8;\n}\n.modal-content__warning {\n    background-color: #fdf6ec;\n    border-color: #faecd8;\n}\n.modal-content__danger {\n    background-color: #fef0f0;\n    border-color: #fde2e2;\n}\n/* 消息节点的默认样式 */\n.modal-content > .modal-body {\n    text-align: center;\n    font-size: 14px;\n}\n\n/* 消息节点的info样式 */\n.modal-content__info > .modal-body {\n    color: #909399;\n}\n/* 消息节点的success样式 */\n.modal-content__success > .modal-body {\n    color: #67c23a;\n}\n/* 消息节点的warning样式 */\n.modal-content__warning > .modal-body {\n    color: #e6a23c;\n}\n/* 消息节点的danger样式 */\n.modal-content__danger > .modal-body {\n    color: #f56c6c;\n}\n/* 遮罩层body */\n.common-axios-loading {\n    font-size: 14px;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    height: 100%;\n    width: 100%;\n}\n/* 遮罩层文本节点样式 */\n.common-axios-text {\n    color: #409eff;\n}\n/* 遮罩层loading节点样式 */\n.common-axios-dotting {\n    color: #409eff;\n    display: inline-block;\n    min-width: 2px;\n    min-height: 2px;\n    box-shadow: 2px 0 currentColor, 6px 0 currentColor, 10px 0 currentColor;\n    -webkit-animation: dot 2s infinite step-start both;\n    animation: dot 2s infinite step-start both;\n    margin-left: 2px;\n}\n.common-axios-dotting:before {\n    content: '...';\n} /* IE8 */\n.common-axios-dotting::before {\n    content: '';\n}\n:root .common-axios-dotting {\n    margin-right: 8px;\n}\n\n@-webkit-keyframes dot {\n    25% {\n        box-shadow: none;\n    }\n    50% {\n        box-shadow: 2px 0 currentColor;\n    }\n    75% {\n        box-shadow: 2px 0 currentColor, 6px 0 currentColor;\n    }\n}\n@keyframes dot {\n    25% {\n        box-shadow: none;\n    }\n    50% {\n        box-shadow: 2px 0 currentColor;\n    }\n    75% {\n        box-shadow: 2px 0 currentColor, 6px 0 currentColor;\n    }\n}\n";
+    var css_248z = "html,\nbody {\n    margin: 0;\n    padding: 0;\n    position: relative;\n}\n\n/* 遮罩层的样式 */\n.common-axios-mask-layer {\n    position: fixed;\n    top: 0;\n    left: 0;\n    /* display: none; */\n    width: 100%;\n    height: 100%;\n    overflow-x: hidden;\n    overflow-y: auto;\n    outline: 0;\n    opacity: 0.5;\n    background-color: #000;\n}\n\n/* 消息的默认样式 */\n.modal-content {\n    min-width: 380px;\n    box-sizing: border-box;\n    border-width: 1px;\n    border-style: solid;\n    border-color: #ebeef5;\n    position: fixed;\n    left: 50%;\n    top: 20px;\n    transform: translateX(-50%);\n    background-color: #edf2fc;\n    transition: opacity 0.3s, transform 0.4s, top 0.4s;\n    padding: 15px 15px 15px 20px;\n    display: flex;\n    align-items: center;\n    border-radius: 4px;\n}\n\n.modal-content__info {\n    background-color: #f0f9eb;\n    border-color: #e1f3d8;\n}\n.modal-content__success {\n    background-color: #f0f9eb;\n    border-color: #e1f3d8;\n}\n.modal-content__warning {\n    background-color: #fdf6ec;\n    border-color: #faecd8;\n}\n.modal-content__danger {\n    background-color: #fef0f0;\n    border-color: #fde2e2;\n}\n/* 消息节点的默认样式 */\n.modal-content > .modal-body {\n    text-align: center;\n    font-size: 14px;\n}\n\n/* 消息节点的info样式 */\n.modal-content__info > .modal-body {\n    color: #909399;\n}\n/* 消息节点的success样式 */\n.modal-content__success > .modal-body {\n    color: #67c23a;\n}\n/* 消息节点的warning样式 */\n.modal-content__warning > .modal-body {\n    color: #e6a23c;\n}\n/* 消息节点的danger样式 */\n.modal-content__danger > .modal-body {\n    color: #f56c6c;\n}\n/* 遮罩层body */\n.common-axios-loading {\n    font-size: 14px;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    height: 100%;\n    width: 100%;\n}\n/* 遮罩层文本节点样式 */\n.common-axios-text {\n    color: #409eff;\n}\n/* 遮罩层loading节点样式 */\n.common-axios-dotting {\n    color: #409eff;\n    display: inline-block;\n    min-width: 2px;\n    min-height: 2px;\n    box-shadow: 2px 0 currentColor, 6px 0 currentColor, 10px 0 currentColor;\n    -webkit-animation: dot 2s infinite step-start both;\n    animation: dot 2s infinite step-start both;\n    margin-left: 2px;\n}\n.common-axios-dotting:before {\n    content: '...';\n} /* IE8 */\n.common-axios-dotting::before {\n    content: '';\n}\n:root .common-axios-dotting {\n    margin-right: 8px;\n}\n\n@-webkit-keyframes dot {\n    25% {\n        box-shadow: none;\n    }\n    50% {\n        box-shadow: 2px 0 currentColor;\n    }\n    75% {\n        box-shadow: 2px 0 currentColor, 6px 0 currentColor;\n    }\n}\n@keyframes dot {\n    25% {\n        box-shadow: none;\n    }\n    50% {\n        box-shadow: 2px 0 currentColor;\n    }\n    75% {\n        box-shadow: 2px 0 currentColor, 6px 0 currentColor;\n    }\n}\n";
     styleInject(css_248z);
 
     /* 创建axios实例 */
@@ -422,51 +387,12 @@
      * @param AxiosRequestConfigs
      */
     var createAxios = function (initAxiosRequestConfig) {
-        // 初始化的用户配置
-        var initResponseConfig = {
-            // 代表成功的key
-            successKey: initAxiosRequestConfig.successKey
-                ? initAxiosRequestConfig.successKey
-                : '',
-            // 代表成功key的value
-            successKeyValue: initAxiosRequestConfig.successKeyValue
-                ? initAxiosRequestConfig.successKeyValue
-                : '',
-            // 代表信息的key
-            messageKey: initAxiosRequestConfig.messageKey,
-            // 代表数据的key
-            dataKey: initAxiosRequestConfig.dataKey,
-        };
-        // 临时的用户配置
-        var temResponseConfig = {
-            // 临时代表成功的key
-            successKey: '',
-            // 临时代表成功的key的值
-            successKeyValue: '',
-            // 临时代表信息的key
-            messageKey: '',
-            // 临时代表数据的key
-            dataKey: '',
-        };
         /* 创建axios实例 */
         var axiosInstance = createAxiosInstance(initAxiosRequestConfig);
         /** 添加请求拦截器 **/
-        axiosInstance.interceptors.request.use(function (config) {
-            // 将临时配置保存起来，给 添加响应拦截 器使用
-            temResponseConfig.successKey = config.successKey
-                ? config.successKey
-                : '';
-            temResponseConfig.successKeyValue = config.successKeyValue
-                ? config.successKeyValue
-                : '';
-            temResponseConfig.messageKey = config.messageKey;
-            temResponseConfig.dataKey = config.dataKey;
-            return axiosRequestCallback(config);
-        }, function (error) { return axiosRequestErrorCallback(error); });
+        axiosInstance.interceptors.request.use(function (config) { return axiosRequestCallback(config); }, function (error) { return axiosRequestErrorCallback(error); });
         /** 添加响应拦截器 **/
-        axiosInstance.interceptors.response.use(function (axiosResponse) {
-            return axiosResponseCallback(axiosResponse, initResponseConfig, temResponseConfig);
-        }, function (error) { return axiosResponseErrorCallback(error); });
+        axiosInstance.interceptors.response.use(function (axiosResponse) { return axiosResponseCallback(axiosResponse); }, function (error) { return axiosResponseErrorCallback(error); });
         var axiosHelpers = {
             get: createParamsInParamsHelper(axiosInstance, 'get'),
             head: createParamsInParamsHelper(axiosInstance, 'head'),

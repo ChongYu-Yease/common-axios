@@ -3,13 +3,14 @@ import {
     AxiosErrorCallback,
     AxiosResponseCallback,
     GetValueByKeyInOpject,
-    GetConfigInConfigs,
     AddRequestLog,
     RequestLog,
     RemoveRequestLog,
-} from './types'
+} from './axios-callback.type'
 
-import { handleRemoveResponseLog, handleAddResponseLog } from './config'
+import { AxiosRequestConfigs } from './index.types'
+// axios  防抖
+import { handleRemoveResponseLog, handleAddResponseLog } from './axios-debounce'
 
 import axios from 'axios'
 
@@ -78,7 +79,7 @@ const getValueByKeyInOpject: GetValueByKeyInOpject = (key, object) => {
 }
 
 /**
- * 请求拦截器callback
+ * 请求前成功回调
  * @param config
  * @returns config
  */
@@ -94,7 +95,6 @@ export const axiosRequestCallback: AxiosRequestCallback = (config) => {
     // 如果需要遮罩层 那就创建遮罩层节点
     if (needLoading) {
         const needLoad = addRequestLog(config)
-
         // TODO 向map里面添加数据
         if (needLoad) createLoadingNode(loadingText)
     }
@@ -119,66 +119,17 @@ export const axiosRequestErrorCallback: AxiosErrorCallback = (error) => {
 }
 
 /**
- * 获取用户配置 临时配置优先级高于初始化配置
- * @param initResponseConfig 用户初始化的配置
- * @param temResponseConfig 用户临时配置
- */
-const getConfigInConfigs: GetConfigInConfigs = (
-    initResponseConfig,
-    temResponseConfig
-) => {
-    // 计算 successKey
-    const successKey = temResponseConfig.successKey
-        ? temResponseConfig.successKey
-        : initResponseConfig.successKey
-        ? initResponseConfig.successKey
-        : ''
-
-    // 计算 successKeyValue
-    const successKeyValue = temResponseConfig.successKeyValue
-        ? temResponseConfig.successKeyValue
-        : initResponseConfig.successKeyValue
-        ? initResponseConfig.successKeyValue
-        : ''
-
-    // 计算 dataKey
-    const dataKey = temResponseConfig.dataKey
-        ? temResponseConfig.dataKey
-        : initResponseConfig.dataKey
-        ? initResponseConfig.dataKey
-        : ''
-
-    // 计算 messageKey
-    const messageKey = temResponseConfig.messageKey
-        ? temResponseConfig.messageKey
-        : initResponseConfig.messageKey
-        ? initResponseConfig.messageKey
-        : ''
-
-    // 重置 临时配置
-    temResponseConfig.successKey = ''
-    temResponseConfig.successKeyValue = ''
-    temResponseConfig.messageKey = ''
-    temResponseConfig.dataKey = ''
-
-    return { successKey, successKeyValue, dataKey, messageKey }
-}
-
-/**
  *
- * @param axiosResponse 请求返回的参数
+ * @param axiosResponse 请求返回成功回调
  * @returns
  */
-export const axiosResponseCallback: AxiosResponseCallback = (
-    axiosResponse,
-    initResponseConfig,
-    temResponseConfig
-) => {
+export const axiosResponseCallback: AxiosResponseCallback = (axiosResponse) => {
     // 请求完毕无论成功与否，关闭遮罩层
     removeRequestLog()
-    // 获取用户临时配置
+    console.log('axiosResponse.config', axiosResponse.config)
+
     const { successKey, successKeyValue, dataKey, messageKey } =
-        getConfigInConfigs(initResponseConfig, temResponseConfig)
+        axiosResponse.config as AxiosRequestConfigs
 
     if (successKey && successKeyValue) {
         const _successKeyValue = getValueByKeyInOpject(
@@ -212,9 +163,10 @@ export const axiosResponseCallback: AxiosResponseCallback = (
         return Promise.resolve(axiosResponse)
     }
 }
+
 /**
  *
- * @param axiosResponse 请求返回的参数
+ * @param axiosResponse 请求返回错误回调
  * @returns
  */
 export const axiosResponseErrorCallback: AxiosErrorCallback = (error) => {

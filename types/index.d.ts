@@ -1,4 +1,4 @@
-import { CreateAxios } from '../src/types'
+import { CreateAxios } from '../src/index.types'
 
 declare const createAxios: CreateAxios
 

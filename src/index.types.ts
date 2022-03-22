@@ -1,40 +1,17 @@
-import {
-    AxiosRequestConfig,
-    AxiosInstance,
-    AxiosResponse,
-    Canceler,
-} from 'axios'
+import { AxiosRequestConfig, AxiosResponse } from 'axios'
 
-export type LogMap = Map<string, Canceler>
-
-export type RequestLog = Array<string>
-
-export type GetTextWith = (message: string) => number
-
-export type CreateMessage = (
-    message: string,
-    type?: 'success' | 'info' | 'warning' | 'danger'
-) => void
-
-export type CreateMessageNode = (
-    message: string,
-    type?: 'success' | 'info' | 'warning' | 'danger'
-) => HTMLDivElement
-
-export type CreateMaskLayerNode = () => HTMLDivElement
-
-// 创建loading节点
-export type CreateLoadingNode = (loadingText: string | undefined) => void
-
-export type CreateDottingNode = () => HTMLSpanElement
-
-// 创建文本节点
-export type CreateTextNode = (
-    loadingText: string | undefined
-) => HTMLSpanElement
-
-// 移除遮罩层
-export type RemoveLoadingNode = (className: string) => void
+/**
+ * axios的请求方法
+ */
+export type AxiosMethods =
+    | 'get'
+    | 'post'
+    | 'put'
+    | 'delete'
+    | 'head'
+    | 'put'
+    | 'patch'
+    | 'options'
 
 export type LoadingList = Map<string, Function>
 
@@ -72,56 +49,6 @@ export type AxiosRequestConfigs = AxiosRequestConfig &
         messageKey?: string /* 消息字段 */
         dataKey?: string /* 数据的字段 */
     }
-/**
- * 添加请求记录
- */
-export type AddRequestLog = (axiosConfigs: AxiosRequestConfigs) => boolean
-
-/**
- * 移除求情记录
- */
-export type RemoveRequestLog = () => void
-/**
- * 创建axios实例
- */
-export type CreateAxiosInstance = (config: AxiosRequestConfigs) => AxiosInstance
-/**
- * axios的请求方法
- */
-export type AxiosMethods =
-    | 'get'
-    | 'post'
-    | 'put'
-    | 'delete'
-    | 'head'
-    | 'put'
-    | 'patch'
-    | 'options'
-
-/**
- * axios 请求配置回调
- */
-export type AxiosRequestCallback = (
-    config: AxiosRequestConfigs
-) => AxiosRequestConfig
-
-/**
- * axios 请求前 请求后的错误回调 的声明
- */
-export type AxiosErrorCallback = (error: Error) => Promise<Error>
-
-/**
- * axios 请求后成功的回调
- */
-export type AxiosResponseCallback = (
-    axiosResponse: AxiosResponse<any>,
-    initResponseConfig: AxiosRequestConfigs,
-    temResponseConfig: AxiosRequestConfigs
-) => Promise<{
-    code: number
-    message: string
-    data: any
-}>
 
 /**
  * 参数在params的声明
@@ -150,22 +77,6 @@ export type ParamsInParamsOrDataHelper = <T = any, R = AxiosResponse<T>>(
     config?: AxiosRequestConfigs
 ) => Promise<R> | Promise<T>
 
-/**
- * 执行方法返回的对象所包含的属性
- */
-export type GetValueByKeyInOpject = (
-    key: string,
-    object: { [k: string]: any }
-) => any
-
-export type GetConfigInConfigs = (
-    temResponseConfig: AxiosRequestConfigs,
-    initResponseConfig: AxiosRequestConfigs
-) => AxiosRequestConfigs
-
-export type HandleAddResponseLog = (config: AxiosRequestConfigs) => void
-
-export type HandleRemoveResponseLog = (config: AxiosRequestConfigs) => void
 export interface AxiosHelpers {
     get: ParamsInParamsHelper
     head: ParamsInParamsHelper

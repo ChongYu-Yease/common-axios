@@ -4,6 +4,7 @@ body {
     padding: 0;
     position: relative;
 }
+
 /* 遮罩层的样式 */
 .common-axios-mask-layer {
     position: fixed;
@@ -18,6 +19,7 @@ body {
     opacity: 0.5;
     background-color: #000;
 }
+
 /* 消息的默认样式 */
 .modal-content {
     min-width: 380px;
@@ -45,6 +47,7 @@ body {
     align-items: center;
     border-radius: 4px;
 }
+
 .modal-content__info {
     background-color: #f0f9eb;
     border-color: #e1f3d8;

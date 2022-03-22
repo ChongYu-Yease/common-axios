@@ -1,4 +1,4 @@
-import { AxiosMethods, AxiosRequestConfigs } from './types'
+import { AxiosMethods, AxiosRequestConfigs } from './index.types'
 import { AxiosInstance } from 'axios'
 
 /**
