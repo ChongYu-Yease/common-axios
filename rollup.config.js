@@ -12,6 +12,7 @@ import serve from 'rollup-plugin-serve'
 import livereload from 'rollup-plugin-livereload'
 
 const isProduction = process.env.NODE_ENV === 'production'
+
 const initConfig = () => {
     const flexibleOutput = []
     const flexiblePlugins = []
@@ -27,6 +28,7 @@ const initConfig = () => {
                 qs: 'qs',
             },
         })
+
         // 发布压缩代码
         flexiblePlugins.push(terser())
     } else {
@@ -63,22 +65,29 @@ const initConfig = () => {
                     'Access-Control-Allow-Origin': '*',
                 },
             }),
+
             // 热更新
             livereload()
         )
     }
     const defaultConfig = {
         input: './src/index.ts',
+
         external: ['axios', 'qs'],
+
         plugins: [
             del({ targets: ['dist', 'demo/index.umd.js'] }),
+
             babel({
                 exclude: 'node_modules/**',
                 extensions: ['.js', '.jsx'],
                 babelHelpers: 'bundled',
             }),
+
             commonjs(),
+
             nodeResolve({ browser: true, extensions: ['.jsx', '.js'] }),
+
             nodePolyfills(),
 
             postcss({
@@ -86,6 +95,7 @@ const initConfig = () => {
             }),
 
             json(),
+
             typescript({
                 exclude: 'node_modules/**',
                 useTsconfigDeclarationDir: true,

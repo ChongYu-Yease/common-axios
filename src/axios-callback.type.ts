@@ -6,11 +6,13 @@ import { AxiosRequestConfigs } from './index.types'
 /**
  * axios 请求后成功的回调
  */
-export type AxiosResponseCallback = (axiosResponse: AxiosResponse) => Promise<{
-    code: number
-    message: string
-    data: any
-}>
+export type AxiosResponseCallback = (axiosResponse: AxiosResponse) =>
+    | Promise<{
+          code: number
+          message: string
+          data: any
+      }>
+    | undefined
 
 /**
  * axios 请求配置回调
@@ -31,16 +33,3 @@ export type GetValueByKeyInOpject = (
     key: string,
     object: { [k: string]: any }
 ) => any
-
-/**
- * 添加请求记录
- */
-export type AddRequestLog = (axiosConfigs: AxiosRequestConfigs) => boolean
-
-/**
- * 移除求情记录
- */
-export type RemoveRequestLog = () => void
-
-// 记录请求记录
-export type RequestLog = Array<string>

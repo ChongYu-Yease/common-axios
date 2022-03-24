@@ -3,53 +3,27 @@ import {
     AxiosErrorCallback,
     AxiosResponseCallback,
     GetValueByKeyInOpject,
-    AddRequestLog,
-    RequestLog,
-    RemoveRequestLog,
 } from './axios-callback.type'
 
 import { AxiosRequestConfigs } from './index.types'
+
 // axios  防抖
-import { handleRemoveResponseLog, handleAddResponseLog } from './axios-debounce'
+import { AxiosDebounce } from './axios-debounce'
+
+// 创建防抖实例
+const axiosDebounceInstance = new AxiosDebounce()
 
 import axios from 'axios'
 
-import qs from 'qs'
+import { MaskLayer } from './create-masklayer'
 
-import { createLoadingNode, removeLoadingNode } from './create-elements'
+// 遮罩层实例
+const masklayerInstance = new MaskLayer()
 
-// 请求记录
-const requestLog: RequestLog = []
+import { Message } from './create-message'
 
-/**
- * 添加axios请求记录 并返回需不要需要创建遮罩层
- * @param config axios resquest config
- * @returns boolean
- */
-const addRequestLog: AddRequestLog = (config) => {
-    const key = [
-        config.method,
-        config.url,
-        qs.stringify(config.params),
-        qs.stringify(config.data),
-    ].join('&')
-
-    if (requestLog.length === 0) {
-        requestLog.push(key)
-        return true
-    } else {
-        requestLog.push(key)
-        return false
-    }
-}
-
-/**
- * 移除请求记录
- */
-const removeRequestLog: RemoveRequestLog = () => {
-    requestLog.pop()
-    if (requestLog.length === 0) removeLoadingNode()
-}
+// 创建message实例
+const messageInstance = new Message()
 
 /**
  * 通过key查找object里面的值
@@ -88,16 +62,15 @@ export const axiosRequestCallback: AxiosRequestCallback = (config) => {
 
     // 先判断是否需要防抖 如果需要 需要防抖的话 如果接口被取消 就不再需要遮罩层
     if (axiosDebounce) {
-        handleRemoveResponseLog(config) // 在请求开始前，对之前的请求做检查取消操作
-        handleAddResponseLog(config) // 将当前请求添加到 pending 中
+        axiosDebounceInstance.handleRemoveAxiosQueue(config) // 在请求开始前，对之前的请求做检查取消操作
+        axiosDebounceInstance.handleAddAxiosQueue(config) // 将当前请求添加到 pending 中
     }
 
-    // 如果需要遮罩层 那就创建遮罩层节点
-    if (needLoading) {
-        const needLoad = addRequestLog(config)
-        // TODO 向map里面添加数据
-        if (needLoad) createLoadingNode(loadingText)
+    // 创建遮罩层
+    if (needLoading || loadingText) {
+        masklayerInstance.createLoading(config)
     }
+
     // 修改content-type
     if (contentType) {
         config.headers = {
@@ -105,6 +78,7 @@ export const axiosRequestCallback: AxiosRequestCallback = (config) => {
             'Content-Type': contentType,
         }
     }
+
     return config
 }
 
@@ -114,7 +88,8 @@ export const axiosRequestCallback: AxiosRequestCallback = (config) => {
  * @returns error
  */
 export const axiosRequestErrorCallback: AxiosErrorCallback = (error) => {
-    removeLoadingNode()
+    console.log('请求前错误回调')
+
     return Promise.reject(error)
 }
 
@@ -124,10 +99,7 @@ export const axiosRequestErrorCallback: AxiosErrorCallback = (error) => {
  * @returns
  */
 export const axiosResponseCallback: AxiosResponseCallback = (axiosResponse) => {
-    // 请求完毕无论成功与否，关闭遮罩层
-    removeRequestLog()
-    console.log('axiosResponse.config', axiosResponse.config)
-
+    masklayerInstance.removeLoading(axiosResponse.config)
     const { successKey, successKeyValue, dataKey, messageKey } =
         axiosResponse.config as AxiosRequestConfigs
 
@@ -138,10 +110,6 @@ export const axiosResponseCallback: AxiosResponseCallback = (axiosResponse) => {
         )
 
         if (_successKeyValue == successKeyValue) {
-            // createMessage('成功了!', 'success')
-            // createMessage('默认的!', 'info')
-            // createMessage('警告的!', 'warning')
-            // createMessage('错误的!', 'danger')
             if (dataKey) {
                 return Promise.resolve(
                     getValueByKeyInOpject(dataKey, axiosResponse.data)
@@ -151,13 +119,43 @@ export const axiosResponseCallback: AxiosResponseCallback = (axiosResponse) => {
             }
         } else {
             if (messageKey) {
-                const message = getValueByKeyInOpject(
+                const messageValue = getValueByKeyInOpject(
                     messageKey,
                     axiosResponse.data
                 )
-                throw new Error(message)
+
+                messageInstance.createMessage({
+                    message: `${messageValue}`,
+                    type: 'error',
+                    center: false,
+                    duration: 2000,
+                    showClose: false,
+                })
+                if (dataKey) {
+                    return Promise.resolve(
+                        getValueByKeyInOpject(dataKey, axiosResponse.data)
+                    )
+                } else {
+                    return Promise.resolve(axiosResponse.data)
+                }
+                // 阻止代码往下运行
+                // throw Promise.reject(messageValue)
+            } else {
+                messageInstance.createMessage({
+                    message: axiosResponse.data.message,
+                    type: 'error',
+                    center: false,
+                    duration: 2000,
+                })
+                if (dataKey) {
+                    return Promise.resolve(
+                        getValueByKeyInOpject(dataKey, axiosResponse.data)
+                    )
+                } else {
+                    return Promise.resolve(axiosResponse.data)
+                }
+                // throw Promise.reject(axiosResponse.data.message)
             }
-            throw SyntaxError(axiosResponse.data.message)
         }
     } else {
         return Promise.resolve(axiosResponse)
@@ -170,11 +168,18 @@ export const axiosResponseCallback: AxiosResponseCallback = (axiosResponse) => {
  * @returns
  */
 export const axiosResponseErrorCallback: AxiosErrorCallback = (error) => {
-    removeLoadingNode()
     if (axios.isCancel(error)) {
-        console.log('axios.isCancel')
+        messageInstance.createMessage({
+            message: 'axios.isCancel',
+            type: 'error',
+            center: true,
+        })
     } else {
-        console.log('else', error)
+        messageInstance.createMessage({
+            message: error.message,
+            type: 'error',
+            center: true,
+        })
     }
     return Promise.reject(error)
 }

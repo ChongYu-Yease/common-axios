@@ -87,7 +87,7 @@ body {
     color: #f56c6c;
 }
 /* 遮罩层body */
-.common-axios-loading {
+.common-axios-loading-box {
     font-size: 14px;
     display: flex;
     justify-content: center;
@@ -95,6 +95,7 @@ body {
     height: 100%;
     width: 100%;
 }
+
 /* 遮罩层文本节点样式 */
 .common-axios-text {
     color: #409eff;

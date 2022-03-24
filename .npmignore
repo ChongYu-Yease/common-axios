@@ -1,1 +1,4 @@
 demo/
+src/
+.gitignore
+package-lock.json

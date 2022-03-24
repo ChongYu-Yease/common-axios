@@ -8,6 +8,7 @@ import {
     createParamsInParamsOrDataHelper,
 } from './create-helper'
 
+// axios 所有的回调函数
 import {
     axiosRequestCallback,
     axiosRequestErrorCallback,
@@ -16,9 +17,6 @@ import {
 } from './axios-callback'
 
 import { CreateAxios, AxiosHelpers, AxiosRequestConfigs } from './index.types'
-
-// 引入公共样式 主要是body 遮罩层 loading动画的效果
-import './index.css'
 
 /**
  * @param AxiosRequestConfigs

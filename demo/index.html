@@ -6,7 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.24.0/axios.js"></script>
+    <script type="text/javascript" src="https://cdn.bootcss.com/qs/6.7.0/qs.min.js"></script>
+    <script type="text/javascript" src="https://cdn.bootcss.com/axios/0.21.4/axios.min.js"></script>
 
 </head>
 
@@ -18,19 +19,22 @@
     <script>
 
         const axiosHelpers = commonAxios.createAxios()
-
+        // 单词请求
         const handleOnceLoadData = async () => {
             const result = await axiosHelpers.get(
                 "http://metis.vdian.net/api/group/uiTree", null,
                 { needLoading: true, axiosDebounce: true, loadingText: "我爱我家" })
             console.log('result', result);
+
         }
+        // 多次请求
         let timerId = null
         const handleMoreLoadData = handleMoreLoadData => {
             timerId = setInterval(async () => {
                 const result = await axiosHelpers.get("qqlykm.cn/api/ya/live.php", { channel: "sztv1" }, { axiosDebounce: true })
-            }, 10)
+            }, 100)
         }
+        // 取消请求
         const handleCancelMoreLoadData = () => {
             window.clearInterval(timerId)
         }
