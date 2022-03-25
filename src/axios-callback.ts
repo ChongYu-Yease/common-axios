@@ -170,7 +170,7 @@ export const axiosResponseCallback: AxiosResponseCallback = (axiosResponse) => {
 export const axiosResponseErrorCallback: AxiosErrorCallback = (error) => {
     if (axios.isCancel(error)) {
         messageInstance.createMessage({
-            message: 'axios.isCancel',
+            message: `检测到${error.message}多次重复请求，接口已取消`,
             type: 'error',
             center: true,
         })

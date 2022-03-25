@@ -116,6 +116,77 @@
         };
     };
 
+    var Dep = /** @class */ (function () {
+        // 订阅池
+        function Dep() {
+            this.id = new Date();
+            this.subs = []; //该事件下被订阅对象的集合
+        }
+        Dep.prototype.defined = function () {
+            // @ts-ignore
+            // 添加订阅者
+            Dep.watch.add(this);
+        };
+        Dep.prototype.notify = function () {
+            //通知订阅者有变化
+            this.subs.forEach(function (item) {
+                if (typeof item.update === 'function') {
+                    try {
+                        item.update.apply(item); //触发订阅者更新函数
+                    }
+                    catch (err) {
+                        console.warn(err);
+                    }
+                }
+            });
+        };
+        return Dep;
+    }());
+    // // @ts-ignore
+    // Dep.watch = null
+    var Watch = /** @class */ (function () {
+        function Watch(name, fn) {
+            this.name = name; //订阅消息的名称
+            this.id = new Date(); //这里简单的运用时间戳做订阅者的ID
+            this.callBack = fn; //订阅消息发送改变时->订阅者执行的回调函数
+        }
+        //将订阅者放入dep订阅池
+        Watch.prototype.add = function (dep) {
+            dep.subs.push(this);
+        };
+        //将订阅者更新方法
+        Watch.prototype.update = function () {
+            var cb = this.callBack; //赋值为了不改变函数内调用的this
+            cb(this.name);
+        };
+        return Watch;
+    }());
+    var addHistoryMethod = (function () {
+        var historyDep = new Dep();
+        console.log('historyDep', historyDep);
+        return function (name) {
+            if (name === 'historychange') {
+                return function (name, fn) {
+                    var watcher = new Watch(name, fn);
+                    // @ts-ignore
+                    Dep.watch = watcher;
+                    historyDep.defined();
+                    // @ts-ignore
+                    Dep.watch = undefined; //置空供下一个订阅者使用
+                };
+            }
+            else if (name === 'pushState' || name === 'replaceState') {
+                var method_1 = window.history[name];
+                return function () {
+                    // @ts-ignore
+                    method_1.apply(window.history, arguments);
+                    historyDep.notify();
+                };
+            }
+        };
+    })();
+
+    console.log('addHistoryMethod', addHistoryMethod);
     var AxiosDebounce = /** @class */ (function () {
         function AxiosDebounce() {
             var _this = this;
@@ -172,6 +243,16 @@
             };
             // 初始化队列
             this.axiosQueue = new Map();
+            // 监听 hash 模式的路由
+            window.onhashchange = function () {
+                console.log('onhashchange');
+            };
+            // @ts-ignore
+            window.addHistoryListener = addHistoryMethod('historychange');
+            // @ts-ignore
+            history.pushState = addHistoryMethod('pushState');
+            // @ts-ignore
+            history.replaceState = addHistoryMethod('replaceState');
         }
         return AxiosDebounce;
     }());
@@ -238,6 +319,7 @@
             };
             // 创建loading dom节点
             this.createLoadingDom = function (config) {
+                // loading文本
                 var loadingText = config.loadingText;
                 if (document) {
                     // 创建文本节点
@@ -263,20 +345,31 @@
                     }
                 }
             };
+            // 修改遮罩层的内容
+            this.setMaskLayerContent = function (config) {
+                var textDom = document.querySelector('.common-axios-text');
+                textDom.textContent = config.loadingText || '拼命加载中...';
+            };
             // 创建遮罩层
             this.createLoading = function (config) {
                 // 添加遮罩层任务队列
                 _this.addMasklayerQueue(config);
-                if (_this.masklayerQueue.length < 2)
+                if (_this.masklayerQueue.length !== 0) {
                     _this.createLoadingDom(config);
+                }
             };
             // 关闭遮罩层
             this.removeLoading = function (config) {
-                _this.masklayerQueue.pop();
-                if (_this.masklayerQueue.length === 0)
-                    setTimeout(function () {
+                setTimeout(function () {
+                    _this.masklayerQueue.pop();
+                    if (_this.masklayerQueue.length === 0) {
                         _this.removeLoadingDom();
-                    }, 3000);
+                    }
+                    else {
+                        // 修改下次遮罩层的内容
+                        _this.setMaskLayerContent(config);
+                    }
+                }, 300);
             };
             this.masklayerQueue = [];
         }
@@ -294,7 +387,7 @@
         return MaskLayer;
     }());
 
-    var css_248z = ".ui-message {\n    min-width: 380px;\n    border-width: 1px;\n    border-style: solid;\n    border-color: #ebeef5;\n    background-color: #edf2fc;\n    transform: translateX(-50%);\n    position: fixed;\n    left: 50%;\n    top: 20px;\n    transition: opacity 0.3s, transform 0.4s, top 0.4s;\n    padding: 15px 15px 15px 20px;\n    display: flex;\n    align-items: center;\n    border-radius: 4px;\n    overflow: hidden;\n}\n\n.ui-message-center {\n    justify-content: center;\n}\n\n.ui-message .message-content {\n    margin-left: 16px;\n    margin: 0;\n    padding: 0;\n    font-size: 14px;\n    line-height: 1;\n}\n\n.ui-message .close-button {\n    position: absolute;\n    top: 50%;\n    right: 15px;\n    transform: translateY(-50%);\n    cursor: pointer;\n    background-image: url('./img/close.png');\n    width: 12px;\n    height: 12px;\n    background-size: 100% 100%;\n}\n\n.ui-message-leave {\n    opacity: 0;\n    transform: translate(-50%, -100%);\n}\n\n.ui-message-enter {\n    opacity: 1;\n    transform: translate(-50%, -100%);\n}\n\n.ui-message-info .message-content {\n    color: #909399;\n}\n\n.ui-message-success {\n    background-color: #f0f9eb;\n    border-color: #e1f3d8;\n}\n\n.ui-message-success .message-content {\n    color: #67c23c;\n}\n\n.ui-message-warning {\n    background-color: #fdf6ec;\n    border-color: #faecd8;\n}\n\n.ui-message-warning .message-content {\n    color: #e6a23c;\n}\n\n.ui-message-error {\n    background-color: #fef0f0;\n    border-color: #fde2e2;\n}\n\n.ui-message-error .message-content {\n    color: #f56c6c;\n}\n";
+    var css_248z = ".common-axios-message {\n    min-width: 380px;\n    border-width: 1px;\n    border-style: solid;\n    border-color: #ebeef5;\n    background-color: #edf2fc;\n    transform: translateX(-50%);\n    position: fixed;\n    left: 50%;\n    top: 20px;\n    transition: opacity 0.3s, transform 0.4s, top 0.4s;\n    padding: 15px 15px 15px 20px;\n    display: flex;\n    align-items: center;\n    border-radius: 4px;\n    overflow: hidden;\n}\n\n.common-axios-message_center {\n    justify-content: center;\n}\n\n.common-axios-message .common-axios-message_content {\n    margin-left: 16px;\n    margin: 0;\n    padding: 0;\n    font-size: 14px;\n    line-height: 1;\n}\n\n.common-axios-message .close-button {\n    position: absolute;\n    top: 50%;\n    right: 15px;\n    transform: translateY(-50%);\n    cursor: pointer;\n    background-image: url('./img/close.png');\n    width: 12px;\n    height: 12px;\n    background-size: 100% 100%;\n}\n\n.common-axios-message_leave {\n    opacity: 0;\n    transform: translate(-50%, -100%);\n}\n\n.common-axios-message_enter {\n    opacity: 1;\n    transform: translate(-50%, -100%);\n}\n\n.common-axios-message_info .common-axios-message_content {\n    color: #909399;\n}\n\n.common-axios-message_success {\n    background-color: #f0f9eb;\n    border-color: #e1f3d8;\n}\n\n.common-axios-message_success .common-axios-message_content {\n    color: #67c23c;\n}\n\n.common-axios-message_warning {\n    background-color: #fdf6ec;\n    border-color: #faecd8;\n}\n\n.common-axios-message_warning .common-axios-message_content {\n    color: #e6a23c;\n}\n\n.common-axios-message_error {\n    background-color: #fef0f0;\n    border-color: #fde2e2;\n}\n\n.common-axios-message_error .common-axios-message_content {\n    color: #f56c6c;\n}\n";
     styleInject(css_248z);
 
     // 引入message 样式
@@ -302,12 +395,14 @@
     var Message = /** @class */ (function () {
         // 初始化属性
         function Message() {
+            // 消息位置
+            // private position: 'top' | 'bottom' | 'left' | 'right'
             // 消息内容
             this.message = '';
             // 消息队列
             this.messageQueue = [];
-            // 设置默认值
-            this.position = 'top';
+            // // 设置默认值
+            // this.position = 'top'
             this.message = '';
             this.type = '';
             this.duration = 2000;
@@ -317,25 +412,25 @@
         // 通过type 设置dom节点的class
         Message.prototype.setMessageType = function (messageDom, type) {
             if (type === '') {
-                messageDom.classList.add('ui-message-info');
+                messageDom.classList.add('common-axios-message_info');
             }
             else if (type === 'success') {
-                messageDom.classList.add('ui-message-success');
+                messageDom.classList.add('common-axios-message_success');
             }
             else if (type === 'warning') {
-                messageDom.classList.add('ui-message-warning');
+                messageDom.classList.add('common-axios-message_warning');
             }
             else if (type === 'error') {
-                messageDom.classList.add('ui-message-error');
+                messageDom.classList.add('common-axios-message_error');
             }
             else {
-                messageDom.classList.add('ui-message-info'); // 默认值
+                messageDom.classList.add('common-axios-message_info'); // 默认值
             }
         };
         // 创建文本节点
         Message.prototype.createTextDom = function (messageDom, message) {
             var p = document.createElement('p');
-            p.classList.add('message-content');
+            p.classList.add('common-axios-message_content');
             p.textContent = message || this.message;
             messageDom.appendChild(p);
         };
@@ -346,7 +441,7 @@
             this.messageQueue.splice(startIndex, 1);
             this.updateMessageDom(startIndex);
             //增加移除动画
-            messageDom.classList.add('ui-message-leave');
+            messageDom.classList.add('common-axios-message_leave');
             setTimeout(function () {
                 _this.body.removeChild(messageDom);
             }, 400);
@@ -364,10 +459,10 @@
                 };
             }
             var messageDom = document.createElement('div');
-            messageDom.classList.add('ui-message');
-            messageDom.classList.add('ui-message-leave');
+            messageDom.classList.add('common-axios-message');
+            messageDom.classList.add('common-axios-message_leave');
             if (options.center === true) {
-                messageDom.classList.add('ui-message-center');
+                messageDom.classList.add('common-axios-message_center');
             }
             var targetId = this.id;
             // 向消息队列当中添加消息数据
@@ -385,7 +480,7 @@
             this.body.appendChild(messageDom);
             //增加新增动画
             setTimeout(function () {
-                messageDom.classList.remove('ui-message-leave');
+                messageDom.classList.remove('common-axios-message_leave');
             }, 100);
             var i = null;
             if (options.showClose === true) {
@@ -568,7 +663,7 @@
     var axiosResponseErrorCallback = function (error) {
         if (axios__default['default'].isCancel(error)) {
             messageInstance.createMessage({
-                message: 'axios.isCancel',
+                message: "\u68C0\u6D4B\u5230" + error.message + "\u591A\u6B21\u91CD\u590D\u8BF7\u6C42\uFF0C\u63A5\u53E3\u5DF2\u53D6\u6D88",
                 type: 'error',
                 center: true,
             });

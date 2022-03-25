@@ -1,4 +1,4 @@
-.ui-message {
+.common-axios-message {
     min-width: 380px;
     border-width: 1px;
     border-style: solid;
@@ -16,11 +16,11 @@
     overflow: hidden;
 }
 
-.ui-message-center {
+.common-axios-message_center {
     justify-content: center;
 }
 
-.ui-message .message-content {
+.common-axios-message .common-axios-message_content {
     margin-left: 16px;
     margin: 0;
     padding: 0;
@@ -28,7 +28,7 @@
     line-height: 1;
 }
 
-.ui-message .close-button {
+.common-axios-message .close-button {
     position: absolute;
     top: 50%;
     right: 15px;
@@ -40,43 +40,43 @@
     background-size: 100% 100%;
 }
 
-.ui-message-leave {
+.common-axios-message_leave {
     opacity: 0;
     transform: translate(-50%, -100%);
 }
 
-.ui-message-enter {
+.common-axios-message_enter {
     opacity: 1;
     transform: translate(-50%, -100%);
 }
 
-.ui-message-info .message-content {
+.common-axios-message_info .common-axios-message_content {
     color: #909399;
 }
 
-.ui-message-success {
+.common-axios-message_success {
     background-color: #f0f9eb;
     border-color: #e1f3d8;
 }
 
-.ui-message-success .message-content {
+.common-axios-message_success .common-axios-message_content {
     color: #67c23c;
 }
 
-.ui-message-warning {
+.common-axios-message_warning {
     background-color: #fdf6ec;
     border-color: #faecd8;
 }
 
-.ui-message-warning .message-content {
+.common-axios-message_warning .common-axios-message_content {
     color: #e6a23c;
 }
 
-.ui-message-error {
+.common-axios-message_error {
     background-color: #fef0f0;
     border-color: #fde2e2;
 }
 
-.ui-message-error .message-content {
+.common-axios-message_error .common-axios-message_content {
     color: #f56c6c;
 }

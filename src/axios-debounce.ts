@@ -1,6 +1,9 @@
 import axios, { Canceler } from 'axios'
 import qs from 'qs'
 import { AxiosRequestConfigs } from './index.types'
+import { addHistoryMethod } from './watch-route-change'
+console.log('addHistoryMethod', addHistoryMethod)
+
 export class AxiosDebounce {
     // axios 队列
     axiosQueue: Map<string, Canceler>
@@ -8,6 +11,16 @@ export class AxiosDebounce {
     constructor() {
         // 初始化队列
         this.axiosQueue = new Map()
+        // 监听 hash 模式的路由
+        window.onhashchange = function () {
+            console.log('onhashchange')
+        }
+        // @ts-ignore
+        window.addHistoryListener = addHistoryMethod('historychange')
+        // @ts-ignore
+        history.pushState = addHistoryMethod('pushState')
+        // @ts-ignore
+        history.replaceState = addHistoryMethod('replaceState')
     }
 
     // 添加axios 队列

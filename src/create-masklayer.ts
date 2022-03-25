@@ -57,7 +57,9 @@ export class MaskLayer {
 
     // 创建loading dom节点
     private createLoadingDom = (config: AxiosRequestConfigs): void => {
+        // loading文本
         const { loadingText } = config
+
         if (document) {
             // 创建文本节点
             const textDom = this.createTextDom(loadingText)
@@ -94,20 +96,33 @@ export class MaskLayer {
         }
     }
 
+    // 修改遮罩层的内容
+    private setMaskLayerContent = (config: AxiosRequestConfigs): void => {
+        const textDom: HTMLSpanElement =
+            document.querySelector('.common-axios-text')!
+        textDom.textContent = config.loadingText || '拼命加载中...'
+    }
+
     // 创建遮罩层
     public createLoading = (config: AxiosRequestConfigs): void => {
         // 添加遮罩层任务队列
         this.addMasklayerQueue(config)
 
-        if (this.masklayerQueue.length < 2) this.createLoadingDom(config)
+        if (this.masklayerQueue.length !== 0) {
+            this.createLoadingDom(config)
+        }
     }
 
     // 关闭遮罩层
     public removeLoading = (config: AxiosRequestConfigs) => {
-        this.masklayerQueue.pop()
-        if (this.masklayerQueue.length === 0)
-            setTimeout(() => {
+        setTimeout(() => {
+            this.masklayerQueue.pop()
+            if (this.masklayerQueue.length === 0) {
                 this.removeLoadingDom()
-            }, 3000)
+            } else {
+                // 修改下次遮罩层的内容
+                this.setMaskLayerContent(config)
+            }
+        }, 300)
     }
 }

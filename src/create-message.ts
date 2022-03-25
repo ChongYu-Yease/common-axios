@@ -7,7 +7,7 @@ export class Message {
     private messageQueue: Array<{ messageDom: HTMLDivElement; id: number }>
 
     // 消息位置
-    private position: 'top' | 'bottom' | 'left' | 'right'
+    // private position: 'top' | 'bottom' | 'left' | 'right'
 
     // 消息内容
     private message: string = ''
@@ -28,8 +28,8 @@ export class Message {
     constructor() {
         // 消息队列
         this.messageQueue = []
-        // 设置默认值
-        this.position = 'top'
+        // // 设置默认值
+        // this.position = 'top'
         this.message = ''
         this.type = ''
         this.duration = 2000
@@ -40,22 +40,22 @@ export class Message {
     // 通过type 设置dom节点的class
     private setMessageType(messageDom: HTMLDivElement, type?: string) {
         if (type === '') {
-            messageDom.classList.add('ui-message-info')
+            messageDom.classList.add('common-axios-message_info')
         } else if (type === 'success') {
-            messageDom.classList.add('ui-message-success')
+            messageDom.classList.add('common-axios-message_success')
         } else if (type === 'warning') {
-            messageDom.classList.add('ui-message-warning')
+            messageDom.classList.add('common-axios-message_warning')
         } else if (type === 'error') {
-            messageDom.classList.add('ui-message-error')
+            messageDom.classList.add('common-axios-message_error')
         } else {
-            messageDom.classList.add('ui-message-info') // 默认值
+            messageDom.classList.add('common-axios-message_info') // 默认值
         }
     }
 
     // 创建文本节点
     private createTextDom(messageDom: HTMLDivElement, message: string) {
         const p = document.createElement('p')
-        p.classList.add('message-content')
+        p.classList.add('common-axios-message_content')
         p.textContent = message || this.message
         messageDom.appendChild(p)
     }
@@ -70,7 +70,7 @@ export class Message {
         this.updateMessageDom(startIndex)
 
         //增加移除动画
-        messageDom.classList.add('ui-message-leave')
+        messageDom.classList.add('common-axios-message_leave')
 
         setTimeout(() => {
             this.body.removeChild(messageDom)
@@ -97,12 +97,12 @@ export class Message {
 
         const messageDom = document.createElement('div')
 
-        messageDom.classList.add('ui-message')
+        messageDom.classList.add('common-axios-message')
 
-        messageDom.classList.add('ui-message-leave')
+        messageDom.classList.add('common-axios-message_leave')
 
         if (options.center === true) {
-            messageDom.classList.add('ui-message-center')
+            messageDom.classList.add('common-axios-message_center')
         }
 
         const targetId = this.id
@@ -127,7 +127,7 @@ export class Message {
 
         //增加新增动画
         setTimeout(() => {
-            messageDom.classList.remove('ui-message-leave')
+            messageDom.classList.remove('common-axios-message_leave')
         }, 100)
 
         let i = null
