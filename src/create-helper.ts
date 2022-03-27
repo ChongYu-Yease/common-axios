@@ -1,5 +1,10 @@
 import { AxiosMethods, AxiosRequestConfigs } from './index.types'
-import { AxiosInstance } from 'axios'
+import { AxiosInstance, AxiosResponse } from 'axios'
+
+type CreateParamsInParamsHelper = (
+    axiosInstance: AxiosInstance,
+    method: AxiosMethods
+) => (url: string, params?: any, config?: AxiosRequestConfigs) => any
 
 /**
  * 调用参数为params的axios请求
@@ -7,9 +12,8 @@ import { AxiosInstance } from 'axios'
  * @param method 请求方法
  * @returns (url: string, params?: any, config?: AxiosRequestConfigs)=> Promise<AxiosResponse<T>>
  */
-export const createParamsInParamsHelper =
-    (axiosInstance: AxiosInstance, method: AxiosMethods) =>
-    (url: string, params?: any, config?: AxiosRequestConfigs) =>
+export const createParamsInParamsHelper: CreateParamsInParamsHelper =
+    (axiosInstance, method) => (url, params?, config?) =>
         axiosInstance[method](url, {
             params,
             ...config,

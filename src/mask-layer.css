@@ -1,12 +1,5 @@
-html,
-body {
-    margin: 0;
-    padding: 0;
-    position: relative;
-}
-
 /* 遮罩层的样式 */
-.common-axios-mask-layer {
+.common-axios_mask-layer {
     position: fixed;
     top: 0;
     left: 0;
@@ -87,7 +80,7 @@ body {
     color: #f56c6c;
 }
 /* 遮罩层body */
-.common-axios-loading-box {
+.common-axios_loading-box {
     font-size: 14px;
     display: flex;
     justify-content: center;
@@ -97,11 +90,11 @@ body {
 }
 
 /* 遮罩层文本节点样式 */
-.common-axios-text {
+.common-axios_text {
     color: #409eff;
 }
 /* 遮罩层loading节点样式 */
-.common-axios-dotting {
+.common-axios_dotting {
     color: #409eff;
     display: inline-block;
     min-width: 2px;
@@ -111,13 +104,13 @@ body {
     animation: dot 2s infinite step-start both;
     margin-left: 2px;
 }
-.common-axios-dotting:before {
+.common-axios_dotting:before {
     content: '...';
 } /* IE8 */
-.common-axios-dotting::before {
+.common-axios_dotting::before {
     content: '';
 }
-:root .common-axios-dotting {
+:root .common-axios_dotting {
     margin-right: 8px;
 }
 

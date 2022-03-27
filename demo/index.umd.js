@@ -84,13 +84,11 @@
      * @param method 请求方法
      * @returns (url: string, params?: any, config?: AxiosRequestConfigs)=> Promise<AxiosResponse<T>>
      */
-    var createParamsInParamsHelper = function (axiosInstance, method) {
-        return function (url, params, config) {
-            return axiosInstance[method](url, __assign({ params: params }, config)).catch(function (error) {
-                return error;
-            });
-        };
-    };
+    var createParamsInParamsHelper = function (axiosInstance, method) { return function (url, params, config) {
+        return axiosInstance[method](url, __assign({ params: params }, config)).catch(function (error) {
+            return error;
+        });
+    }; };
     /**
      * 请求参数在pramas字段或者在data字段 的axios请求
      * @param axiosInstance axios实例
@@ -116,77 +114,7 @@
         };
     };
 
-    var Dep = /** @class */ (function () {
-        // 订阅池
-        function Dep() {
-            this.id = new Date();
-            this.subs = []; //该事件下被订阅对象的集合
-        }
-        Dep.prototype.defined = function () {
-            // @ts-ignore
-            // 添加订阅者
-            Dep.watch.add(this);
-        };
-        Dep.prototype.notify = function () {
-            //通知订阅者有变化
-            this.subs.forEach(function (item) {
-                if (typeof item.update === 'function') {
-                    try {
-                        item.update.apply(item); //触发订阅者更新函数
-                    }
-                    catch (err) {
-                        console.warn(err);
-                    }
-                }
-            });
-        };
-        return Dep;
-    }());
-    // // @ts-ignore
-    // Dep.watch = null
-    var Watch = /** @class */ (function () {
-        function Watch(name, fn) {
-            this.name = name; //订阅消息的名称
-            this.id = new Date(); //这里简单的运用时间戳做订阅者的ID
-            this.callBack = fn; //订阅消息发送改变时->订阅者执行的回调函数
-        }
-        //将订阅者放入dep订阅池
-        Watch.prototype.add = function (dep) {
-            dep.subs.push(this);
-        };
-        //将订阅者更新方法
-        Watch.prototype.update = function () {
-            var cb = this.callBack; //赋值为了不改变函数内调用的this
-            cb(this.name);
-        };
-        return Watch;
-    }());
-    var addHistoryMethod = (function () {
-        var historyDep = new Dep();
-        console.log('historyDep', historyDep);
-        return function (name) {
-            if (name === 'historychange') {
-                return function (name, fn) {
-                    var watcher = new Watch(name, fn);
-                    // @ts-ignore
-                    Dep.watch = watcher;
-                    historyDep.defined();
-                    // @ts-ignore
-                    Dep.watch = undefined; //置空供下一个订阅者使用
-                };
-            }
-            else if (name === 'pushState' || name === 'replaceState') {
-                var method_1 = window.history[name];
-                return function () {
-                    // @ts-ignore
-                    method_1.apply(window.history, arguments);
-                    historyDep.notify();
-                };
-            }
-        };
-    })();
-
-    console.log('addHistoryMethod', addHistoryMethod);
+    // console.log('addHistoryMethod', addHistoryMethod)
     var AxiosDebounce = /** @class */ (function () {
         function AxiosDebounce() {
             var _this = this;
@@ -244,15 +172,15 @@
             // 初始化队列
             this.axiosQueue = new Map();
             // 监听 hash 模式的路由
-            window.onhashchange = function () {
-                console.log('onhashchange');
-            };
-            // @ts-ignore
-            window.addHistoryListener = addHistoryMethod('historychange');
-            // @ts-ignore
-            history.pushState = addHistoryMethod('pushState');
-            // @ts-ignore
-            history.replaceState = addHistoryMethod('replaceState');
+            // window.onhashchange = function () {
+            //     console.log('onhashchange')
+            // }
+            // // @ts-ignore
+            // window.addHistoryListener = addHistoryMethod('historychange')
+            // // @ts-ignore
+            // history.pushState = addHistoryMethod('pushState')
+            // // @ts-ignore
+            // history.replaceState = addHistoryMethod('replaceState')
         }
         return AxiosDebounce;
     }());
@@ -284,9 +212,10 @@
       }
     }
 
-    var css_248z$1 = "html,\nbody {\n    margin: 0;\n    padding: 0;\n    position: relative;\n}\n\n/* 遮罩层的样式 */\n.common-axios-mask-layer {\n    position: fixed;\n    top: 0;\n    left: 0;\n    /* display: none; */\n    width: 100%;\n    height: 100%;\n    overflow-x: hidden;\n    overflow-y: auto;\n    outline: 0;\n    opacity: 0.5;\n    background-color: #000;\n}\n\n/* 消息的默认样式 */\n.modal-content {\n    min-width: 380px;\n    box-sizing: border-box;\n    border-width: 1px;\n    border-style: solid;\n    border-color: #ebeef5;\n    position: fixed;\n    left: 50%;\n    top: 20px;\n    transform: translateX(-50%);\n    background-color: #edf2fc;\n    transition: opacity 0.3s, transform 0.4s, top 0.4s;\n    padding: 15px 15px 15px 20px;\n    display: flex;\n    align-items: center;\n    border-radius: 4px;\n}\n\n.modal-content__info {\n    background-color: #f0f9eb;\n    border-color: #e1f3d8;\n}\n.modal-content__success {\n    background-color: #f0f9eb;\n    border-color: #e1f3d8;\n}\n.modal-content__warning {\n    background-color: #fdf6ec;\n    border-color: #faecd8;\n}\n.modal-content__danger {\n    background-color: #fef0f0;\n    border-color: #fde2e2;\n}\n/* 消息节点的默认样式 */\n.modal-content > .modal-body {\n    text-align: center;\n    font-size: 14px;\n}\n\n/* 消息节点的info样式 */\n.modal-content__info > .modal-body {\n    color: #909399;\n}\n/* 消息节点的success样式 */\n.modal-content__success > .modal-body {\n    color: #67c23a;\n}\n/* 消息节点的warning样式 */\n.modal-content__warning > .modal-body {\n    color: #e6a23c;\n}\n/* 消息节点的danger样式 */\n.modal-content__danger > .modal-body {\n    color: #f56c6c;\n}\n/* 遮罩层body */\n.common-axios-loading-box {\n    font-size: 14px;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    height: 100%;\n    width: 100%;\n}\n\n/* 遮罩层文本节点样式 */\n.common-axios-text {\n    color: #409eff;\n}\n/* 遮罩层loading节点样式 */\n.common-axios-dotting {\n    color: #409eff;\n    display: inline-block;\n    min-width: 2px;\n    min-height: 2px;\n    box-shadow: 2px 0 currentColor, 6px 0 currentColor, 10px 0 currentColor;\n    -webkit-animation: dot 2s infinite step-start both;\n    animation: dot 2s infinite step-start both;\n    margin-left: 2px;\n}\n.common-axios-dotting:before {\n    content: '...';\n} /* IE8 */\n.common-axios-dotting::before {\n    content: '';\n}\n:root .common-axios-dotting {\n    margin-right: 8px;\n}\n\n@-webkit-keyframes dot {\n    25% {\n        box-shadow: none;\n    }\n    50% {\n        box-shadow: 2px 0 currentColor;\n    }\n    75% {\n        box-shadow: 2px 0 currentColor, 6px 0 currentColor;\n    }\n}\n@keyframes dot {\n    25% {\n        box-shadow: none;\n    }\n    50% {\n        box-shadow: 2px 0 currentColor;\n    }\n    75% {\n        box-shadow: 2px 0 currentColor, 6px 0 currentColor;\n    }\n}\n";
+    var css_248z$1 = "/* 遮罩层的样式 */\n.common-axios_mask-layer {\n    position: fixed;\n    top: 0;\n    left: 0;\n    /* display: none; */\n    width: 100%;\n    height: 100%;\n    overflow-x: hidden;\n    overflow-y: auto;\n    outline: 0;\n    opacity: 0.5;\n    background-color: #000;\n}\n\n/* 消息的默认样式 */\n.modal-content {\n    min-width: 380px;\n    box-sizing: border-box;\n    border-width: 1px;\n    border-style: solid;\n    border-color: #ebeef5;\n    position: fixed;\n    left: 50%;\n    top: 20px;\n    transform: translateX(-50%);\n    background-color: #edf2fc;\n    transition: opacity 0.3s, transform 0.4s, top 0.4s;\n    padding: 15px 15px 15px 20px;\n    display: flex;\n    align-items: center;\n    border-radius: 4px;\n}\n\n.modal-content__info {\n    background-color: #f0f9eb;\n    border-color: #e1f3d8;\n}\n.modal-content__success {\n    background-color: #f0f9eb;\n    border-color: #e1f3d8;\n}\n.modal-content__warning {\n    background-color: #fdf6ec;\n    border-color: #faecd8;\n}\n.modal-content__danger {\n    background-color: #fef0f0;\n    border-color: #fde2e2;\n}\n/* 消息节点的默认样式 */\n.modal-content > .modal-body {\n    text-align: center;\n    font-size: 14px;\n}\n\n/* 消息节点的info样式 */\n.modal-content__info > .modal-body {\n    color: #909399;\n}\n/* 消息节点的success样式 */\n.modal-content__success > .modal-body {\n    color: #67c23a;\n}\n/* 消息节点的warning样式 */\n.modal-content__warning > .modal-body {\n    color: #e6a23c;\n}\n/* 消息节点的danger样式 */\n.modal-content__danger > .modal-body {\n    color: #f56c6c;\n}\n/* 遮罩层body */\n.common-axios_loading-box {\n    font-size: 14px;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    height: 100%;\n    width: 100%;\n}\n\n/* 遮罩层文本节点样式 */\n.common-axios_text {\n    color: #409eff;\n}\n/* 遮罩层loading节点样式 */\n.common-axios_dotting {\n    color: #409eff;\n    display: inline-block;\n    min-width: 2px;\n    min-height: 2px;\n    box-shadow: 2px 0 currentColor, 6px 0 currentColor, 10px 0 currentColor;\n    -webkit-animation: dot 2s infinite step-start both;\n    animation: dot 2s infinite step-start both;\n    margin-left: 2px;\n}\n.common-axios_dotting:before {\n    content: '...';\n} /* IE8 */\n.common-axios_dotting::before {\n    content: '';\n}\n:root .common-axios_dotting {\n    margin-right: 8px;\n}\n\n@-webkit-keyframes dot {\n    25% {\n        box-shadow: none;\n    }\n    50% {\n        box-shadow: 2px 0 currentColor;\n    }\n    75% {\n        box-shadow: 2px 0 currentColor, 6px 0 currentColor;\n    }\n}\n@keyframes dot {\n    25% {\n        box-shadow: none;\n    }\n    50% {\n        box-shadow: 2px 0 currentColor;\n    }\n    75% {\n        box-shadow: 2px 0 currentColor, 6px 0 currentColor;\n    }\n}\n";
     styleInject(css_248z$1);
 
+    // 引入遮罩层的样式
     // 创建遮罩层
     var MaskLayer = /** @class */ (function () {
         function MaskLayer() {
@@ -294,100 +223,108 @@
             // 创建深色遮罩层
             this.createMaskLayerDom = function () {
                 var maskLayerDom = document.createElement('div');
-                maskLayerDom.classList.add('common-axios-mask-layer');
+                maskLayerDom.classList.add('common-axios_mask-layer');
                 return maskLayerDom;
             };
             // 创建文本节点
             this.createTextDom = function (loadingText) {
                 loadingText = loadingText ? loadingText : '拼命加载中';
                 var span = document.createElement('span');
-                span.classList.add('common-axios-text');
+                span.classList.add('common-axios_text');
                 span.textContent = loadingText;
                 return span;
             };
             // 创建旋转的dom节点
             this.createDottingDom = function () {
                 var span = document.createElement('span');
-                span.classList.add('common-axios-dotting');
+                span.classList.add('common-axios_dotting');
                 return span;
             };
             // 将文字节点和旋转节点放在一起
             this.createLoadingBox = function () {
                 var loadingBox = document.createElement('div');
-                loadingBox.classList.add('common-axios-loading-box');
+                loadingBox.classList.add('common-axios_loading-box');
                 return loadingBox;
             };
             // 创建loading dom节点
             this.createLoadingDom = function (config) {
                 // loading文本
                 var loadingText = config.loadingText;
-                if (document) {
-                    // 创建文本节点
-                    var textDom = _this.createTextDom(loadingText);
-                    // 创建loading节点
-                    var dottingDom = _this.createDottingDom();
-                    // 创建load box 为了将两个放在一个节点内
-                    var loadingBox = _this.createLoadingBox();
-                    loadingBox.appendChild(textDom);
-                    loadingBox.appendChild(dottingDom);
-                    // 创建遮罩层节点
-                    var maskLayerDom = _this.createMaskLayerDom();
-                    maskLayerDom.appendChild(loadingBox);
-                    document.body.appendChild(maskLayerDom);
-                }
+                // 创建文本节点
+                var textDom = _this.createTextDom(loadingText);
+                // 创建loading节点
+                var dottingDom = _this.createDottingDom();
+                // 创建load box 为了将两个放在一个节点内
+                var loadingBox = _this.createLoadingBox();
+                loadingBox.appendChild(textDom);
+                loadingBox.appendChild(dottingDom);
+                // 创建遮罩层节点
+                var maskLayerDom = _this.createMaskLayerDom();
+                maskLayerDom.appendChild(loadingBox);
+                document.body.appendChild(maskLayerDom);
             };
             // 移除遮罩层
             this.removeLoadingDom = function () {
-                if (document) {
-                    var loadingDom = document.querySelector('.common-axios-mask-layer');
+                // 延迟300毫秒关闭
+                setTimeout(function () {
+                    var loadingDom = document.querySelector('.common-axios_mask-layer');
                     if (loadingDom) {
                         document.body.removeChild(loadingDom);
                     }
-                }
-            };
-            // 修改遮罩层的内容
-            this.setMaskLayerContent = function (config) {
-                var textDom = document.querySelector('.common-axios-text');
-                textDom.textContent = config.loadingText || '拼命加载中...';
+                });
             };
             // 创建遮罩层
             this.createLoading = function (config) {
                 // 添加遮罩层任务队列
-                _this.addMasklayerQueue(config);
-                if (_this.masklayerQueue.length !== 0) {
-                    _this.createLoadingDom(config);
-                }
+                _this.addMasklayer(config);
             };
             // 关闭遮罩层
             this.removeLoading = function (config) {
-                setTimeout(function () {
-                    _this.masklayerQueue.pop();
-                    if (_this.masklayerQueue.length === 0) {
-                        _this.removeLoadingDom();
-                    }
-                    else {
-                        // 修改下次遮罩层的内容
-                        _this.setMaskLayerContent(config);
-                    }
-                }, 300);
+                _this.removeMasklayer(config);
             };
+            // 初始化遮罩层队列
             this.masklayerQueue = [];
         }
-        MaskLayer.prototype.addMasklayerQueue = function (config) {
-            // 生成key 其实这个key 没有什么作用 不知道后续会遇到什么需求 先这么做吧
-            var key = [
-                config.method,
-                config.url,
-                qs__default['default'].stringify(config.params),
-                qs__default['default'].stringify(config.data),
-            ].join('&');
-            // 向遮罩层队列中添加记录
-            this.masklayerQueue.push(key);
+        // 更新遮罩层的文本
+        MaskLayer.prototype.uploadMasklayerContent = function (config) {
+            var masklayerTextDom = document.querySelector('.common-axios_text');
+            masklayerTextDom.textContent = config.loadingText
+                ? config.loadingText
+                : '拼命加载中';
+        };
+        // 创建或者更新遮罩层
+        MaskLayer.prototype.uploadMasklayer = function () {
+            var config = this.masklayerQueue[this.masklayerQueue.length - 1];
+            var hasMasklayerDom = document.querySelector('.common-axios_mask-layer');
+            if (hasMasklayerDom) {
+                this.uploadMasklayerContent(config);
+            }
+            else {
+                this.createLoadingDom(config);
+            }
+        };
+        // 向遮罩层队列中添加记录
+        MaskLayer.prototype.addMasklayer = function (config) {
+            this.masklayerQueue.push(config);
+            this.uploadMasklayer();
+        };
+        // 向遮罩层队列中删除记录
+        MaskLayer.prototype.removeMasklayer = function (config) {
+            var index = this.masklayerQueue.findIndex(function (itemConfig) {
+                return JSON.stringify(itemConfig) === JSON.stringify(config);
+            });
+            this.masklayerQueue.splice(index, 1);
+            if (this.masklayerQueue.length) {
+                this.uploadMasklayer();
+            }
+            else {
+                this.removeLoadingDom();
+            }
         };
         return MaskLayer;
     }());
 
-    var css_248z = ".common-axios-message {\n    min-width: 380px;\n    border-width: 1px;\n    border-style: solid;\n    border-color: #ebeef5;\n    background-color: #edf2fc;\n    transform: translateX(-50%);\n    position: fixed;\n    left: 50%;\n    top: 20px;\n    transition: opacity 0.3s, transform 0.4s, top 0.4s;\n    padding: 15px 15px 15px 20px;\n    display: flex;\n    align-items: center;\n    border-radius: 4px;\n    overflow: hidden;\n}\n\n.common-axios-message_center {\n    justify-content: center;\n}\n\n.common-axios-message .common-axios-message_content {\n    margin-left: 16px;\n    margin: 0;\n    padding: 0;\n    font-size: 14px;\n    line-height: 1;\n}\n\n.common-axios-message .close-button {\n    position: absolute;\n    top: 50%;\n    right: 15px;\n    transform: translateY(-50%);\n    cursor: pointer;\n    background-image: url('./img/close.png');\n    width: 12px;\n    height: 12px;\n    background-size: 100% 100%;\n}\n\n.common-axios-message_leave {\n    opacity: 0;\n    transform: translate(-50%, -100%);\n}\n\n.common-axios-message_enter {\n    opacity: 1;\n    transform: translate(-50%, -100%);\n}\n\n.common-axios-message_info .common-axios-message_content {\n    color: #909399;\n}\n\n.common-axios-message_success {\n    background-color: #f0f9eb;\n    border-color: #e1f3d8;\n}\n\n.common-axios-message_success .common-axios-message_content {\n    color: #67c23c;\n}\n\n.common-axios-message_warning {\n    background-color: #fdf6ec;\n    border-color: #faecd8;\n}\n\n.common-axios-message_warning .common-axios-message_content {\n    color: #e6a23c;\n}\n\n.common-axios-message_error {\n    background-color: #fef0f0;\n    border-color: #fde2e2;\n}\n\n.common-axios-message_error .common-axios-message_content {\n    color: #f56c6c;\n}\n";
+    var css_248z = ".common-axios_message {\n    min-width: 380px;\n    border-width: 1px;\n    border-style: solid;\n    border-color: #ebeef5;\n    background-color: #edf2fc;\n    transform: translateX(-50%);\n    position: fixed;\n    left: 50%;\n    top: 20px;\n    transition: opacity 0.3s, transform 0.4s, top 0.4s;\n    padding: 15px 15px 15px 20px;\n    display: flex;\n    align-items: center;\n    border-radius: 4px;\n    overflow: hidden;\n}\n\n.common-axios_message_center {\n    justify-content: center;\n}\n\n.common-axios_message .common-axios_message_content {\n    margin-left: 20px;\n    margin: 0;\n    padding: 0;\n    font-size: 14px;\n    line-height: 1;\n}\n\n.common-axios_message .close-button {\n    position: absolute;\n    top: 50%;\n    right: 15px;\n    transform: translateY(-50%);\n    cursor: pointer;\n    /* background-image: url('./img/close.png'); */\n    width: 12px;\n    height: 12px;\n    background-size: 100% 100%;\n}\n\n.common-axios_message_leave {\n    opacity: 0;\n    transform: translate(-50%, -100%);\n}\n\n.common-axios_message_enter {\n    opacity: 1;\n    transform: translate(-50%, -100%);\n}\n\n.common-axios_message_info .common-axios_message_content {\n    color: #909399;\n}\n\n.common-axios_message_success {\n    background-color: #f0f9eb;\n    border-color: #e1f3d8;\n}\n\n.common-axios_message_success .common-axios_message_content {\n    color: #67c23c;\n}\n\n.common-axios_message_warning {\n    background-color: #fdf6ec;\n    border-color: #faecd8;\n}\n\n.common-axios_message_warning .common-axios_message_content {\n    color: #e6a23c;\n}\n\n.common-axios_message_error {\n    background-color: #fef0f0;\n    border-color: #fde2e2;\n}\n\n.common-axios_message_error .common-axios_message_content {\n    color: #f56c6c;\n}\n";
     styleInject(css_248z);
 
     // 引入message 样式
@@ -401,36 +338,22 @@
             this.message = '';
             // 消息队列
             this.messageQueue = [];
-            // // 设置默认值
-            // this.position = 'top'
             this.message = '';
-            this.type = '';
-            this.duration = 2000;
-            this.body = document.getElementsByTagName('body')[0];
+            this.messageType = '';
+            this.messageDuration = 2000;
+            this.body = document.querySelector('body');
             this.id = 0;
         }
         // 通过type 设置dom节点的class
-        Message.prototype.setMessageType = function (messageDom, type) {
-            if (type === '') {
-                messageDom.classList.add('common-axios-message_info');
-            }
-            else if (type === 'success') {
-                messageDom.classList.add('common-axios-message_success');
-            }
-            else if (type === 'warning') {
-                messageDom.classList.add('common-axios-message_warning');
-            }
-            else if (type === 'error') {
-                messageDom.classList.add('common-axios-message_error');
-            }
-            else {
-                messageDom.classList.add('common-axios-message_info'); // 默认值
-            }
+        Message.prototype.setMessageType = function (messageDom, messageType) {
+            messageType = messageType ? messageType : 'info';
+            var className = "common-axios_message_" + messageType;
+            messageDom.classList.add(className);
         };
         // 创建文本节点
         Message.prototype.createTextDom = function (messageDom, message) {
             var p = document.createElement('p');
-            p.classList.add('common-axios-message_content');
+            p.classList.add('common-axios_message_content');
             p.textContent = message || this.message;
             messageDom.appendChild(p);
         };
@@ -441,7 +364,7 @@
             this.messageQueue.splice(startIndex, 1);
             this.updateMessageDom(startIndex);
             //增加移除动画
-            messageDom.classList.add('common-axios-message_leave');
+            messageDom.classList.add('common-axios_message_leave');
             setTimeout(function () {
                 _this.body.removeChild(messageDom);
             }, 400);
@@ -452,17 +375,17 @@
             if (typeof options !== 'object') {
                 options = {
                     message: '',
-                    type: 'info',
+                    messageType: 'info',
                     center: false,
-                    duration: 2000,
+                    messageDuration: 2000,
                     showClose: false,
                 };
             }
             var messageDom = document.createElement('div');
-            messageDom.classList.add('common-axios-message');
-            messageDom.classList.add('common-axios-message_leave');
+            messageDom.classList.add('common-axios_message');
+            messageDom.classList.add('common-axios_message_leave');
             if (options.center === true) {
-                messageDom.classList.add('common-axios-message_center');
+                messageDom.classList.add('common-axios_message_center');
             }
             var targetId = this.id;
             // 向消息队列当中添加消息数据
@@ -471,7 +394,7 @@
                 messageDom: messageDom,
             });
             // 给dom节点添加class
-            this.setMessageType(messageDom, options.type);
+            this.setMessageType(messageDom, options.messageType);
             // 创建文本节点
             this.createTextDom(messageDom, options.message);
             // 设置当前message节点的 zIndex、top
@@ -480,7 +403,7 @@
             this.body.appendChild(messageDom);
             //增加新增动画
             setTimeout(function () {
-                messageDom.classList.remove('common-axios-message_leave');
+                messageDom.classList.remove('common-axios_message_leave');
             }, 100);
             var i = null;
             if (options.showClose === true) {
@@ -488,15 +411,15 @@
                 i.classList.add('close-button');
                 messageDom.appendChild(i);
             }
-            var duration = isNaN(Number(options.duration))
-                ? this.duration
-                : Number(options.duration);
+            var messageDuration = isNaN(Number(options.messageDuration))
+                ? this.messageDuration
+                : Number(options.messageDuration);
             // 如果duration为0则不需要setTimeout
             var timeId;
-            if (duration !== 0) {
+            if (messageDuration !== 0) {
                 timeId = setTimeout(function () {
                     _this.removeMessage(messageDom, targetId);
-                }, duration);
+                }, messageDuration);
             }
             if (options.showClose === true) {
                 // @ts-ignore
@@ -603,6 +526,7 @@
      * @returns
      */
     var axiosResponseCallback = function (axiosResponse) {
+        // 关闭遮罩层
         masklayerInstance.removeLoading(axiosResponse.config);
         var _a = axiosResponse.config, successKey = _a.successKey, successKeyValue = _a.successKeyValue, dataKey = _a.dataKey, messageKey = _a.messageKey;
         if (successKey && successKeyValue) {
@@ -620,9 +544,9 @@
                     var messageValue = getValueByKeyInOpject(messageKey, axiosResponse.data);
                     messageInstance.createMessage({
                         message: "" + messageValue,
-                        type: 'error',
+                        messageType: 'error',
                         center: false,
-                        duration: 2000,
+                        messageDuration: 2000,
                         showClose: false,
                     });
                     if (dataKey) {
@@ -637,9 +561,9 @@
                 else {
                     messageInstance.createMessage({
                         message: axiosResponse.data.message,
-                        type: 'error',
+                        messageType: 'error',
                         center: false,
-                        duration: 2000,
+                        messageDuration: 2000,
                     });
                     if (dataKey) {
                         return Promise.resolve(getValueByKeyInOpject(dataKey, axiosResponse.data));
@@ -664,14 +588,14 @@
         if (axios__default['default'].isCancel(error)) {
             messageInstance.createMessage({
                 message: "\u68C0\u6D4B\u5230" + error.message + "\u591A\u6B21\u91CD\u590D\u8BF7\u6C42\uFF0C\u63A5\u53E3\u5DF2\u53D6\u6D88",
-                type: 'error',
+                messageType: 'error',
                 center: true,
             });
         }
         else {
             messageInstance.createMessage({
                 message: error.message,
-                type: 'error',
+                messageType: 'error',
                 center: true,
             });
         }

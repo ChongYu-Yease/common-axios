@@ -99,7 +99,9 @@ export const axiosRequestErrorCallback: AxiosErrorCallback = (error) => {
  * @returns
  */
 export const axiosResponseCallback: AxiosResponseCallback = (axiosResponse) => {
+    // 关闭遮罩层
     masklayerInstance.removeLoading(axiosResponse.config)
+
     const { successKey, successKeyValue, dataKey, messageKey } =
         axiosResponse.config as AxiosRequestConfigs
 
@@ -126,9 +128,9 @@ export const axiosResponseCallback: AxiosResponseCallback = (axiosResponse) => {
 
                 messageInstance.createMessage({
                     message: `${messageValue}`,
-                    type: 'error',
+                    messageType: 'error',
                     center: false,
-                    duration: 2000,
+                    messageDuration: 2000,
                     showClose: false,
                 })
                 if (dataKey) {
@@ -143,9 +145,9 @@ export const axiosResponseCallback: AxiosResponseCallback = (axiosResponse) => {
             } else {
                 messageInstance.createMessage({
                     message: axiosResponse.data.message,
-                    type: 'error',
+                    messageType: 'error',
                     center: false,
-                    duration: 2000,
+                    messageDuration: 2000,
                 })
                 if (dataKey) {
                     return Promise.resolve(
@@ -171,13 +173,13 @@ export const axiosResponseErrorCallback: AxiosErrorCallback = (error) => {
     if (axios.isCancel(error)) {
         messageInstance.createMessage({
             message: `检测到${error.message}多次重复请求，接口已取消`,
-            type: 'error',
+            messageType: 'error',
             center: true,
         })
     } else {
         messageInstance.createMessage({
             message: error.message,
-            type: 'error',
+            messageType: 'error',
             center: true,
         })
     }

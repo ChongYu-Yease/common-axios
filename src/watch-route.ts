@@ -1,7 +1,7 @@
 class Dep {
-    watch: Watch | undefined
+    watch: Watcher | undefined
     id: Object
-    public subs: Array<Watch>
+    public subs: Array<Watcher>
     // 订阅池
     constructor() {
         this.id = new Date()
@@ -25,10 +25,11 @@ class Dep {
         })
     }
 }
+
 // // @ts-ignore
 // Dep.watch = null
-
-class Watch {
+// 订阅
+class Watcher {
     name: string
     id: Object
     callBack: Function
@@ -51,12 +52,11 @@ class Watch {
 
 export const addHistoryMethod = (function () {
     const historyDep = new Dep()
-    console.log('historyDep', historyDep)
-
+    // console.log('historyDep', historyDep)
     return function (name: string) {
         if (name === 'historychange') {
             return function (name: string, fn: Function) {
-                const watcher = new Watch(name, fn)
+                const watcher = new Watcher(name, fn)
                 // @ts-ignore
                 Dep.watch = watcher
                 historyDep.defined()

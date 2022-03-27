@@ -1,34 +1,62 @@
-import qs from 'qs'
 import { AxiosRequestConfigs } from './index.types'
 // 引入遮罩层的样式
 import './mask-layer.css'
-
+import qs from 'qs'
 // 创建遮罩层
 export class MaskLayer {
     // 遮罩层队列
-    private masklayerQueue: Array<string>
+    private masklayerQueue: Array<AxiosRequestConfigs>
 
     constructor() {
+        // 初始化遮罩层队列
         this.masklayerQueue = []
     }
 
-    private addMasklayerQueue(config: AxiosRequestConfigs) {
-        // 生成key 其实这个key 没有什么作用 不知道后续会遇到什么需求 先这么做吧
-        const key = [
-            config.method,
-            config.url,
-            qs.stringify(config.params),
-            qs.stringify(config.data),
-        ].join('&')
+    // 更新遮罩层的文本
+    private uploadMasklayerContent(config: AxiosRequestConfigs): void {
+        const masklayerTextDom: HTMLSpanElement =
+            document.querySelector('.common-axios_text')!
+        masklayerTextDom.textContent = config.loadingText
+            ? config.loadingText
+            : '拼命加载中'
+    }
 
-        // 向遮罩层队列中添加记录
-        this.masklayerQueue.push(key)
+    // 创建或者更新遮罩层
+    private uploadMasklayer(): void {
+        const config = this.masklayerQueue[this.masklayerQueue.length - 1]
+        const hasMasklayerDom = document.querySelector(
+            '.common-axios_mask-layer'
+        )
+        if (hasMasklayerDom) {
+            this.uploadMasklayerContent(config)
+        } else {
+            this.createLoadingDom(config)
+        }
+    }
+    // 向遮罩层队列中添加记录
+    private addMasklayer(config: AxiosRequestConfigs) {
+        this.masklayerQueue.push(config)
+        this.uploadMasklayer()
+    }
+
+    // 向遮罩层队列中删除记录
+    private removeMasklayer(config: AxiosRequestConfigs): void {
+        const index = this.masklayerQueue.findIndex(
+            (itemConfig) =>
+                JSON.stringify(itemConfig) === JSON.stringify(config)
+        )
+        this.masklayerQueue.splice(index, 1)
+        if (this.masklayerQueue.length) {
+            this.uploadMasklayer()
+        } else {
+            this.removeLoadingDom()
+        }
     }
 
     // 创建深色遮罩层
     private createMaskLayerDom = (): HTMLDivElement => {
         const maskLayerDom = document.createElement('div')
-        maskLayerDom.classList.add('common-axios-mask-layer')
+        maskLayerDom.classList.add('common-axios_mask-layer')
         return maskLayerDom
     }
 
@@ -36,7 +64,7 @@ export class MaskLayer {
     private createTextDom = (loadingText?: string): HTMLSpanElement => {
         loadingText = loadingText ? loadingText : '拼命加载中'
         const span = document.createElement('span')
-        span.classList.add('common-axios-text')
+        span.classList.add('common-axios_text')
         span.textContent = loadingText
         return span
     }
@@ -44,14 +72,14 @@ export class MaskLayer {
     // 创建旋转的dom节点
     private createDottingDom = (): HTMLSpanElement => {
         const span = document.createElement('span')
-        span.classList.add('common-axios-dotting')
+        span.classList.add('common-axios_dotting')
         return span
     }
 
     // 将文字节点和旋转节点放在一起
     private createLoadingBox = (): HTMLDivElement => {
         const loadingBox = document.createElement('div')
-        loadingBox.classList.add('common-axios-loading-box')
+        loadingBox.classList.add('common-axios_loading-box')
         return loadingBox
     }
 
@@ -60,69 +88,48 @@ export class MaskLayer {
         // loading文本
         const { loadingText } = config
 
-        if (document) {
-            // 创建文本节点
-            const textDom = this.createTextDom(loadingText)
+        // 创建文本节点
+        const textDom = this.createTextDom(loadingText)
 
-            // 创建loading节点
-            const dottingDom = this.createDottingDom()
+        // 创建loading节点
+        const dottingDom = this.createDottingDom()
 
-            // 创建load box 为了将两个放在一个节点内
+        // 创建load box 为了将两个放在一个节点内
+        const loadingBox = this.createLoadingBox()
 
-            const loadingBox = this.createLoadingBox()
+        loadingBox.appendChild(textDom)
 
-            loadingBox.appendChild(textDom)
+        loadingBox.appendChild(dottingDom)
 
-            loadingBox.appendChild(dottingDom)
+        // 创建遮罩层节点
+        const maskLayerDom = this.createMaskLayerDom()
 
-            // 创建遮罩层节点
-            const maskLayerDom = this.createMaskLayerDom()
+        maskLayerDom.appendChild(loadingBox)
 
-            maskLayerDom.appendChild(loadingBox)
-
-            document.body.appendChild(maskLayerDom)
-        }
+        document.body.appendChild(maskLayerDom)
     }
 
     // 移除遮罩层
     private removeLoadingDom = (): void => {
-        if (document) {
+        // 延迟300毫秒关闭
+        setTimeout(() => {
             const loadingDom = document.querySelector(
-                '.common-axios-mask-layer'
+                '.common-axios_mask-layer'
             )
             if (loadingDom) {
                 document.body.removeChild(loadingDom)
             }
-        }
-    }
-
-    // 修改遮罩层的内容
-    private setMaskLayerContent = (config: AxiosRequestConfigs): void => {
-        const textDom: HTMLSpanElement =
-            document.querySelector('.common-axios-text')!
-        textDom.textContent = config.loadingText || '拼命加载中...'
+        })
     }
 
     // 创建遮罩层
     public createLoading = (config: AxiosRequestConfigs): void => {
         // 添加遮罩层任务队列
-        this.addMasklayerQueue(config)
-
-        if (this.masklayerQueue.length !== 0) {
-            this.createLoadingDom(config)
-        }
+        this.addMasklayer(config)
     }
 
     // 关闭遮罩层
     public removeLoading = (config: AxiosRequestConfigs) => {
-        setTimeout(() => {
-            this.masklayerQueue.pop()
-            if (this.masklayerQueue.length === 0) {
-                this.removeLoadingDom()
-            } else {
-                // 修改下次遮罩层的内容
-                this.setMaskLayerContent(config)
-            }
-        }, 300)
+        this.removeMasklayer(config)
     }
 }

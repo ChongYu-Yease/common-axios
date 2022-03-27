@@ -13,10 +13,10 @@ export class Message {
     private message: string = ''
 
     // 消息类型
-    private type: '' | 'success' | 'warning' | 'error' | 'info'
+    private messageType: '' | 'success' | 'warning' | 'error' | 'info'
 
     // 消息节点消失的时间间隔
-    private duration: number
+    private messageDuration: number
 
     // body节点
     private body: HTMLBodyElement
@@ -28,34 +28,24 @@ export class Message {
     constructor() {
         // 消息队列
         this.messageQueue = []
-        // // 设置默认值
-        // this.position = 'top'
         this.message = ''
-        this.type = ''
-        this.duration = 2000
-        this.body = document.getElementsByTagName('body')[0]
+        this.messageType = ''
+        this.messageDuration = 2000
+        this.body = document.querySelector('body')!
         this.id = 0
     }
 
     // 通过type 设置dom节点的class
-    private setMessageType(messageDom: HTMLDivElement, type?: string) {
-        if (type === '') {
-            messageDom.classList.add('common-axios-message_info')
-        } else if (type === 'success') {
-            messageDom.classList.add('common-axios-message_success')
-        } else if (type === 'warning') {
-            messageDom.classList.add('common-axios-message_warning')
-        } else if (type === 'error') {
-            messageDom.classList.add('common-axios-message_error')
-        } else {
-            messageDom.classList.add('common-axios-message_info') // 默认值
-        }
+    private setMessageType(messageDom: HTMLDivElement, messageType?: string) {
+        messageType = messageType ? messageType : 'info'
+        const className = `common-axios_message_${messageType}`
+        messageDom.classList.add(className)
     }
 
     // 创建文本节点
     private createTextDom(messageDom: HTMLDivElement, message: string) {
         const p = document.createElement('p')
-        p.classList.add('common-axios-message_content')
+        p.classList.add('common-axios_message_content')
         p.textContent = message || this.message
         messageDom.appendChild(p)
     }
@@ -70,7 +60,7 @@ export class Message {
         this.updateMessageDom(startIndex)
 
         //增加移除动画
-        messageDom.classList.add('common-axios-message_leave')
+        messageDom.classList.add('common-axios_message_leave')
 
         setTimeout(() => {
             this.body.removeChild(messageDom)
@@ -79,30 +69,30 @@ export class Message {
 
     createMessage(options: {
         message: string
-        type?: '' | 'info' | 'warning' | 'error' | 'success'
+        messageType?: '' | 'info' | 'warning' | 'error' | 'success'
         center?: boolean
-        duration?: number
+        messageDuration?: number
         showClose?: boolean
     }) {
         // 判断 options 配置
         if (typeof options !== 'object') {
             options = {
                 message: '',
-                type: 'info',
+                messageType: 'info',
                 center: false,
-                duration: 2000,
+                messageDuration: 2000,
                 showClose: false,
             }
         }
 
         const messageDom = document.createElement('div')
 
-        messageDom.classList.add('common-axios-message')
+        messageDom.classList.add('common-axios_message')
 
-        messageDom.classList.add('common-axios-message_leave')
+        messageDom.classList.add('common-axios_message_leave')
 
         if (options.center === true) {
-            messageDom.classList.add('common-axios-message_center')
+            messageDom.classList.add('common-axios_message_center')
         }
 
         const targetId = this.id
@@ -114,7 +104,7 @@ export class Message {
         })
 
         // 给dom节点添加class
-        this.setMessageType(messageDom, options.type)
+        this.setMessageType(messageDom, options.messageType)
 
         // 创建文本节点
         this.createTextDom(messageDom, options.message)
@@ -127,7 +117,7 @@ export class Message {
 
         //增加新增动画
         setTimeout(() => {
-            messageDom.classList.remove('common-axios-message_leave')
+            messageDom.classList.remove('common-axios_message_leave')
         }, 100)
 
         let i = null
@@ -136,17 +126,17 @@ export class Message {
             i.classList.add('close-button')
             messageDom.appendChild(i)
         }
-        const duration = isNaN(Number(options.duration))
-            ? this.duration
-            : Number(options.duration)
+        const messageDuration = isNaN(Number(options.messageDuration))
+            ? this.messageDuration
+            : Number(options.messageDuration)
 
         // 如果duration为0则不需要setTimeout
         let timeId: NodeJS.Timeout
 
-        if (duration !== 0) {
+        if (messageDuration !== 0) {
             timeId = setTimeout(() => {
                 this.removeMessage(messageDom, targetId)
-            }, duration)
+            }, messageDuration)
         }
         if (options.showClose === true) {
             // @ts-ignore

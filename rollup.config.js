@@ -104,6 +104,7 @@ const initConfig = () => {
         ],
     }
     defaultConfig.output = flexibleOutput
+
     defaultConfig.plugins = defaultConfig.plugins.concat(flexiblePlugins)
 
     return defaultConfig
