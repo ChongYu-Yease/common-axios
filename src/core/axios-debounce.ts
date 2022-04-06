@@ -1,6 +1,6 @@
 import axios, { Canceler } from 'axios'
 import qs from 'qs'
-import { AxiosRequestConfigs } from '../types/index.types'
+import { AxiosRequestConfigs } from '../../types/index.types'
 import { addHistoryMethod } from './watch-route'
 // console.log('addHistoryMethod', addHistoryMethod)
 

@@ -20,7 +20,7 @@ import {
     CreateAxios,
     AxiosHelpers,
     AxiosRequestConfigs,
-} from './types/index.types'
+} from '../types/index.types'
 
 /**
  * @param AxiosRequestConfigs

@@ -44,6 +44,8 @@ type AxiosRequestContentType = {
  * 添加 contentType 接口的请求方式
  * 添加 successKey 代表接口请求成功的字段
  * 添加 successKeyValue 代表接口请求成功的字段的值
+ * 添加 axiosResponseCallback 代表响应拦截器成功的回调
+ * 添加 axiosRequestCallback 代表请求拦截器成功的回调
  */
 export type AxiosRequestConfigs = AxiosRequestConfig &
     SuccessKeyAndSuccessKeyValue &
@@ -53,8 +55,10 @@ export type AxiosRequestConfigs = AxiosRequestConfig &
         axiosDebounce?: boolean /* 接口防抖 应用场景：同一个接口，同一个请求方式，同样的请求参数发起了多次数据请求，当第一次发起请求的接口没有返回数据之前，后续的接口都会被取消 */
         messageKey?: string /* 消息字段 */
         dataKey?: string /* 数据的字段 */
-        axiosResponseCallback?: (axiosResponse: AxiosResponse) => void
-        axiosRequestCallback?: (
+        // 返回成功回调 用于全局拦截
+        axiosResponseSuccessCallback?: (axiosResponse: AxiosResponse) => void
+        // 请求成功回调 用于全局拦截
+        axiosRequestSuccessCallback?: (
             axiosRequestConfigs: AxiosRequestConfigs
         ) => void
     }

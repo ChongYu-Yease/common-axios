@@ -3,9 +3,9 @@ import {
     AxiosErrorCallback,
     AxiosResponseCallback,
     GetValueByKeyInOpject,
-} from '../types/axios-callback.type'
+} from '../../types/axios-callback.type'
 
-import { AxiosRequestConfigs } from '../types/index.types'
+import { AxiosRequestConfigs } from '../../types/index.types'
 
 // axios  防抖
 import { AxiosDebounce } from './axios-debounce'
@@ -63,11 +63,15 @@ export const axiosRequestCallback: AxiosRequestCallback = (config) => {
         loadingText,
         axiosDebounce,
         contentType,
-        axiosRequestCallback,
+        axiosRequestSuccessCallback,
     } = config
 
-    if (axiosRequestCallback && typeof axiosRequestCallback === 'function')
-        axiosRequestCallback(config)
+    if (
+        axiosRequestSuccessCallback &&
+        typeof axiosRequestSuccessCallback === 'function'
+    ) {
+        axiosRequestSuccessCallback(config)
+    }
 
     // 先判断是否需要防抖 如果需要 需要防抖的话 如果接口被取消 就不再需要遮罩层
     if (axiosDebounce) {
@@ -109,19 +113,21 @@ export const axiosResponseCallback: AxiosResponseCallback = (axiosResponse) => {
     // 关闭遮罩层
     masklayerInstance.removeLoading(axiosResponse.config as AxiosRequestConfigs)
 
-    // 执行自定义事件
-
     const {
         successKey,
         successKeyValue,
         dataKey,
         messageKey,
-        axiosResponseCallback,
+        axiosResponseSuccessCallback,
     } = axiosResponse.config as AxiosRequestConfigs
 
     // 执行自定义事件
-    if (axiosResponseCallback && typeof axiosResponseCallback == 'function')
-        axiosResponseCallback(axiosResponse)
+    if (
+        axiosResponseSuccessCallback &&
+        typeof axiosResponseSuccessCallback == 'function'
+    ) {
+        axiosResponseSuccessCallback(axiosResponse)
+    }
 
     if (successKey && successKeyValue) {
         const _successKeyValue = getValueByKeyInOpject(

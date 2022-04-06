@@ -26,7 +26,7 @@ class Dep {
     }
 }
 
-// // @ts-ignore
+// @ts-ignore
 // Dep.watch = null
 // 订阅
 class Watcher {
@@ -52,7 +52,7 @@ class Watcher {
 
 export const addHistoryMethod = (function () {
     const historyDep = new Dep()
-    // console.log('historyDep', historyDep)
+
     return function (name: string) {
         if (name === 'historychange') {
             return function (name: string, fn: Function) {
