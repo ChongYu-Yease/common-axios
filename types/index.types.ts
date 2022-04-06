@@ -48,6 +48,10 @@ export type AxiosRequestConfigs = AxiosRequestConfig &
             | ' multipart/form-data'
         messageKey?: string /* 消息字段 */
         dataKey?: string /* 数据的字段 */
+        axiosResponseCallback?: (axiosResponse: AxiosResponse) => void
+        axiosRequestCallback?: (
+            axiosRequestConfigs: AxiosRequestConfigs
+        ) => void
     }
 
 /**

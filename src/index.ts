@@ -16,7 +16,11 @@ import {
     axiosResponseErrorCallback,
 } from './axios-callback'
 
-import { CreateAxios, AxiosHelpers, AxiosRequestConfigs } from './index.types'
+import {
+    CreateAxios,
+    AxiosHelpers,
+    AxiosRequestConfigs,
+} from '../types/index.types'
 
 /**
  * @param AxiosRequestConfigs

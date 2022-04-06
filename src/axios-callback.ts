@@ -3,9 +3,9 @@ import {
     AxiosErrorCallback,
     AxiosResponseCallback,
     GetValueByKeyInOpject,
-} from './axios-callback.type'
+} from '../types/axios-callback.type'
 
-import { AxiosRequestConfigs } from './index.types'
+import { AxiosRequestConfigs } from '../types/index.types'
 
 // axios  防抖
 import { AxiosDebounce } from './axios-debounce'
@@ -58,7 +58,16 @@ const getValueByKeyInOpject: GetValueByKeyInOpject = (key, object) => {
  * @returns config
  */
 export const axiosRequestCallback: AxiosRequestCallback = (config) => {
-    const { needLoading, loadingText, axiosDebounce, contentType } = config
+    const {
+        needLoading,
+        loadingText,
+        axiosDebounce,
+        contentType,
+        axiosRequestCallback,
+    } = config
+
+    if (axiosRequestCallback && typeof axiosRequestCallback === 'function')
+        axiosRequestCallback(config)
 
     // 先判断是否需要防抖 如果需要 需要防抖的话 如果接口被取消 就不再需要遮罩层
     if (axiosDebounce) {
@@ -88,8 +97,6 @@ export const axiosRequestCallback: AxiosRequestCallback = (config) => {
  * @returns error
  */
 export const axiosRequestErrorCallback: AxiosErrorCallback = (error) => {
-    console.log('请求前错误回调')
-
     return Promise.reject(error)
 }
 
@@ -100,17 +107,28 @@ export const axiosRequestErrorCallback: AxiosErrorCallback = (error) => {
  */
 export const axiosResponseCallback: AxiosResponseCallback = (axiosResponse) => {
     // 关闭遮罩层
-    masklayerInstance.removeLoading(axiosResponse.config)
+    masklayerInstance.removeLoading(axiosResponse.config as AxiosRequestConfigs)
 
-    const { successKey, successKeyValue, dataKey, messageKey } =
-        axiosResponse.config as AxiosRequestConfigs
+    // 执行自定义事件
+
+    const {
+        successKey,
+        successKeyValue,
+        dataKey,
+        messageKey,
+        axiosResponseCallback,
+    } = axiosResponse.config as AxiosRequestConfigs
+
+    // 执行自定义事件
+    if (axiosResponseCallback && typeof axiosResponseCallback == 'function')
+        axiosResponseCallback(axiosResponse)
 
     if (successKey && successKeyValue) {
         const _successKeyValue = getValueByKeyInOpject(
             successKey,
             axiosResponse.data
         )
-
+        // 处理成功的情况
         if (_successKeyValue == successKeyValue) {
             if (dataKey) {
                 return Promise.resolve(
@@ -133,6 +151,7 @@ export const axiosResponseCallback: AxiosResponseCallback = (axiosResponse) => {
                     messageDuration: 2000,
                     showClose: false,
                 })
+
                 if (dataKey) {
                     return Promise.resolve(
                         getValueByKeyInOpject(dataKey, axiosResponse.data)
@@ -140,8 +159,6 @@ export const axiosResponseCallback: AxiosResponseCallback = (axiosResponse) => {
                 } else {
                     return Promise.resolve(axiosResponse.data)
                 }
-                // 阻止代码往下运行
-                // throw Promise.reject(messageValue)
             } else {
                 messageInstance.createMessage({
                     message: axiosResponse.data.message,
@@ -149,6 +166,7 @@ export const axiosResponseCallback: AxiosResponseCallback = (axiosResponse) => {
                     center: false,
                     messageDuration: 2000,
                 })
+
                 if (dataKey) {
                     return Promise.resolve(
                         getValueByKeyInOpject(dataKey, axiosResponse.data)
@@ -156,7 +174,6 @@ export const axiosResponseCallback: AxiosResponseCallback = (axiosResponse) => {
                 } else {
                     return Promise.resolve(axiosResponse.data)
                 }
-                // throw Promise.reject(axiosResponse.data.message)
             }
         }
     } else {

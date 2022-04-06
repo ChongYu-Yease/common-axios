@@ -1,4 +1,4 @@
-import { AxiosMethods, AxiosRequestConfigs } from './index.types'
+import { AxiosMethods, AxiosRequestConfigs } from '../types/index.types'
 import { AxiosInstance, AxiosResponse } from 'axios'
 
 type CreateParamsInParamsHelper = (

@@ -1,6 +1,6 @@
 {
     "name": "common-axios",
-    "version": "0.2.5",
+    "version": "0.2.8",
     "description": "封装的axios",
     "main": "./dist/index.umd.js",
     "typings": "./types/index.d.ts",

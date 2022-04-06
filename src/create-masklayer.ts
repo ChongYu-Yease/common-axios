@@ -1,4 +1,4 @@
-import { AxiosRequestConfigs } from './index.types'
+import { AxiosRequestConfigs } from '../types/index.types'
 // 引入遮罩层的样式
 import './mask-layer.css'
 import qs from 'qs'
@@ -129,7 +129,11 @@ export class MaskLayer {
     }
 
     // 关闭遮罩层
-    public removeLoading = (config: AxiosRequestConfigs) => {
-        this.removeMasklayer(config)
+    public removeLoading = (config?: AxiosRequestConfigs) => {
+        if (config) {
+            this.removeMasklayer(config)
+        } else {
+            this.removeLoadingDom()
+        }
     }
 }

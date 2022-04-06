@@ -1,5 +1,5 @@
-import { CreateAxios } from '../src/index.types'
+import { CreateAxios, AxiosHelpers } from './index.types'
 
 declare const createAxios: CreateAxios
 
-export { createAxios }
+export { createAxios, AxiosHelpers }

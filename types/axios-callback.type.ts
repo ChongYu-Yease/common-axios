@@ -19,7 +19,7 @@ export type AxiosResponseCallback = (axiosResponse: AxiosResponse) =>
  */
 export type AxiosRequestCallback = (
     config: AxiosRequestConfigs
-) => AxiosRequestConfig
+) => AxiosRequestConfigs
 
 /**
  * axios 请求前 请求后的错误回调 的声明

@@ -280,7 +280,12 @@
             };
             // 关闭遮罩层
             this.removeLoading = function (config) {
-                _this.removeMasklayer(config);
+                if (config) {
+                    _this.removeMasklayer(config);
+                }
+                else {
+                    _this.removeLoadingDom();
+                }
             };
             // 初始化遮罩层队列
             this.masklayerQueue = [];
@@ -495,7 +500,9 @@
      * @returns config
      */
     var axiosRequestCallback = function (config) {
-        var needLoading = config.needLoading, loadingText = config.loadingText, axiosDebounce = config.axiosDebounce, contentType = config.contentType;
+        var needLoading = config.needLoading, loadingText = config.loadingText, axiosDebounce = config.axiosDebounce, contentType = config.contentType, axiosRequestCallback = config.axiosRequestCallback;
+        if (axiosRequestCallback && typeof axiosRequestCallback === 'function')
+            axiosRequestCallback(config);
         // 先判断是否需要防抖 如果需要 需要防抖的话 如果接口被取消 就不再需要遮罩层
         if (axiosDebounce) {
             axiosDebounceInstance.handleRemoveAxiosQueue(config); // 在请求开始前，对之前的请求做检查取消操作
@@ -517,7 +524,6 @@
      * @returns error
      */
     var axiosRequestErrorCallback = function (error) {
-        console.log('请求前错误回调');
         return Promise.reject(error);
     };
     /**
@@ -528,9 +534,14 @@
     var axiosResponseCallback = function (axiosResponse) {
         // 关闭遮罩层
         masklayerInstance.removeLoading(axiosResponse.config);
-        var _a = axiosResponse.config, successKey = _a.successKey, successKeyValue = _a.successKeyValue, dataKey = _a.dataKey, messageKey = _a.messageKey;
+        // 执行自定义事件
+        var _a = axiosResponse.config, successKey = _a.successKey, successKeyValue = _a.successKeyValue, dataKey = _a.dataKey, messageKey = _a.messageKey, axiosResponseCallback = _a.axiosResponseCallback;
+        // 执行自定义事件
+        if (axiosResponseCallback && typeof axiosResponseCallback == 'function')
+            axiosResponseCallback(axiosResponse);
         if (successKey && successKeyValue) {
             var _successKeyValue = getValueByKeyInOpject(successKey, axiosResponse.data);
+            // 处理成功的情况
             if (_successKeyValue == successKeyValue) {
                 if (dataKey) {
                     return Promise.resolve(getValueByKeyInOpject(dataKey, axiosResponse.data));
@@ -555,8 +566,6 @@
                     else {
                         return Promise.resolve(axiosResponse.data);
                     }
-                    // 阻止代码往下运行
-                    // throw Promise.reject(messageValue)
                 }
                 else {
                     messageInstance.createMessage({
@@ -571,7 +580,6 @@
                     else {
                         return Promise.resolve(axiosResponse.data);
                     }
-                    // throw Promise.reject(axiosResponse.data.message)
                 }
             }
         }
