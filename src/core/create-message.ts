@@ -1,5 +1,5 @@
 // 引入message 样式
-import './message.css'
+import '../css/message.css'
 
 // 创建message
 export class Message {

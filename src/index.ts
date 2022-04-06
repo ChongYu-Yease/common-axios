@@ -1,12 +1,12 @@
 /* 创建axios实例 */
-import { createAxiosInstance } from './create-axios'
+import { createAxiosInstance } from './core/create-axios'
 
 /* 创建axioshelper */
 import {
     createParamsInParamsHelper,
     createParamsInDataHelper,
     createParamsInParamsOrDataHelper,
-} from './create-helper'
+} from './core/create-helper'
 
 // axios 所有的回调函数
 import {
@@ -14,13 +14,13 @@ import {
     axiosRequestErrorCallback,
     axiosResponseCallback,
     axiosResponseErrorCallback,
-} from './axios-callback'
+} from './core/axios-callback'
 
 import {
     CreateAxios,
     AxiosHelpers,
     AxiosRequestConfigs,
-} from '../types/index.types'
+} from './types/index.types'
 
 /**
  * @param AxiosRequestConfigs

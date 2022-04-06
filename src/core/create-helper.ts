@@ -4,7 +4,7 @@ import { AxiosInstance, AxiosResponse } from 'axios'
 type CreateParamsInParamsHelper = (
     axiosInstance: AxiosInstance,
     method: AxiosMethods
-) => (url: string, params?: any, config?: AxiosRequestConfigs) => any
+) => (url: string, params?: any, config?: AxiosRequestConfigs) => Promise<any>
 
 /**
  * 调用参数为params的axios请求
@@ -20,29 +20,34 @@ export const createParamsInParamsHelper: CreateParamsInParamsHelper =
         }).catch((error) => {
             return error
         })
+
+type CreateParamsInParamsOrDataHelper = (
+    axiosInstance: AxiosInstance,
+    method: AxiosMethods
+) => (url: string, params?: any, config?: AxiosRequestConfigs) => Promise<any>
+
 /**
  * 请求参数在pramas字段或者在data字段 的axios请求
  * @param axiosInstance axios实例
  * @param method 请求方法
  * @returns (url: string, params?: any, config?: AxiosRequestConfigs)=> Promise<AxiosResponse<T>>
  */
-export const createParamsInParamsOrDataHelper = (
+export const createParamsInParamsOrDataHelper: CreateParamsInParamsOrDataHelper =
+    (axiosInstance, method) => {
+        return (url, params, config) => {
+            return axiosInstance[method](url, {
+                ...params,
+                ...config,
+            }).catch((error) => {
+                return error
+            })
+        }
+    }
+
+type CreateParamsInDataHelper = (
     axiosInstance: AxiosInstance,
     method: AxiosMethods
-) => {
-    return (
-        url: string,
-        params?: { params?: any; data?: any },
-        config?: AxiosRequestConfigs
-    ) => {
-        return axiosInstance[method](url, {
-            ...params,
-            ...config,
-        }).catch((error) => {
-            return error
-        })
-    }
-}
+) => (url: string, params?: any, config?: AxiosRequestConfigs) => Promise<any>
 
 /**
  * 请求参数在data字段的axios请求
@@ -50,11 +55,11 @@ export const createParamsInParamsOrDataHelper = (
  * @param method 请求方法
  * @returns (url: string, params?: any, config?: AxiosRequestConfigs)=> Promise<AxiosResponse<T>>
  */
-export const createParamsInDataHelper = (
-    axiosInstance: AxiosInstance,
-    method: AxiosMethods
+export const createParamsInDataHelper: CreateParamsInDataHelper = (
+    axiosInstance,
+    method
 ) => {
-    return (url: string, data?: any, config?: AxiosRequestConfigs) => {
+    return (url, data, config) => {
         return axiosInstance[method](url, data, {
             ...config,
         }).catch((error) => error)
