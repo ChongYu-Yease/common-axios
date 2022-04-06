@@ -10,9 +10,11 @@ yarn add simple-axios
 
 ### 设计目的
 
-    1.统一所有请求方法的入参规则, 第一个参数为 url, 第二个参数为携带的请求参数, 第三个参数为请求配置项,
-    2.除了原生的axiosConfig之外，另外还动态支持自定义配置
-    3.自定义创建遮罩层，遮罩层的展示内容
+    1.原生axios使用方法众多，且使用方法不够统一;
+
+    2.axios的拓展需要自己在项目自定义，看起来自由度比较高，但是配置相对比较繁琐;
+
+    3.提供了轻量级自定义创建遮罩层，自定义message组件;
 
 ### 快速开始
 
@@ -30,11 +32,13 @@ const axios =
 ```
 
 ```js
+
 除了上述地址包括配置之外还支持如下字段配置
-/* 是否创建遮罩层，默认为false */
+
+/* 是否创建遮罩层，默认为false needLoading 和 loadingText 只要配置了一个就可以生成遮罩层 注意：目前遮罩层针对同步请求的时候 遮罩层有闪烁的行为 不建议使用 */
 needLoading?: boolean
 
-/* 遮罩层展示的内容 需要needLoading:true */
+/* 遮罩层展示的内容 默认为拼命加载中 needLoading 和 loadingText 只要配置了一个就可以生成遮罩层 注意：目前遮罩层针对同步请求的时候 遮罩层有闪烁的行为 不建议使用 */
 loadingText?: string
 
 /* 接口防抖 应用场景：同一个接口，同一个请求方式，同样的请求参数发起了多次数据请求，当第一次发起请求的接口没有返回数据之前，后续的接口都会被取消 默认为false */
@@ -46,27 +50,61 @@ successKey?: string
 /* 代表成功的参数的key所对应的值 默认为undefined */
 successKeyValue?: string
 
+/* 代表返回数据的key，支持a.b.c */
+/**
+ * 例如: 后端返回的数据是
+ *
+ * {
+ *  a: {
+ *       b:{
+ *          c:"我是c"
+ *         }
+ *     }
+ *  }
+ *
+*/
+dataKey?:string
+
+/* 代表失败的参数的key 默认为undefined */
+errorKey?:string
+
+/* 代表失败的参数的key所对应的值 默认为undefined */
+errorKey?:string
+
+/* 代表返回消息的key 配置此字段之后 可开启原生message组件提示 */
+message?:string
+
 /* 请求方式的contentType 默认为'application/json' */
 contentType?:
     | 'application/json'
     | 'application/x-www-form-urlencoded'
     | ' multipart/form-data'
+
+
+ /* 请求前拦截回调 用于全局拦截 参数 axiosRequestConfig */
+    axiosRequestCallback?:Function
+
+/* 请求后拦截回调 用于全局拦截 参数 axiosResponse */
+    axiosResponseCallback?:Function
+
+
+
 ```
 
 ### 具体使用方法
 
 ```js
-/* get请求参数位置以及请求配置 head请求如同*/
+/* get请求参数位置以及请求配置 【 head 】请求如同*/
 const result = await axiosHelpers.get(<url>,<params>,<config>)
 ```
 
 ```js
-/* post请求参数位置以及请求配置 put，patch请求如同 */
+/* post请求参数位置以及请求配置 【 put 】，【 patch 】请求如同 */
 const result = await axiosHelpers.post(<url>,<data>,<config>)
 ```
 
 ```js
-/* delete请求参数位置以及请求配置 option请求如同 */
+/* delete请求参数位置以及请求配置 【 option 】请求如同 */
 const result = await axiosHelpers.delete(<url>,<{params:params,data:data}>,<config>)
 
 ```
@@ -78,6 +116,12 @@ const result = await axiosHelpers.delete(<url>,<{params:params,data:data}>,<conf
 ### 抛砖引玉
 
     1.本包使用ts+rollup封装打包的，如果您有兴趣您也可以贡献自己的代码
+
+### TODO
+
+    1. common-axios 遮罩层在同步请求的时候的创建逻辑和销毁逻辑还存在bug;
+
+    2. 当用户开启axiosDebounce的时候，在页面离开的时候无法监听路由，在axios取消接口操作;
 
 ### 免责声明
 

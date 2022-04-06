@@ -16,6 +16,7 @@ export type AxiosMethods =
 export type LoadingList = Map<string, Function>
 
 /**
+ * 成功配置
  * successKey 和 successKeyValue配对使用的 要么全部都有 要么一个没有
  */
 type SuccessKeyAndSuccessKeyValue =
@@ -26,6 +27,20 @@ type SuccessKeyAndSuccessKeyValue =
     | {
           successKey: string /* 代表成功的参数的key */
           successKeyValue: string /* 代表成功的参数的key所对应的值 */
+      }
+
+/**
+ * 失败配置
+ * errorKey 和 errorKeyValue 要么全部都有 要么一个没有
+ */
+type ErrorKeyAndErrorKeyValue =
+    | {
+          errorKey?: never /* 代表失败的参数的key */
+          errorKeyValue?: never /* 代表失败的参数的key所对应的值 */
+      }
+    | {
+          errorKey: string /* 代表失败的参数的key */
+          errorKeyValue: string /* 代表失败的参数的key所对应的值 */
       }
 
 // axios content-type
@@ -49,16 +64,17 @@ type AxiosRequestContentType = {
  */
 export type AxiosRequestConfigs = AxiosRequestConfig &
     SuccessKeyAndSuccessKeyValue &
+    ErrorKeyAndErrorKeyValue &
     AxiosRequestContentType & {
         needLoading?: boolean /* 是否创建遮罩层，默认为否 */
-        loadingText?: string /* 遮罩层展示的内容*/
+        loadingText?: string /* 遮罩层展示的内容 默认为拼命加载中*/
         axiosDebounce?: boolean /* 接口防抖 应用场景：同一个接口，同一个请求方式，同样的请求参数发起了多次数据请求，当第一次发起请求的接口没有返回数据之前，后续的接口都会被取消 */
         messageKey?: string /* 消息字段 */
         dataKey?: string /* 数据的字段 */
-        // 返回成功回调 用于全局拦截
-        axiosResponseSuccessCallback?: (axiosResponse: AxiosResponse) => void
+        // 拦截成功回调 用于全局拦截
+        axiosResponseCallback?: (axiosResponse: AxiosResponse) => void
         // 请求成功回调 用于全局拦截
-        axiosRequestSuccessCallback?: (
+        axiosRequestCallback?: (
             axiosRequestConfigs: AxiosRequestConfigs
         ) => void
     }
@@ -66,29 +82,29 @@ export type AxiosRequestConfigs = AxiosRequestConfig &
 /**
  * 参数在params的声明
  */
-export type ParamsInParamsHelper = <T = any, R = AxiosResponse<T>>(
+export type ParamsInParamsHelper = <T = any>(
     url: string,
     params?: any,
     config?: AxiosRequestConfigs
-) => Promise<R> | Promise<T>
+) => Promise<T>
 
 /**
  * 参数在data字段中的声明
  */
-export type ParamsInDataHelper = <T = any, R = AxiosResponse<T>>(
+export type ParamsInDataHelper = <T = any>(
     url: string,
     data?: any,
     config?: AxiosRequestConfigs
-) => Promise<R> | Promise<T>
+) => Promise<T>
 
 /**
  * 参数既可以在params也可以在data的声明
  */
-export type ParamsInParamsOrDataHelper = <T = any, R = AxiosResponse<T>>(
+export type ParamsInParamsOrDataHelper = <T = any>(
     url: string,
     params: { params?: any; data?: any },
     config?: AxiosRequestConfigs
-) => Promise<R> | Promise<T>
+) => Promise<T>
 
 export interface AxiosHelpers {
     get: ParamsInParamsHelper

@@ -6,13 +6,9 @@ import { AxiosRequestConfigs } from './index.types'
 /**
  * axios 请求后成功的回调
  */
-export type AxiosResponseCallback = (axiosResponse: AxiosResponse) =>
-    | Promise<{
-          code: number
-          message: string
-          data: any
-      }>
-    | undefined
+export type AxiosResponseCallback = <T = any, R = AxiosResponse<T>>(
+    axiosResponse: AxiosResponse
+) => Promise<R> | Promise<T>
 
 /**
  * axios 请求配置回调

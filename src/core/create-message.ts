@@ -6,9 +6,6 @@ export class Message {
     // 消息队列
     private messageQueue: Array<{ messageDom: HTMLDivElement; id: number }>
 
-    // 消息位置
-    // private position: 'top' | 'bottom' | 'left' | 'right'
-
     // 消息内容
     private message: string = ''
 

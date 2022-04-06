@@ -63,14 +63,11 @@ export const axiosRequestCallback: AxiosRequestCallback = (config) => {
         loadingText,
         axiosDebounce,
         contentType,
-        axiosRequestSuccessCallback,
+        axiosRequestCallback,
     } = config
 
-    if (
-        axiosRequestSuccessCallback &&
-        typeof axiosRequestSuccessCallback === 'function'
-    ) {
-        axiosRequestSuccessCallback(config)
+    if (axiosRequestCallback && typeof axiosRequestCallback === 'function') {
+        axiosRequestCallback(config)
     }
 
     // 先判断是否需要防抖 如果需要 需要防抖的话 如果接口被取消 就不再需要遮罩层
@@ -116,20 +113,21 @@ export const axiosResponseCallback: AxiosResponseCallback = (axiosResponse) => {
     const {
         successKey,
         successKeyValue,
+        errorKey,
+        errorKeyValue,
         dataKey,
         messageKey,
-        axiosResponseSuccessCallback,
+        axiosResponseCallback,
     } = axiosResponse.config as AxiosRequestConfigs
 
     // 执行自定义事件
-    if (
-        axiosResponseSuccessCallback &&
-        typeof axiosResponseSuccessCallback == 'function'
-    ) {
-        axiosResponseSuccessCallback(axiosResponse)
+    if (axiosResponseCallback && typeof axiosResponseCallback == 'function') {
+        axiosResponseCallback(axiosResponse)
     }
 
+    // 处理成功情况
     if (successKey && successKeyValue) {
+        // 获取代表成功的值
         const _successKeyValue = getValueByKeyInOpject(
             successKey,
             axiosResponse.data
@@ -143,13 +141,23 @@ export const axiosResponseCallback: AxiosResponseCallback = (axiosResponse) => {
             } else {
                 return Promise.resolve(axiosResponse.data)
             }
-        } else {
+        }
+    }
+    // 处理错误情况
+    if (errorKey && errorKeyValue) {
+        // 获取代表失败的值
+        const _errorKeyValue = getValueByKeyInOpject(
+            errorKey,
+            axiosResponse.data
+        )
+
+        if (_errorKeyValue == errorKeyValue) {
             if (messageKey) {
+                // 获取消息内容
                 const messageValue = getValueByKeyInOpject(
                     messageKey,
                     axiosResponse.data
                 )
-
                 messageInstance.createMessage({
                     message: `${messageValue}`,
                     messageType: 'error',
@@ -157,34 +165,10 @@ export const axiosResponseCallback: AxiosResponseCallback = (axiosResponse) => {
                     messageDuration: 2000,
                     showClose: false,
                 })
-
-                if (dataKey) {
-                    return Promise.resolve(
-                        getValueByKeyInOpject(dataKey, axiosResponse.data)
-                    )
-                } else {
-                    return Promise.resolve(axiosResponse.data)
-                }
-            } else {
-                messageInstance.createMessage({
-                    message: axiosResponse.data.message,
-                    messageType: 'error',
-                    center: false,
-                    messageDuration: 2000,
-                })
-
-                if (dataKey) {
-                    return Promise.resolve(
-                        getValueByKeyInOpject(dataKey, axiosResponse.data)
-                    )
-                } else {
-                    return Promise.resolve(axiosResponse.data)
-                }
             }
         }
-    } else {
-        return Promise.resolve(axiosResponse)
     }
+    return Promise.resolve(axiosResponse)
 }
 
 /**

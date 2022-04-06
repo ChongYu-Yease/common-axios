@@ -1,7 +1,7 @@
 {
     "name": "common-axios",
-    "version": "0.2.9",
-    "description": "封装的axios",
+    "version": "0.3.4",
+    "description": "基于axios重新封装的axios，支持原生遮罩层、原生message组件，代码比较轻量级 ",
     "main": "./dist/index.umd.js",
     "module": "./dist/index.umd.js",
     "typings": "./types/index.d.ts",
@@ -12,7 +12,9 @@
     },
     "keywords": [
         "common-axios",
-        "axios"
+        "axios",
+        "message",
+        "masklayer"
     ],
     "repository": {
         "type": "git",
