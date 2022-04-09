@@ -15,19 +15,6 @@ export type AxiosMethods =
 
 export type LoadingList = Map<string, Function>
 
-/**
- * 成功配置
- * successKey 和 successKeyValue配对使用的 要么全部都有 要么一个没有
- */
-type SuccessKeyAndSuccessKeyValue =
-    | {
-          successKey?: never /* 代表成功的参数的key */
-          successKeyValue?: never /* 代表成功的参数的key所对应的值 */
-      }
-    | {
-          successKey: string /* 代表成功的参数的key */
-          successKeyValue: string /* 代表成功的参数的key所对应的值 */
-      }
 
 /**
  * 失败配置
@@ -35,20 +22,20 @@ type SuccessKeyAndSuccessKeyValue =
  */
 type ErrorKeyAndErrorKeyValue =
     | {
-          errorKey?: never /* 代表失败的参数的key */
-          errorKeyValue?: never /* 代表失败的参数的key所对应的值 */
-      }
+        errorKey?: never /* 代表失败的参数的key */
+        errorKeyValue?: never /* 代表失败的参数的key所对应的值 */
+    }
     | {
-          errorKey: string /* 代表失败的参数的key */
-          errorKeyValue: string /* 代表失败的参数的key所对应的值 */
-      }
+        errorKey: string /* 代表失败的参数的key */
+        errorKeyValue: string /* 代表失败的参数的key所对应的值 */
+    }
 
 // axios content-type
 type AxiosRequestContentType = {
     contentType?:
-        | 'application/json'
-        | 'application/x-www-form-urlencoded'
-        | ' multipart/form-data'
+    | 'application/json'
+    | 'application/x-www-form-urlencoded'
+    | ' multipart/form-data'
 }
 
 /**
@@ -57,13 +44,10 @@ type AxiosRequestContentType = {
  * 添加 loadingText 遮罩层展示的内容
  * 添加 axiosDebounce 接口是否防抖
  * 添加 contentType 接口的请求方式
- * 添加 successKey 代表接口请求成功的字段
- * 添加 successKeyValue 代表接口请求成功的字段的值
  * 添加 axiosResponseCallback 代表响应拦截器成功的回调
  * 添加 axiosRequestCallback 代表请求拦截器成功的回调
  */
 export type AxiosRequestConfigs = AxiosRequestConfig &
-    SuccessKeyAndSuccessKeyValue &
     ErrorKeyAndErrorKeyValue &
     AxiosRequestContentType & {
         needLoading?: boolean /* 是否创建遮罩层，默认为否 */

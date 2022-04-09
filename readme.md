@@ -44,12 +44,6 @@ loadingText?: string
 /* 接口防抖 应用场景：同一个接口，同一个请求方式，同样的请求参数发起了多次数据请求，当第一次发起请求的接口没有返回数据之前，后续的接口都会被取消 默认为false */
 axiosDebounce?: boolean
 
-/* 代表成功的参数的key 默认为undefined */
-successKey?: string
-
-/* 代表成功的参数的key所对应的值 默认为undefined */
-successKeyValue?: string
-
 /* 代表返回数据的key，支持a.b.c */
 /**
  * 例如: 后端返回的数据是
@@ -69,7 +63,7 @@ dataKey?:string
 errorKey?:string
 
 /* 代表失败的参数的key所对应的值 默认为undefined */
-errorKey?:string
+errorKeyValue?:string
 
 /* 代表返回消息的key 配置此字段之后 可开启原生message组件提示 */
 message?:string

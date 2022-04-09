@@ -1,6 +1,6 @@
 {
     "name": "common-axios",
-    "version": "0.3.4",
+    "version": "0.3.8",
     "description": "基于axios重新封装的axios，支持原生遮罩层、原生message组件，代码比较轻量级 ",
     "main": "./dist/index.umd.js",
     "module": "./dist/index.umd.js",

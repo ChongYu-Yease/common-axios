@@ -109,10 +109,9 @@ export const axiosRequestErrorCallback: AxiosErrorCallback = (error) => {
 export const axiosResponseCallback: AxiosResponseCallback = (axiosResponse) => {
     // 关闭遮罩层
     masklayerInstance.removeLoading(axiosResponse.config as AxiosRequestConfigs)
+    console.log("axiosResponseCallback");
 
     const {
-        successKey,
-        successKeyValue,
         errorKey,
         errorKeyValue,
         dataKey,
@@ -125,25 +124,7 @@ export const axiosResponseCallback: AxiosResponseCallback = (axiosResponse) => {
         axiosResponseCallback(axiosResponse)
     }
 
-    // 处理成功情况
-    if (successKey && successKeyValue) {
-        // 获取代表成功的值
-        const _successKeyValue = getValueByKeyInOpject(
-            successKey,
-            axiosResponse.data
-        )
-        // 处理成功的情况
-        if (_successKeyValue == successKeyValue) {
-            if (dataKey) {
-                return Promise.resolve(
-                    getValueByKeyInOpject(dataKey, axiosResponse.data)
-                )
-            } else {
-                return Promise.resolve(axiosResponse.data)
-            }
-        }
-    }
-    // 处理错误情况
+    // 处理错误提示
     if (errorKey && errorKeyValue) {
         // 获取代表失败的值
         const _errorKeyValue = getValueByKeyInOpject(
@@ -168,7 +149,15 @@ export const axiosResponseCallback: AxiosResponseCallback = (axiosResponse) => {
             }
         }
     }
-    return Promise.resolve(axiosResponse)
+    if (dataKey) {
+        return Promise.resolve(
+            getValueByKeyInOpject(dataKey, axiosResponse.data)
+        )
+    } else {
+        return Promise.resolve(axiosResponse.data)
+    }
+
+
 }
 
 /**
