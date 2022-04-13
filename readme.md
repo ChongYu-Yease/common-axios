@@ -5,7 +5,7 @@
 ```sh
 npm install common-axios -S
 
-yarn add simple-axios
+yarn add common-axios
 ```
 
 ### 设计目的
