@@ -5,6 +5,8 @@
 ```sh
 npm install common-axios -S
 
+OR
+
 yarn add common-axios
 ```
 
