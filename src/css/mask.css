@@ -1,5 +1,5 @@
 /* 遮罩层的样式 */
-.common-axios_mask-layer {
+.common-axios_mask {
     position: fixed;
     top: 0;
     left: 0;
@@ -93,6 +93,7 @@
 .common-axios_text {
     color: #409eff;
 }
+
 /* 遮罩层loading节点样式 */
 .common-axios_dotting {
     color: #409eff;

@@ -118,11 +118,13 @@ export class Message {
         }, 100)
 
         let i = null
+
         if (options.showClose === true) {
             i = document.createElement('i')
             i.classList.add('close-button')
             messageDom.appendChild(i)
         }
+
         const messageDuration = isNaN(Number(options.messageDuration))
             ? this.messageDuration
             : Number(options.messageDuration)
@@ -135,6 +137,7 @@ export class Message {
                 this.removeMessage(messageDom, targetId)
             }, messageDuration)
         }
+
         if (options.showClose === true) {
             // @ts-ignore
             i.addEventListener('click', () => {

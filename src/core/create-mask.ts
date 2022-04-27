@@ -1,63 +1,63 @@
 import { AxiosRequestConfigs } from '../../types/index.types'
 // 引入遮罩层的样式
-import '../css/mask-layer.css'
-import qs from 'qs'
+import '../css/mask.css'
+
 // 创建遮罩层
-export class MaskLayer {
+export class Mask {
     // 遮罩层队列
-    private masklayerQueue: Array<AxiosRequestConfigs>
+    private maskQueue: Array<AxiosRequestConfigs>
 
     constructor() {
         // 初始化遮罩层队列
-        this.masklayerQueue = []
+        this.maskQueue = []
     }
 
     // 更新遮罩层的文本
-    private uploadMasklayerContent(config: AxiosRequestConfigs): void {
-        const masklayerTextDom: HTMLSpanElement =
+    private uploadMaskContent(config: AxiosRequestConfigs): void {
+        const maskTextDom: HTMLSpanElement =
             document.querySelector('.common-axios_text')!
-        masklayerTextDom.textContent = config.loadingText
+        maskTextDom.textContent = config.loadingText
             ? config.loadingText
             : '拼命加载中'
     }
 
     // 创建或者更新遮罩层
-    private uploadMasklayer(): void {
-        const config = this.masklayerQueue[this.masklayerQueue.length - 1]
-        const hasMasklayerDom = document.querySelector(
-            '.common-axios_mask-layer'
+    private uploadMask(): void {
+        const config = this.maskQueue[this.maskQueue.length - 1]
+        const hasMaskDom = document.querySelector(
+            '.common-axios_mask'
         )
-        if (hasMasklayerDom) {
-            this.uploadMasklayerContent(config)
+        if (hasMaskDom) {
+            this.uploadMaskContent(config)
         } else {
             this.createLoadingDom(config)
         }
     }
     // 向遮罩层队列中添加记录
-    private addMasklayer(config: AxiosRequestConfigs) {
-        this.masklayerQueue.push(config)
-        this.uploadMasklayer()
+    private addMask(config: AxiosRequestConfigs) {
+        this.maskQueue.push(config)
+        this.uploadMask()
     }
 
     // 向遮罩层队列中删除记录
-    private removeMasklayer(config: AxiosRequestConfigs): void {
-        const index = this.masklayerQueue.findIndex(
+    private removeMask(config: AxiosRequestConfigs): void {
+        const index = this.maskQueue.findIndex(
             (itemConfig) =>
                 JSON.stringify(itemConfig) === JSON.stringify(config)
         )
-        this.masklayerQueue.splice(index, 1)
-        if (this.masklayerQueue.length) {
-            this.uploadMasklayer()
+        this.maskQueue.splice(index, 1)
+        if (this.maskQueue.length) {
+            this.uploadMask()
         } else {
             this.removeLoadingDom()
         }
     }
 
     // 创建深色遮罩层
-    private createMaskLayerDom = (): HTMLDivElement => {
-        const maskLayerDom = document.createElement('div')
-        maskLayerDom.classList.add('common-axios_mask-layer')
-        return maskLayerDom
+    private createMaskDom = (): HTMLDivElement => {
+        const maskDom = document.createElement('div')
+        maskDom.classList.add('common-axios_mask')
+        return maskDom
     }
 
     // 创建文本节点
@@ -102,11 +102,11 @@ export class MaskLayer {
         loadingBox.appendChild(dottingDom)
 
         // 创建遮罩层节点
-        const maskLayerDom = this.createMaskLayerDom()
+        const maskDom = this.createMaskDom()
 
-        maskLayerDom.appendChild(loadingBox)
+        maskDom.appendChild(loadingBox)
 
-        document.body.appendChild(maskLayerDom)
+        document.body.appendChild(maskDom)
     }
 
     // 移除遮罩层
@@ -114,7 +114,7 @@ export class MaskLayer {
         // 延迟300毫秒关闭
         setTimeout(() => {
             const loadingDom = document.querySelector(
-                '.common-axios_mask-layer'
+                '.common-axios_mask'
             )
             if (loadingDom) {
                 document.body.removeChild(loadingDom)
@@ -125,13 +125,13 @@ export class MaskLayer {
     // 创建遮罩层
     public createLoading = (config: AxiosRequestConfigs): void => {
         // 添加遮罩层任务队列
-        this.addMasklayer(config)
+        this.addMask(config)
     }
 
     // 关闭遮罩层
     public removeLoading = (config?: AxiosRequestConfigs) => {
         if (config) {
-            this.removeMasklayer(config)
+            this.removeMask(config)
         } else {
             this.removeLoadingDom()
         }

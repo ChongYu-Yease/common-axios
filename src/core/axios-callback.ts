@@ -2,7 +2,6 @@ import {
     AxiosRequestCallback,
     AxiosErrorCallback,
     AxiosResponseCallback,
-    GetValueByKeyInOpject,
 } from '../../types/axios-callback.type'
 
 import { AxiosRequestConfigs } from '../../types/index.types'
@@ -15,42 +14,17 @@ const axiosDebounceInstance = new AxiosDebounce()
 
 import axios from 'axios'
 
-import { MaskLayer } from './create-masklayer'
+import { Mask } from './create-mask'
 
 // 遮罩层实例
-const masklayerInstance = new MaskLayer()
+const maskInstance = new Mask()
 
 import { Message } from './create-message'
 
 // 创建message实例
 const messageInstance = new Message()
 
-/**
- * 通过key查找object里面的值
- * @param key object的属性
- * @param object 数据
- * @returns object[key]
- */
-const getValueByKeyInOpject: GetValueByKeyInOpject = (key, object) => {
-    if (!key) return object
-    if (key.includes('.')) {
-        const keys: Array<string> = key.split('.')
-        let index = 0
-        let temValue: any
-        while (index < keys.length) {
-            const key = keys[index]
-            if (!temValue) {
-                temValue = object[key]
-            } else {
-                temValue = temValue[key]
-            }
-            index++
-        }
-        return temValue
-    } else {
-        return object[key]
-    }
-}
+import { getValueByKeyInOpject } from "../utils/index"
 
 /**
  * 请求前成功回调
@@ -78,7 +52,7 @@ export const axiosRequestCallback: AxiosRequestCallback = (config) => {
 
     // 创建遮罩层
     if (needLoading || loadingText) {
-        masklayerInstance.createLoading(config)
+        maskInstance.createLoading(config)
     }
 
     // 修改content-type
@@ -108,9 +82,8 @@ export const axiosRequestErrorCallback: AxiosErrorCallback = (error) => {
  */
 export const axiosResponseCallback: AxiosResponseCallback = (axiosResponse) => {
     // 关闭遮罩层
-    masklayerInstance.removeLoading(axiosResponse.config as AxiosRequestConfigs)
-    console.log("axiosResponseCallback");
-
+    maskInstance.removeLoading(axiosResponse.config as AxiosRequestConfigs)
+    // 获取配置
     const {
         errorKey,
         errorKeyValue,
@@ -149,6 +122,8 @@ export const axiosResponseCallback: AxiosResponseCallback = (axiosResponse) => {
             }
         }
     }
+
+    // 返回数据
     if (dataKey) {
         return Promise.resolve(
             getValueByKeyInOpject(dataKey, axiosResponse.data)
