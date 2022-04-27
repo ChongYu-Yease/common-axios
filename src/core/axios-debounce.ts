@@ -1,8 +1,7 @@
 import axios, { Canceler } from 'axios'
 import * as qs from '../utils/index'
 import { AxiosRequestConfigs } from '../../types/index.types'
-// 修改 history.push 和 history.replace 方法
-import "./watch-routing"
+
 
 export class AxiosDebounce {
     // axios 队列
@@ -12,25 +11,6 @@ export class AxiosDebounce {
         // 初始化队列
         this.axiosQueue = new Map()
 
-        // 监听 hash 模式的路由
-        window.addEventListener('hashchange', (event) => {
-            console.log("hashchange", event);
-        })
-
-        // 监听 history 模式的 back、forward、go 路由跳转方法
-        window.addEventListener('popstate', function (event) {
-            console.log('监听back/forward/go', event);
-        })
-
-        // 监听 history 模式的 pushState 路由跳转方法
-        window.addEventListener('pushState', function (e) {
-            console.log('change pushState', e);
-        })
-
-        // 监听 history模式的 replaceState 路由跳转方法
-        window.addEventListener('replaceState', function (e) {
-            console.log('change replaceState', e);
-        })
     }
 
     // 添加axios 队列

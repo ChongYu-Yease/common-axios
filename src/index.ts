@@ -8,13 +8,19 @@ import {
     createParamsInParamsOrDataHelper,
 } from './core/create-helper'
 
-// axios 所有的回调函数
+/* axios request 所有的回调函数 */
 import {
     axiosRequestCallback,
     axiosRequestErrorCallback,
+} from "./core/axios-request-callback"
+
+/* axios response 所有的回调函数 */
+import {
     axiosResponseCallback,
     axiosResponseErrorCallback,
-} from './core/axios-callback'
+} from './core/axios-response-callback'
+
+
 
 import {
     CreateAxios,

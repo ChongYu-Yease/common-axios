@@ -7,7 +7,7 @@ export class Message {
     private messageQueue: Array<{ messageDom: HTMLDivElement; id: number }>
 
     // 消息内容
-    private message: string = ''
+    private message: string
 
     // 消息类型
     private messageType: '' | 'success' | 'warning' | 'error' | 'info'
@@ -21,6 +21,7 @@ export class Message {
     // id
     private id: number
 
+    timeId: number
     // 初始化属性
     constructor() {
         // 消息队列
@@ -30,6 +31,7 @@ export class Message {
         this.messageDuration = 2000
         this.body = document.querySelector('body')!
         this.id = 0
+        this.timeId = 0
     }
 
     // 通过type 设置dom节点的class
@@ -91,7 +93,20 @@ export class Message {
         if (options.center === true) {
             messageDom.classList.add('common-axios_message_center')
         }
+        // 给节点添加鼠标划入的事件
+        messageDom.addEventListener("mouseenter", () => {
+            console.log("mouseenter", "this.timeId", this.timeId);
+            // 鼠标划入终止message节点的移除
+            // window.clearTimeout(this.timeId)
 
+        })
+        // 给节点添加鼠标划出的事件
+        messageDom.addEventListener("mouseleave", () => {
+            // 鼠标划出继续移除message节点
+            // this.timeId = window.setTimeout(() => {
+            //     this.removeMessage(messageDom, this.id)
+            // })
+        })
         const targetId = this.id
 
         // 向消息队列当中添加消息数据
@@ -99,6 +114,7 @@ export class Message {
             id: targetId,
             messageDom,
         })
+
 
         // 给dom节点添加class
         this.setMessageType(messageDom, options.messageType)
@@ -113,7 +129,7 @@ export class Message {
         this.body.appendChild(messageDom)
 
         //增加新增动画
-        setTimeout(() => {
+        window.setTimeout(() => {
             messageDom.classList.remove('common-axios_message_leave')
         }, 100)
 
@@ -130,10 +146,9 @@ export class Message {
             : Number(options.messageDuration)
 
         // 如果duration为0则不需要setTimeout
-        let timeId: NodeJS.Timeout
 
         if (messageDuration !== 0) {
-            timeId = setTimeout(() => {
+            this.timeId = window.setTimeout(() => {
                 this.removeMessage(messageDom, targetId)
             }, messageDuration)
         }
@@ -143,7 +158,7 @@ export class Message {
             i.addEventListener('click', () => {
                 this.removeMessage(messageDom, targetId)
                 if (targetId !== -1) {
-                    window.clearTimeout(timeId)
+                    window.clearTimeout(this.timeId)
                 }
             })
         }
@@ -170,5 +185,19 @@ export class Message {
             // 暂不支持换行功能，换行后获取上一个元素的height和top来更新下一个元素的top
             messageDom.style.top = `${64 * i + 20}px`
         }
+    }
+    // 终止移除message节点
+    stopRemoveMessage(targetId: number) {
+        // const startIndex = this.messageQueue.findIndex(
+        //     (message) => message.id === targetId
+        // )
+        // this.messageQueue.splice(startIndex, 1)
+        // this.updateMessageDom(startIndex)
+        // this.setCurrentMessageDom()
+
+    }
+    // 继续移除message节点
+    continueRemoveMessage(targetId: number) {
+
     }
 }

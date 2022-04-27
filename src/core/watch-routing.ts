@@ -1,7 +1,6 @@
 // 监听pushState/replaceState
 const historyWrap = function (type: "pushState" | "replaceState") {
 
-    console.log("重写pushState，replaceState方法");
 
     // 记录原来的方法
     const originCallback = history[type];

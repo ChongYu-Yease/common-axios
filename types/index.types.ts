@@ -17,7 +17,7 @@ export type LoadingList = Map<string, Function>
 
 
 /**
- * 失败配置
+ * 错误 消息 配置
  * errorKey 和 errorKeyValue 要么全部都有 要么一个没有
  */
 type ErrorKeyAndErrorKeyValue =
@@ -27,8 +27,20 @@ type ErrorKeyAndErrorKeyValue =
     }
     | {
         errorKey: string /* 代表失败的参数的key */
-        errorKeyValue: string /* 代表失败的参数的key所对应的值 */
+        errorKeyValue: string | number /* 代表失败的参数的key所对应的值 */
     }
+
+/**
+ * 成功 消息 配置
+ * successKey 和 successKeyValue 要么全部都有 要么一个没有
+ */
+type SuccessKeyAndSuccessKeyValue = {
+    successKey?: never /* 代表成功的参数的key */
+    successKeyValue?: never /* 代表成功的参数的key所对应的值 */
+} | {
+    successKey: string  /* 代表成功的参数的key */
+    successKeyValue: string | number /* 代表成功的参数的key所对应的值 */
+}
 
 // axios content-type
 type AxiosRequestContentType = {
@@ -47,11 +59,11 @@ type AxiosRequestContentType = {
  * 添加 axiosResponseCallback 代表响应拦截器成功的回调
  * 添加 axiosRequestCallback 代表请求拦截器成功的回调
  */
-export type AxiosRequestConfigs = AxiosRequestConfig &
+export type AxiosRequestConfigs = AxiosRequestConfig & SuccessKeyAndSuccessKeyValue &
     ErrorKeyAndErrorKeyValue &
     AxiosRequestContentType & {
-        needLoading?: boolean /* 是否创建遮罩层，默认为否 */
-        loadingText?: string /* 遮罩层展示的内容 默认为拼命加载中*/
+        needLoading?: boolean /* 是否创建遮罩层，默认为false */
+        loadingText?: string /* 遮罩层展示的内容 默认为 "拼命加载中" */
         axiosDebounce?: boolean /* 接口防抖 应用场景：同一个接口，同一个请求方式，同样的请求参数发起了多次数据请求，当第一次发起请求的接口没有返回数据之前，后续的接口都会被取消 */
         messageKey?: string /* 消息字段 */
         dataKey?: string /* 数据的字段 */

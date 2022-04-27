@@ -1,16 +1,12 @@
 import {
-    AxiosRequestCallback,
     AxiosErrorCallback,
     AxiosResponseCallback,
 } from '../../types/axios-callback.type'
 
+// 修改 history.push 和 history.replace 方法
+import "./watch-routing"
+
 import { AxiosRequestConfigs } from '../../types/index.types'
-
-// axios  防抖
-import { AxiosDebounce } from './axios-debounce'
-
-// 创建防抖实例
-const axiosDebounceInstance = new AxiosDebounce()
 
 import axios from 'axios'
 
@@ -26,54 +22,6 @@ const messageInstance = new Message()
 
 import { getValueByKeyInOpject } from "../utils/index"
 
-/**
- * 请求前成功回调
- * @param config
- * @returns config
- */
-export const axiosRequestCallback: AxiosRequestCallback = (config) => {
-    const {
-        needLoading,
-        loadingText,
-        axiosDebounce,
-        contentType,
-        axiosRequestCallback,
-    } = config
-
-    if (axiosRequestCallback && typeof axiosRequestCallback === 'function') {
-        axiosRequestCallback(config)
-    }
-
-    // 先判断是否需要防抖 如果需要 需要防抖的话 如果接口被取消 就不再需要遮罩层
-    if (axiosDebounce) {
-        axiosDebounceInstance.handleRemoveAxiosQueue(config) // 在请求开始前，对之前的请求做检查取消操作
-        axiosDebounceInstance.handleAddAxiosQueue(config) // 将当前请求添加到 pending 中
-    }
-
-    // 创建遮罩层
-    if (needLoading || loadingText) {
-        maskInstance.createLoading(config)
-    }
-
-    // 修改content-type
-    if (contentType) {
-        config.headers = {
-            ...config.headers,
-            'Content-Type': contentType,
-        }
-    }
-
-    return config
-}
-
-/**
- * 请求前错误回调
- * @param error 错误信息
- * @returns error
- */
-export const axiosRequestErrorCallback: AxiosErrorCallback = (error) => {
-    return Promise.reject(error)
-}
 
 /**
  *
@@ -83,13 +31,10 @@ export const axiosRequestErrorCallback: AxiosErrorCallback = (error) => {
 export const axiosResponseCallback: AxiosResponseCallback = (axiosResponse) => {
     // 关闭遮罩层
     maskInstance.removeLoading(axiosResponse.config as AxiosRequestConfigs)
+
     // 获取配置
     const {
-        errorKey,
-        errorKeyValue,
-        dataKey,
-        messageKey,
-        axiosResponseCallback,
+        successKey, successKeyValue, errorKey, errorKeyValue, dataKey, messageKey, axiosResponseCallback,
     } = axiosResponse.config as AxiosRequestConfigs
 
     // 执行自定义事件
@@ -97,7 +42,7 @@ export const axiosResponseCallback: AxiosResponseCallback = (axiosResponse) => {
         axiosResponseCallback(axiosResponse)
     }
 
-    // 处理错误提示
+    // 处理 错误 提示
     if (errorKey && errorKeyValue) {
         // 获取代表失败的值
         const _errorKeyValue = getValueByKeyInOpject(
@@ -116,6 +61,35 @@ export const axiosResponseCallback: AxiosResponseCallback = (axiosResponse) => {
                     message: `${messageValue}`,
                     messageType: 'error',
                     center: false,
+                    // messageDuration: 2000,
+                    messageDuration: 2000,
+                    showClose: false,
+                })
+            }
+        }
+    }
+
+    // 处理 成功 提示
+    if (successKey && successKeyValue) {
+
+        // 获取代表失败的值
+        const _successKeyValue = getValueByKeyInOpject(
+            successKey,
+            axiosResponse.data
+        )
+
+        if (_successKeyValue == successKeyValue) {
+            if (messageKey) {
+                // 获取消息内容
+                const messageValue = getValueByKeyInOpject(
+                    messageKey,
+                    axiosResponse.data
+                )
+                messageInstance.createMessage({
+                    message: `${messageValue}`,
+                    messageType: 'success',
+                    center: false,
+                    // messageDuration: 2000,
                     messageDuration: 2000,
                     showClose: false,
                 })
@@ -145,12 +119,14 @@ export const axiosResponseErrorCallback: AxiosErrorCallback = (error) => {
         messageInstance.createMessage({
             message: `检测到${error.message}多次重复请求，接口已取消`,
             messageType: 'error',
+            messageDuration: 2000,
             center: true,
         })
     } else {
         messageInstance.createMessage({
             message: error.message,
             messageType: 'error',
+            messageDuration: 2000,
             center: true,
         })
     }
