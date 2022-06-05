@@ -21,7 +21,9 @@ export class Message {
     // id
     private id: number
 
+    // 定时器的id
     timeId: number
+
     // 初始化属性
     constructor() {
         // 消息队列
@@ -66,22 +68,23 @@ export class Message {
         }, 400)
     }
 
-    createMessage(options: {
-        message: string
+    createMessage(messageOptions: {
+        message?: string
         messageType?: '' | 'info' | 'warning' | 'error' | 'success'
-        center?: boolean
+        messagePosition?: 'left' | "center" | 'right' | undefined,
         messageDuration?: number
         showClose?: boolean
     }) {
-        // 判断 options 配置
-        if (typeof options !== 'object') {
-            options = {
-                message: '',
-                messageType: 'info',
-                center: false,
-                messageDuration: 2000,
-                showClose: false,
-            }
+        // 判断 messageOptions 配置
+        if (typeof messageOptions !== 'object' || messageOptions === null || messageOptions === undefined || !messageOptions.message) {
+            // messageOptions = {
+            //     message: '',
+            //     messageType: 'info',
+            //     messagePosition: 'left',
+            //     messageDuration: 2000,
+            //     showClose: false,
+            // }
+            return
         }
 
         const messageDom = document.createElement('div')
@@ -90,9 +93,8 @@ export class Message {
 
         messageDom.classList.add('common-axios_message_leave')
 
-        if (options.center === true) {
-            messageDom.classList.add('common-axios_message_center')
-        }
+        messageDom.classList.add(`common-axios_message_${messageOptions.messagePosition || "left"}`)
+
         // 给节点添加鼠标划入的事件
         messageDom.addEventListener("mouseenter", () => {
             console.log("mouseenter", "this.timeId", this.timeId);
@@ -107,6 +109,7 @@ export class Message {
             //     this.removeMessage(messageDom, this.id)
             // })
         })
+
         const targetId = this.id
 
         // 向消息队列当中添加消息数据
@@ -117,10 +120,10 @@ export class Message {
 
 
         // 给dom节点添加class
-        this.setMessageType(messageDom, options.messageType)
+        this.setMessageType(messageDom, messageOptions.messageType)
 
         // 创建文本节点
-        this.createTextDom(messageDom, options.message)
+        this.createTextDom(messageDom, messageOptions.message)
 
         // 设置当前message节点的 zIndex、top
         this.setCurrentMessageDom()
@@ -135,15 +138,15 @@ export class Message {
 
         let i = null
 
-        if (options.showClose === true) {
+        if (messageOptions.showClose === true) {
             i = document.createElement('i')
             i.classList.add('close-button')
             messageDom.appendChild(i)
         }
 
-        const messageDuration = isNaN(Number(options.messageDuration))
+        const messageDuration = isNaN(Number(messageOptions.messageDuration))
             ? this.messageDuration
-            : Number(options.messageDuration)
+            : Number(messageOptions.messageDuration)
 
         // 如果duration为0则不需要setTimeout
 
@@ -153,7 +156,7 @@ export class Message {
             }, messageDuration)
         }
 
-        if (options.showClose === true) {
+        if (messageOptions.showClose === true) {
             // @ts-ignore
             i.addEventListener('click', () => {
                 this.removeMessage(messageDom, targetId)

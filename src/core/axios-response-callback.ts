@@ -29,12 +29,25 @@ import { getValueByKeyInOpject } from "../utils/index"
  * @returns
  */
 export const axiosResponseCallback: AxiosResponseCallback = (axiosResponse) => {
+
     // 关闭遮罩层
     maskInstance.removeLoading(axiosResponse.config as AxiosRequestConfigs)
 
     // 获取配置
     const {
-        successKey, successKeyValue, errorKey, errorKeyValue, dataKey, messageKey, axiosResponseCallback,
+        successKey,
+        successKeyValue,
+        errorKey,
+        errorKeyValue,
+        dataKey,
+        errorMessageKey,
+        errorMessageDuration,
+        successMessageKey,
+        successMessageDuration,
+        messagePosition,
+        successMessagePosition,
+        errorMessagePosition,
+        axiosResponseCallback,
     } = axiosResponse.config as AxiosRequestConfigs
 
     // 执行自定义事件
@@ -51,20 +64,20 @@ export const axiosResponseCallback: AxiosResponseCallback = (axiosResponse) => {
         )
 
         if (_errorKeyValue == errorKeyValue) {
-            if (messageKey) {
+            if (errorMessageKey) {
                 // 获取消息内容
                 const messageValue = getValueByKeyInOpject(
-                    messageKey,
+                    errorMessageKey,
                     axiosResponse.data
                 )
-                messageInstance.createMessage({
+                messageValue && messageInstance.createMessage({
                     message: `${messageValue}`,
                     messageType: 'error',
-                    center: false,
-                    // messageDuration: 2000,
-                    messageDuration: 2000,
+                    messagePosition: errorMessagePosition || messagePosition,
+                    messageDuration: errorMessageDuration || 2000,
                     showClose: false,
                 })
+
             }
         }
     }
@@ -72,25 +85,26 @@ export const axiosResponseCallback: AxiosResponseCallback = (axiosResponse) => {
     // 处理 成功 提示
     if (successKey && successKeyValue) {
 
-        // 获取代表失败的值
+        // 获取代表成功的值
         const _successKeyValue = getValueByKeyInOpject(
             successKey,
             axiosResponse.data
         )
 
         if (_successKeyValue == successKeyValue) {
-            if (messageKey) {
+            if (successMessageKey) {
                 // 获取消息内容
                 const messageValue = getValueByKeyInOpject(
-                    messageKey,
+                    successMessageKey,
                     axiosResponse.data
                 )
-                messageInstance.createMessage({
+                console.log("messageValue", messageValue);
+
+                messageValue && messageInstance.createMessage({
                     message: `${messageValue}`,
                     messageType: 'success',
-                    center: false,
-                    // messageDuration: 2000,
-                    messageDuration: 2000,
+                    messagePosition: successMessagePosition || messagePosition || "left",
+                    messageDuration: successMessageDuration || 2000,
                     showClose: false,
                 })
             }
@@ -105,8 +119,6 @@ export const axiosResponseCallback: AxiosResponseCallback = (axiosResponse) => {
     } else {
         return Promise.resolve(axiosResponse.data)
     }
-
-
 }
 
 /**
@@ -120,14 +132,14 @@ export const axiosResponseErrorCallback: AxiosErrorCallback = (error) => {
             message: `检测到${error.message}多次重复请求，接口已取消`,
             messageType: 'error',
             messageDuration: 2000,
-            center: true,
+            messagePosition: "center",
         })
     } else {
         messageInstance.createMessage({
             message: error.message,
             messageType: 'error',
             messageDuration: 2000,
-            center: true,
+            messagePosition: "center",
         })
     }
     return Promise.reject(error)

@@ -17,12 +17,20 @@
     overflow: hidden;
 }
 
-.common-axios_message:hover{
+.common-axios_message:hover {
     cursor: pointer;
+}
+
+.common-axios_message_left {
+    justify-content: flex-start;
 }
 
 .common-axios_message_center {
     justify-content: center;
+}
+
+.common-axios_message_right {
+    justify-content: flex-end;
 }
 
 .common-axios_message .common-axios_message_content {

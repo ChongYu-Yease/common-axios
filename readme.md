@@ -61,14 +61,12 @@ axiosDebounce?: boolean
 */
 dataKey?:string
 
-/* 代表失败的参数的key 默认为undefined */
+/* 代表失败的参数的key 默认为 undefined */
 errorKey?:string
 
-/* 代表失败的参数的key所对应的值 默认为undefined */
+/* 代表失败的参数的key所对应的值 默认为 undefined */
 errorKeyValue?:string
 
-/* 代表返回消息的key 配置此字段之后 可开启原生message组件提示 */
-message?:string
 
 /* 请求方式的contentType 默认为'application/json' */
 contentType?:
@@ -77,13 +75,26 @@ contentType?:
     | ' multipart/form-data'
 
 
- /* 请求前拦截回调 用于全局拦截 参数 axiosRequestConfig */
+/* 请求前拦截回调 用于全局拦截 参数 axiosRequestConfig */
     axiosRequestCallback?:Function
 
 /* 请求后拦截回调 用于全局拦截 参数 axiosResponse */
     axiosResponseCallback?:Function
 
+/* 错误消息字段 */
+ errorMessageKey?: string 
 
+/* 错误消息持续时间 默认2000毫秒 */
+errorMessageDuration?: number 
+
+/* 成功消息字段 */
+successMessageKey?: string 
+
+/* 成功消息持续时间 默认2000毫秒*/
+successMessageDuration?: number 
+
+/* 消息提示的位置 默认left*/
+messagePosition?: 'left' | 'center' | 'right' 
 
 ```
 
@@ -121,4 +132,4 @@ const result = await axiosHelpers.delete(<url>,<{params:params,data:data}>,<conf
 
 ### 免责声明
 
-    本axios包是自己用业余时间封装打包的，如若您使用了该包，出现问题皆有自己承担
+    本axios包是自己用业余时间封装打包的，如若您使用了该包，出现问题皆由自己承担

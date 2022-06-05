@@ -59,20 +59,39 @@ type AxiosRequestContentType = {
  * 添加 axiosResponseCallback 代表响应拦截器成功的回调
  * 添加 axiosRequestCallback 代表请求拦截器成功的回调
  */
-export type AxiosRequestConfigs = AxiosRequestConfig & SuccessKeyAndSuccessKeyValue &
+export type AxiosRequestConfigs =
+    AxiosRequestConfig &
+    SuccessKeyAndSuccessKeyValue &
     ErrorKeyAndErrorKeyValue &
-    AxiosRequestContentType & {
+    AxiosRequestContentType &
+    {
         needLoading?: boolean /* 是否创建遮罩层，默认为false */
+
         loadingText?: string /* 遮罩层展示的内容 默认为 "拼命加载中" */
+
         axiosDebounce?: boolean /* 接口防抖 应用场景：同一个接口，同一个请求方式，同样的请求参数发起了多次数据请求，当第一次发起请求的接口没有返回数据之前，后续的接口都会被取消 */
-        messageKey?: string /* 消息字段 */
+
+        messageDuration?: number /* 消息持续时间 */
+
+        messagePosition?: 'left' | 'center' | 'right' /* 消息提示位置 */
+
+        errorMessageKey?: string /* 错误消息字段 */
+
+        errorMessageDuration?: number /* 错误消息持续时间 */
+
+        errorMessagePosition?: 'left' | 'center' | 'right' /* 错误消息提示的位置 */
+
+        successMessageKey?: string /* 成功消息字段 */
+
+        successMessageDuration?: number /* 成功消息持续时间 */
+
+        successMessagePosition?: 'left' | 'center' | 'right' /* 成功消息提示的位置 */
+
         dataKey?: string /* 数据的字段 */
-        // 拦截成功回调 用于全局拦截
-        axiosResponseCallback?: (axiosResponse: AxiosResponse) => void
-        // 请求成功回调 用于全局拦截
-        axiosRequestCallback?: (
-            axiosRequestConfigs: AxiosRequestConfigs
-        ) => void
+
+        axiosResponseCallback?: (axiosResponse: AxiosResponse) => void /* 拦截成功回调 用于全局拦截 */
+
+        axiosRequestCallback?: (axiosRequestConfigs: AxiosRequestConfigs) => void  /* 请求成功回调 用于全局拦截 */
     }
 
 /**

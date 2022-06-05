@@ -1,3 +1,7 @@
+
+
+
+
 // 监听pushState/replaceState
 const historyWrap = function (type: "pushState" | "replaceState") {
 

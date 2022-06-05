@@ -4,6 +4,7 @@ import '../css/mask.css'
 
 // 创建遮罩层
 export class Mask {
+
     // 遮罩层队列
     private maskQueue: Array<AxiosRequestConfigs>
 
@@ -33,6 +34,7 @@ export class Mask {
             this.createLoadingDom(config)
         }
     }
+
     // 向遮罩层队列中添加记录
     private addMask(config: AxiosRequestConfigs) {
         this.maskQueue.push(config)
