@@ -76,16 +76,7 @@ export class Message {
         showClose?: boolean
     }) {
         // 判断 messageOptions 配置
-        if (typeof messageOptions !== 'object' || messageOptions === null || messageOptions === undefined || !messageOptions.message) {
-            // messageOptions = {
-            //     message: '',
-            //     messageType: 'info',
-            //     messagePosition: 'left',
-            //     messageDuration: 2000,
-            //     showClose: false,
-            // }
-            return
-        }
+        if (typeof messageOptions !== 'object' || messageOptions === null || messageOptions === undefined || !messageOptions.message) return
 
         const messageDom = document.createElement('div')
 

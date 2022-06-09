@@ -1,10 +1,10 @@
 {
     "name": "common-axios",
-    "version": "0.4.1",
+    "version": "0.4.2",
     "description": "基于axios重新封装的axios，支持原生遮罩层、原生message组件，代码比较轻量级 ",
-    "main": "./dist/index.umd.js",
-    "module": "./dist/index.umd.js",
-    "typings": "./types/index.d.ts",
+    "main": "./dist/common-axios.umd.js",
+    "module": "./dist/common-axios.umd.js",
+    "typings": "./types/common-axios.d.ts",
     "scripts": {
         "dev": "NODE_ENV=development ENV=daily rollup -c -w",
         "build": "NODE_ENV=production ENV=prod rollup -c",

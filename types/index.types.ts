@@ -18,28 +18,40 @@ export type LoadingList = Map<string, Function>
 
 /**
  * 错误 消息 配置
- * errorKey 和 errorKeyValue 要么全部都有 要么一个没有
+ * errorStatusKey 和 errorStatusKeyValue 要么全部都有 要么一个没有
  */
-type ErrorKeyAndErrorKeyValue =
+type errorStatusKeyAnderrorStatusKeyValue =
     | {
-        errorKey?: never /* 代表失败的参数的key */
-        errorKeyValue?: never /* 代表失败的参数的key所对应的值 */
+        /* 代表失败的参数的key */
+        errorStatusKey?: never
+
+        /* 代表失败的参数的key所对应的值 */
+        errorStatusKeyValue?: never
     }
     | {
-        errorKey: string /* 代表失败的参数的key */
-        errorKeyValue: string | number /* 代表失败的参数的key所对应的值 */
+        /* 代表失败的参数的key */
+        errorStatusKey: string
+
+        /* 代表失败的参数的key所对应的值 */
+        errorStatusKeyValue: string | number
     }
 
 /**
  * 成功 消息 配置
- * successKey 和 successKeyValue 要么全部都有 要么一个没有
+ * successStatusKey 和 successStatusKeyValue 要么全部都有 要么一个没有
  */
-type SuccessKeyAndSuccessKeyValue = {
-    successKey?: never /* 代表成功的参数的key */
-    successKeyValue?: never /* 代表成功的参数的key所对应的值 */
+type successStatusKeyAndsuccessStatusKeyValue = {
+    /* 代表成功的参数的key */
+    successStatusKey?: never
+
+    /* 代表成功的参数的key所对应的值 */
+    successStatusKeyValue?: never
 } | {
-    successKey: string  /* 代表成功的参数的key */
-    successKeyValue: string | number /* 代表成功的参数的key所对应的值 */
+    /* 代表成功的参数的key */
+    successStatusKey: string
+
+    /* 代表成功的参数的key所对应的值 */
+    successStatusKeyValue: string | number
 }
 
 // axios content-type
@@ -61,37 +73,69 @@ type AxiosRequestContentType = {
  */
 export type AxiosRequestConfigs =
     AxiosRequestConfig &
-    SuccessKeyAndSuccessKeyValue &
-    ErrorKeyAndErrorKeyValue &
+    successStatusKeyAndsuccessStatusKeyValue &
+    errorStatusKeyAnderrorStatusKeyValue &
     AxiosRequestContentType &
     {
-        needLoading?: boolean /* 是否创建遮罩层，默认为false */
+        /* 是否创建遮罩层，默认为false */
+        needLoading?: boolean
 
-        loadingText?: string /* 遮罩层展示的内容 默认为 "拼命加载中" */
+        /* 遮罩层展示的内容 默认为 "拼命加载中" */
+        loadingText?: string
 
-        axiosDebounce?: boolean /* 接口防抖 应用场景：同一个接口，同一个请求方式，同样的请求参数发起了多次数据请求，当第一次发起请求的接口没有返回数据之前，后续的接口都会被取消 */
+        /* 接口防抖 应用场景：同一个接口，同一个请求方式，同样的请求参数发起了多次数据请求，当第一次发起请求的接口没有返回数据之前，后续的接口都会被取消 */
+        axiosDebounce?: boolean
 
-        messageDuration?: number /* 消息持续时间 */
+        /* 消息持续时间 默认为2000毫秒 */
+        messageDuration?: number
 
-        messagePosition?: 'left' | 'center' | 'right' /* 消息提示位置 */
+        /* 消息提示位置 默认为left */
+        messagePosition?: 'left' | 'center' | 'right'
 
-        errorMessageKey?: string /* 错误消息字段 */
+        /* 错误消息字段所对应的key 默认undefind */
+        errorMessageContentKey?: string
 
-        errorMessageDuration?: number /* 错误消息持续时间 */
+        /* 错误消息持续时间 如果没有配置 且配置了 messageDuration 属性 则执行 messageDuration 的配置  */
+        errorMessageDuration?: number
 
-        errorMessagePosition?: 'left' | 'center' | 'right' /* 错误消息提示的位置 */
+        /* 错误消息提示的位置 如果没有配置 且配置了 messagePosition 属性 则执行 messagePosition 的配置  */
+        errorMessagePosition?: 'left' | 'center' | 'right'
 
-        successMessageKey?: string /* 成功消息字段 */
+        /* 错误消息提示的自定义内容 优先级高于 errorMessageContentKey 所对应的内容 */
+        errorMessageContent?: string
 
-        successMessageDuration?: number /* 成功消息持续时间 */
+        /* 成功消息字段所对应的key 默认undefind */
+        successMessageContentKey?: string
 
-        successMessagePosition?: 'left' | 'center' | 'right' /* 成功消息提示的位置 */
+        /* 成功消息持续时间 如果没有配置 且配置了 messageDuration 属性 则执行 messageDuration 的配置 */
+        successMessageDuration?: number
 
-        dataKey?: string /* 数据的字段 */
+        /* 成功消息提示的位置 如果没有配置 且配置了 messagePosition 属性 则执行 messagePosition 的配置 */
+        successMessagePosition?: 'left' | 'center' | 'right'
 
-        axiosResponseCallback?: (axiosResponse: AxiosResponse) => void /* 拦截成功回调 用于全局拦截 */
+        /* 成功消息提示的自定义内容 优先级高于 successMessageContentKey 所对应的内容 */
+        successMessageContent?: string
 
-        axiosRequestCallback?: (axiosRequestConfigs: AxiosRequestConfigs) => void  /* 请求成功回调 用于全局拦截 */
+        /* 代表返回数据的key，支持a.b.c */
+        /**
+         * 例如: 后端返回的数据是
+         *
+         * {
+         *  a: {
+         *       b:{
+         *          c:"我是c"
+         *         }
+         *     }
+         *  }
+         *
+        */
+        dataKey?: string
+
+        /* 拦截成功回调 用于全局拦截 */
+        axiosResponseCallback?: (axiosResponse: AxiosResponse) => void
+
+        /* 请求成功回调 用于全局拦截 */
+        axiosRequestCallback?: (axiosRequestConfigs: AxiosRequestConfigs) => void
     }
 
 /**

@@ -46,6 +46,73 @@ loadingText?: string
 /* 接口防抖 应用场景：同一个接口，同一个请求方式，同样的请求参数发起了多次数据请求，当第一次发起请求的接口没有返回数据之前，后续的接口都会被取消 默认为false */
 axiosDebounce?: boolean
 
+/* 是否创建遮罩层，默认为false */
+needLoading?: boolean
+
+/* 遮罩层展示的内容 默认为 "拼命加载中" */
+loadingText?: string
+
+/* 接口防抖 应用场景：同一个接口，同一个请求方式，同样的请求参数发起了多次数据请求，当第一次发起请求的接口没有返回数据之前，后续的接口都会被取消 */
+axiosDebounce?: boolean
+
+{
+    /* 代表失败的参数的key */
+    errorStatusKey?: never
+
+    /* 代表失败的参数的key所对应的值 */
+    errorStatusKeyValue?: never
+} | {
+    /* 代表失败的参数的key */
+    errorStatusKey: string
+
+    /* 代表失败的参数的key所对应的值 */
+    errorStatusKeyValue: string | number
+}
+
+{
+    /* 代表成功的参数的key */
+    successStatusKey?: never
+
+    /* 代表成功的参数的key所对应的值 */
+    successStatusKeyValue?: never
+} | {
+    /* 代表成功的参数的key */
+    successStatusKey: string
+
+    /* 代表成功的参数的key所对应的值 */
+    successStatusKeyValue: string | number
+}
+
+/* 消息持续时间 默认为2000毫秒 */
+messageDuration?: number
+
+/* 消息提示位置 默认为left */
+messagePosition?: 'left' | 'center' | 'right'
+
+/* 错误消息字段所对应的key 默认undefind */
+errorMessageContentKey?: string
+
+/* 错误消息持续时间 如果没有配置 且配置了 messageDuration 属性 则执行 messageDuration 的配置  */
+errorMessageDuration?: number
+
+/* 错误消息提示的位置 如果没有配置 且配置了 messagePosition 属性 则执行 messagePosition 的配置  */
+errorMessagePosition?: 'left' | 'center' | 'right'
+
+/* 错误消息提示的自定义内容 优先级高于 errorMessageContentKey 所对应的内容 */
+errorMessageContent?: string
+
+/* 成功消息字段所对应的key 默认undefind */
+successMessageContentKey?: string
+
+/* 成功消息持续时间 如果没有配置 且配置了 messageDuration 属性 则执行 messageDuration 的配置 */
+successMessageDuration?: number
+
+/* 成功消息提示的位置 如果没有配置 且配置了 messagePosition 属性 则执行 messagePosition 的配置 */
+successMessagePosition?: 'left' | 'center' | 'right'
+
+/* 成功消息提示的自定义内容 优先级高于 successMessageContentKey 所对应的内容 */
+successMessageContent?: string
+
 /* 代表返回数据的key，支持a.b.c */
 /**
  * 例如: 后端返回的数据是
@@ -59,42 +126,14 @@ axiosDebounce?: boolean
  *  }
  *
 */
-dataKey?:string
+dataKey?: string
 
-/* 代表失败的参数的key 默认为 undefined */
-errorKey?:string
+/* 拦截成功回调 用于全局拦截 */
+axiosResponseCallback?: (axiosResponse: AxiosResponse) => void
 
-/* 代表失败的参数的key所对应的值 默认为 undefined */
-errorKeyValue?:string
+/* 请求成功回调 用于全局拦截 */
+axiosRequestCallback?: (axiosRequestConfigs: AxiosRequestConfigs) => void
 
-
-/* 请求方式的contentType 默认为'application/json' */
-contentType?:
-    | 'application/json'
-    | 'application/x-www-form-urlencoded'
-    | ' multipart/form-data'
-
-
-/* 请求前拦截回调 用于全局拦截 参数 axiosRequestConfig */
-    axiosRequestCallback?:Function
-
-/* 请求后拦截回调 用于全局拦截 参数 axiosResponse */
-    axiosResponseCallback?:Function
-
-/* 错误消息字段 */
- errorMessageKey?: string 
-
-/* 错误消息持续时间 默认2000毫秒 */
-errorMessageDuration?: number 
-
-/* 成功消息字段 */
-successMessageKey?: string 
-
-/* 成功消息持续时间 默认2000毫秒*/
-successMessageDuration?: number 
-
-/* 消息提示的位置 默认left*/
-messagePosition?: 'left' | 'center' | 'right' 
 
 ```
 
@@ -132,4 +171,4 @@ const result = await axiosHelpers.delete(<url>,<{params:params,data:data}>,<conf
 
 ### 免责声明
 
-    本axios包是自己用业余时间封装打包的，如若您使用了该包，出现问题皆由自己承担
+    本axios包是自己用业余时间封装打包的，如若您使用了该包，出现问题不负责任

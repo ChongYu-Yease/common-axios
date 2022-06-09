@@ -1,8 +1,12 @@
 import typescript from 'rollup-plugin-typescript2'
 import postcss from 'rollup-plugin-postcss'
 import autoprefixer from 'autoprefixer'
-import { terser } from 'rollup-plugin-terser'
-import { nodeResolve } from '@rollup/plugin-node-resolve' //将外部引入的js打包进来
+import {
+    terser
+} from 'rollup-plugin-terser'
+import {
+    nodeResolve
+} from '@rollup/plugin-node-resolve' //将外部引入的js打包进来
 import nodePolyfills from 'rollup-plugin-polyfill-node'
 import babel from 'rollup-plugin-babel'
 import del from 'rollup-plugin-delete'
@@ -21,7 +25,7 @@ const initConfig = () => {
         // 打算发布的话将代码打包到dist文件夹内
         flexibleOutput.push({
             format: 'umd',
-            file: 'dist/index.umd.js',
+            file: 'dist/common-axios.umd.js',
             name: 'commonAxios',
             globals: {
                 axios: 'axios',
@@ -33,26 +37,23 @@ const initConfig = () => {
         flexiblePlugins.push(terser())
     } else {
         // 开发环境 将代码打包到demo文件夹内
-        flexibleOutput.push(
-            {
-                format: 'umd',
-                file: 'demo/index.umd.js',
-                name: 'commonAxios',
-                globals: {
-                    axios: 'axios',
-                    qs: 'qs',
-                },
+        flexibleOutput.push({
+            format: 'umd',
+            file: 'demo/common-axios.umd.js',
+            name: 'commonAxios',
+            globals: {
+                axios: 'axios',
+                qs: 'qs',
             },
-            {
-                format: 'umd',
-                file: 'dist/index.umd.js',
-                name: 'commonAxios',
-                globals: {
-                    axios: 'axios',
-                    qs: 'qs',
-                },
-            }
-        )
+        }, {
+            format: 'umd',
+            file: 'dist/common-axios.umd.js',
+            name: 'commonAxios',
+            globals: {
+                axios: 'axios',
+                qs: 'qs',
+            },
+        })
         flexiblePlugins.push(
             // 开启服务
             serve({
@@ -76,7 +77,9 @@ const initConfig = () => {
         external: ['axios', 'qs'],
 
         plugins: [
-            del({ targets: ['dist', 'demo/index.umd.js'] }),
+            del({
+                targets: ['dist', 'demo/common-axios.umd.js']
+            }),
 
             babel({
                 exclude: 'node_modules/**',
@@ -86,7 +89,10 @@ const initConfig = () => {
 
             commonjs(),
 
-            nodeResolve({ browser: true, extensions: ['.jsx', '.js'] }),
+            nodeResolve({
+                browser: true,
+                extensions: ['.jsx', '.js']
+            }),
 
             nodePolyfills(),
 

@@ -20,6 +20,8 @@ import { Message } from './create-message'
 // 创建message实例
 const messageInstance = new Message()
 
+// console.log("创建的messageInstance", messageInstance);
+
 import { getValueByKeyInOpject } from "../utils/index"
 
 
@@ -35,18 +37,24 @@ export const axiosResponseCallback: AxiosResponseCallback = (axiosResponse) => {
 
     // 获取配置
     const {
-        successKey,
-        successKeyValue,
-        errorKey,
-        errorKeyValue,
-        dataKey,
-        errorMessageKey,
-        errorMessageDuration,
-        successMessageKey,
-        successMessageDuration,
         messagePosition,
-        successMessagePosition,
+        messageDuration,
+
+        errorStatusKey,
+        errorStatusKeyValue,
+        dataKey,
+        errorMessageContentKey,
+        errorMessageDuration,
         errorMessagePosition,
+        errorMessageContent,
+
+        successStatusKey,
+        successStatusKeyValue,
+        successMessageContentKey,
+        successMessageDuration,
+        successMessagePosition,
+        successMessageContent,
+
         axiosResponseCallback,
     } = axiosResponse.config as AxiosRequestConfigs
 
@@ -56,25 +64,25 @@ export const axiosResponseCallback: AxiosResponseCallback = (axiosResponse) => {
     }
 
     // 处理 错误 提示
-    if (errorKey && errorKeyValue) {
+    if (errorStatusKey && errorStatusKeyValue) {
         // 获取代表失败的值
-        const _errorKeyValue = getValueByKeyInOpject(
-            errorKey,
+        const _errorStatusKeyValue = getValueByKeyInOpject(
+            errorStatusKey,
             axiosResponse.data
         )
 
-        if (_errorKeyValue == errorKeyValue) {
-            if (errorMessageKey) {
+        if (_errorStatusKeyValue == errorStatusKeyValue) {
+            if (errorMessageContentKey) {
                 // 获取消息内容
                 const messageValue = getValueByKeyInOpject(
-                    errorMessageKey,
+                    errorMessageContentKey,
                     axiosResponse.data
                 )
-                messageValue && messageInstance.createMessage({
-                    message: `${messageValue}`,
+                messageInstance.createMessage({
+                    message: errorMessageContent || messageValue,
                     messageType: 'error',
-                    messagePosition: errorMessagePosition || messagePosition,
-                    messageDuration: errorMessageDuration || 2000,
+                    messagePosition: errorMessagePosition || messagePosition || "left",
+                    messageDuration: errorMessageDuration || messageDuration || 2000,
                     showClose: false,
                 })
 
@@ -83,28 +91,28 @@ export const axiosResponseCallback: AxiosResponseCallback = (axiosResponse) => {
     }
 
     // 处理 成功 提示
-    if (successKey && successKeyValue) {
+    if (successStatusKey && successStatusKeyValue) {
 
         // 获取代表成功的值
-        const _successKeyValue = getValueByKeyInOpject(
-            successKey,
+        const _successStatusKeyValue = getValueByKeyInOpject(
+            successStatusKey,
             axiosResponse.data
         )
 
-        if (_successKeyValue == successKeyValue) {
-            if (successMessageKey) {
+        if (_successStatusKeyValue == successStatusKeyValue) {
+            if (successMessageContentKey) {
                 // 获取消息内容
                 const messageValue = getValueByKeyInOpject(
-                    successMessageKey,
+                    successMessageContentKey,
                     axiosResponse.data
                 )
-                console.log("messageValue", messageValue);
 
-                messageValue && messageInstance.createMessage({
-                    message: `${messageValue}`,
+
+                messageInstance.createMessage({
+                    message: successMessageContent || messageValue,
                     messageType: 'success',
                     messagePosition: successMessagePosition || messagePosition || "left",
-                    messageDuration: successMessageDuration || 2000,
+                    messageDuration: successMessageDuration || messageDuration || 2000,
                     showClose: false,
                 })
             }
