@@ -53,12 +53,17 @@ export class Message {
 
     // 移除message 节点
     removeMessage(messageDom: HTMLDivElement, targetId: number) {
+        console.log("removeMessage", "targetId", targetId);
+        console.log("this.messageQueue", this.messageQueue);
+
         const startIndex = this.messageQueue.findIndex(
             (message) => message.id === targetId
         )
+        console.log("startIndex", startIndex);
+        this.updateMessageDom(startIndex)
         this.messageQueue.splice(startIndex, 1)
 
-        this.updateMessageDom(startIndex)
+
 
         //增加移除动画
         messageDom.classList.add('common-axios_message_leave')
@@ -87,18 +92,26 @@ export class Message {
         messageDom.classList.add(`common-axios_message_${messageOptions.messagePosition || "left"}`)
 
         // 给节点添加鼠标划入的事件
-        messageDom.addEventListener("mouseenter", () => {
-            console.log("mouseenter", "this.timeId", this.timeId);
+        messageDom.addEventListener("mouseenter", (event: MouseEvent) => {
+
             // 鼠标划入终止message节点的移除
-            // window.clearTimeout(this.timeId)
+            window.clearTimeout(this.timeId)
 
         })
         // 给节点添加鼠标划出的事件
-        messageDom.addEventListener("mouseleave", () => {
+        messageDom.addEventListener("mouseleave", (event: MouseEvent) => {
             // 鼠标划出继续移除message节点
-            // this.timeId = window.setTimeout(() => {
-            //     this.removeMessage(messageDom, this.id)
-            // })
+            this.timeId = window.setTimeout(() => {
+                const targetDom = event.target as HTMLDivElement
+                const targetDomStyle = window.getComputedStyle(targetDom)
+                // 从队列中移除
+                const currentIndex = this.messageQueue.findIndex((messageOption) => {
+                    const messageDomStyle = window.getComputedStyle(messageOption.messageDom)
+                    return JSON.stringify(messageDomStyle) === JSON.stringify(targetDomStyle)
+                })
+                const id = this.messageQueue[currentIndex].id
+                this.removeMessage(messageDom, id)
+            }, this.messageDuration)
         })
 
         const targetId = this.id
