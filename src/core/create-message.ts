@@ -53,13 +53,10 @@ export class Message {
 
     // 移除message 节点
     removeMessage(messageDom: HTMLDivElement, targetId: number) {
-        console.log("removeMessage", "targetId", targetId);
-        console.log("this.messageQueue", this.messageQueue);
 
         const startIndex = this.messageQueue.findIndex(
             (message) => message.id === targetId
         )
-        console.log("startIndex", startIndex);
         this.updateMessageDom(startIndex)
         this.messageQueue.splice(startIndex, 1)
 
