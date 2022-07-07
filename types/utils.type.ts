@@ -7,3 +7,8 @@ export type GetValueByKeyInOpject = (
 ) => any
 
 export type Stringify = (params: Array<string>) => string
+
+
+
+// 防抖函数
+export type DebounceInstance = (fn: Function, delay: number) => Function

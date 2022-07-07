@@ -3,9 +3,6 @@ import {
     AxiosErrorCallback,
 } from '../../types/axios-callback.type'
 
-// 修改 history.push 和 history.replace 方法
-import "./watch-routing"
-
 
 
 // axios  防抖
@@ -24,8 +21,6 @@ import { Message } from './create-message'
 
 // 创建message实例
 const messageInstance = new Message()
-
-import { getValueByKeyInOpject } from "../utils/index"
 
 /**
  * 请求前成功回调
@@ -48,31 +43,7 @@ export const axiosRequestCallback: AxiosRequestCallback = (config) => {
 
     // 先判断是否需要防抖 如果需要 需要防抖的话 如果接口被取消 就不再需要遮罩层
     if (axiosDebounce) {
-        // 在请求开始前，对之前的请求做检查取消操作
-        axiosDebounceInstance.handleRemoveAxiosQueue(config)
-        // 将当前请求添加到 pending 中
-        axiosDebounceInstance.handleAddAxiosQueue(config)
-
-        // // 如果开启了 axios 防抖 当离开当前页面的时候 就需要取消当前所有的请求
-        // // 监听 hash 模式的路由
-        // window.addEventListener('hashchange', (event) => {
-        //     console.log("页面地址发生变更,变更模式为hashchange", event);
-        // })
-
-        // // 监听 history 模式的 back、forward、go 路由跳转方法
-        // window.addEventListener('popstate', function (event) {
-        //     console.log('页面地址发生了变更 变更模式为popstate', event);
-        // })
-
-        // // 监听 history 模式的 pushState 路由跳转方法
-        // window.addEventListener('pushState', function (e) {
-        //     console.log('页面地址发生了变更 变更模式为pushState', e);
-        // })
-
-        // // 监听 history模式的 replaceState 路由跳转方法
-        // window.addEventListener('replaceState', function (e) {
-        //     console.log('页面地址发生了变更 变更模式为 replaceState', e);
-        // })
+        axiosDebounceInstance.handleAxiosDebounce(config)
     }
 
     // 创建遮罩层

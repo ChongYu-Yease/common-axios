@@ -4,13 +4,14 @@ import '../css/mask.css'
 
 // 创建遮罩层
 export class Mask {
-
+    maskDom: HTMLElement | null
     // 遮罩层队列
     private maskQueue: Array<AxiosRequestConfigs>
 
     constructor() {
         // 初始化遮罩层队列
         this.maskQueue = []
+        this.maskDom = null
     }
 
     // 更新遮罩层的文本
@@ -54,61 +55,42 @@ export class Mask {
             this.removeLoadingDom()
         }
     }
-
-    // 创建深色遮罩层
-    private createMaskDom = (): HTMLDivElement => {
-        const maskDom = document.createElement('div')
-        maskDom.classList.add('common-axios_mask')
-        return maskDom
+    // 创建节点方法
+    private createDom = (tagName: string, className: string, innerText?: string): HTMLElement => {
+        const dom = document.createElement(tagName)
+        dom.classList.add(className)
+        if (innerText) {
+            dom.innerText = innerText
+        }
+        return dom
     }
 
-    // 创建文本节点
-    private createTextDom = (loadingText?: string): HTMLSpanElement => {
-        loadingText = loadingText ? loadingText : '拼命加载中'
-        const span = document.createElement('span')
-        span.classList.add('common-axios_text')
-        span.textContent = loadingText
-        return span
-    }
-
-    // 创建旋转的dom节点
-    private createDottingDom = (): HTMLSpanElement => {
-        const span = document.createElement('span')
-        span.classList.add('common-axios_dotting')
-        return span
-    }
-
-    // 将文字节点和旋转节点放在一起
-    private createLoadingBox = (): HTMLDivElement => {
-        const loadingBox = document.createElement('div')
-        loadingBox.classList.add('common-axios_loading-box')
-        return loadingBox
-    }
 
     // 创建loading dom节点
     private createLoadingDom = (config: AxiosRequestConfigs): void => {
+
         // loading文本
         const { loadingText } = config
 
         // 创建文本节点
-        const textDom = this.createTextDom(loadingText)
+        const textDom = this.createDom("span", "'common-axios_mask'", loadingText)
 
         // 创建loading节点
-        const dottingDom = this.createDottingDom()
+        const dottingDom = this.createDom('span', 'common-axios_dotting')
 
         // 创建load box 为了将两个放在一个节点内
-        const loadingBox = this.createLoadingBox()
+        const loadingDom = this.createDom('div', 'common-axios_loading-box')
 
-        loadingBox.appendChild(textDom)
+        loadingDom.appendChild(textDom)
 
-        loadingBox.appendChild(dottingDom)
+        loadingDom.appendChild(dottingDom)
 
         // 创建遮罩层节点
-        const maskDom = this.createMaskDom()
+        this.maskDom = this.createDom('div', 'common-axios_mask')
 
-        maskDom.appendChild(loadingBox)
+        this.maskDom.appendChild(loadingDom)
 
-        document.body.appendChild(maskDom)
+        document.body.appendChild(this.maskDom)
     }
 
     // 移除遮罩层

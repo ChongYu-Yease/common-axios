@@ -11,11 +11,7 @@ export const createParamsInParamsHelper: CreateParamsInParamsHelper =
         axiosInstance[method](url, {
             params,
             ...config,
-        }).catch((error) => {
-            return error
-        })
-
-
+        }).catch((error) => error)
 
 /**
  * 请求参数在pramas字段或者在data字段 的axios请求
@@ -29,9 +25,7 @@ export const createParamsInParamsOrDataHelper: CreateParamsInParamsOrDataHelper 
             return axiosInstance[method](url, {
                 ...params,
                 ...config,
-            }).catch((error) => {
-                return error
-            })
+            }).catch((error) => error)
         }
     }
 

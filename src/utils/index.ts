@@ -1,4 +1,4 @@
-import { Stringify, GetValueByKeyInOpject } from "../../types/utils.type"
+import { Stringify, GetValueByKeyInOpject, DebounceInstance } from "../../types/utils.type"
 
 // 公共方法
 
@@ -42,5 +42,21 @@ export const getValueByKeyInOpject: GetValueByKeyInOpject = (key, object) => {
         return temValue
     } else {
         return object[key]
+    }
+}
+
+
+export const debounce: DebounceInstance = (fn, delay) => {
+    let timer: number = 0
+    return function () {
+        const args = arguments
+        // @ts-ignore
+        const that: any = this  // 取debounce执行作用域的this
+        if (timer) {
+            window.clearTimeout(timer)
+        }
+        timer = window.setTimeout(function () {
+            fn.apply(that, args) // 用apply指向调用debounce的对象，相当于_this.fn(args);
+        }, delay)
     }
 }
