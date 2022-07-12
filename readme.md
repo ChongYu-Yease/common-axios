@@ -2,12 +2,13 @@
 
 ### 安装方法
 
-```sh
+```shell
 npm install common-axios -S
-
+```
 OR
-
+```shell
 yarn add common-axios
+
 ```
 
 ### 设计目的
@@ -159,9 +160,6 @@ const result = await axiosHelpers.delete(<url>,<{params:params,data:data}>,<conf
 
     1.目前来说所有的请求第二个参数均是请求参数，第三个参数均是请求配置，如果不需要请求参数，还请用占位符代替！！！
 
-### 抛砖引玉
-
-    1.本包使用ts+rollup封装打包的，如果您有兴趣您也可以贡献自己的代码
 
 ### TODO
 

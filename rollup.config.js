@@ -11,8 +11,7 @@ import nodePolyfills from 'rollup-plugin-polyfill-node'
 import babel from 'rollup-plugin-babel'
 import del from 'rollup-plugin-delete'
 import json from '@rollup/plugin-json'
-import commonjs from '@rollup/plugin-commonjs' //将CommonJS模块转换为ES6, 方便rollup直接调用
-import serve from 'rollup-plugin-serve'
+import commonjs from '@rollup/plugin-commonjs' // 将CommonJS模块转换为ES6, 方便rollup直接调用
 import livereload from 'rollup-plugin-livereload'
 
 const isProduction = process.env.NODE_ENV === 'production'
@@ -31,6 +30,14 @@ const initConfig = () => {
                 axios: 'axios',
                 qs: 'qs',
             },
+        }, {
+            format: 'esm',
+            file: 'dist/common-axios.esm.js',
+            name: 'commonAxios',
+            globals: {
+                axios: 'axios',
+                qs: 'qs',
+            },
         })
 
         // 发布压缩代码
@@ -39,15 +46,15 @@ const initConfig = () => {
         // 开发环境 将代码打包到demo文件夹内
         flexibleOutput.push({
             format: 'umd',
-            file: 'demo/common-axios.umd.js',
+            file: 'dist/common-axios.umd.js',
             name: 'commonAxios',
             globals: {
                 axios: 'axios',
                 qs: 'qs',
             },
         }, {
-            format: 'umd',
-            file: 'dist/common-axios.umd.js',
+            format: 'esm',
+            file: 'dist/common-axios.esm.js',
             name: 'commonAxios',
             globals: {
                 axios: 'axios',
@@ -55,17 +62,7 @@ const initConfig = () => {
             },
         })
         flexiblePlugins.push(
-            // 开启服务
-            serve({
-                open: false,
-                host: 'localhost',
-                port: 9008,
-                historyApiFallback: true,
-                contentBase: 'demo',
-                headers: {
-                    'Access-Control-Allow-Origin': '*',
-                },
-            }),
+
 
             // 热更新
             livereload()
@@ -78,7 +75,7 @@ const initConfig = () => {
 
         plugins: [
             del({
-                targets: ['dist', 'demo/common-axios.umd.js']
+                targets: ['dist']
             }),
 
             babel({

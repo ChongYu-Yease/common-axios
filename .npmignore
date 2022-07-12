@@ -1,6 +1,11 @@
-demo/
+
 src/
 .gitignore
 package-lock.json
 tsconfig.json
 rollup.config.js 
+.gitignore
+rollup.config.js
+vue.config.js
+example/
+demo/
