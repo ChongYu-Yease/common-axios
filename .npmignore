@@ -9,3 +9,6 @@ rollup.config.js
 vue.config.js
 example/
 demo/
+vue.config.js
+temp/
+api-extractor.json
