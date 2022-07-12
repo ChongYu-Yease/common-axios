@@ -58,8 +58,11 @@ export class Mask {
     // 创建节点方法
     private createDom = (tagName: string, className: string, innerText?: string): HTMLElement => {
         const dom = document.createElement(tagName)
+
+
         dom.classList.add(className)
         if (innerText) {
+            console.log("创建节点方法", innerText);
             dom.innerText = innerText
         }
         return dom

@@ -1,7 +1,7 @@
 {
     "name": "common-axios",
     "version": "0.4.32",
-    "description": "基于axios重新封装的axios，支持原生遮罩层、原生message组件，代码比较轻量级 ",
+    "description": "基于axios重新封装的axios，支持原生遮罩层、原生message组件，代码比较轻量",
     "main": "dist/common-axios.umd.js",
     "module": "dist/common-axios.esm.js",
     "typings": "types/common-axios.d.ts",
@@ -22,7 +22,10 @@
         "type": "git",
         "url": "git+https://github.com/ChongYu-Yease/easy-axios.git"
     },
-    "author": "xuchongyu<18763006837@163.com>",
+    "author": {
+        "name": "xuchongyu",
+        "email": "18763006837@163.com"
+    },
     "license": "MIT",
     "peerDependencies": {
         "axios": "^0.21.4",
@@ -37,6 +40,7 @@
         "@types/qs": "^6.9.7",
         "autoprefixer": "^10.4.2",
         "babel-plugin-component": "^1.1.1",
+        "@vue/cli-plugin-typescript": "~5.0.0",
         "postcss": "^8.4.6",
         "rollup": "^2.56.3",
         "rollup-plugin-babel": "^4.4.0",
