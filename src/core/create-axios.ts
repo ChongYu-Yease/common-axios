@@ -1,5 +1,13 @@
 import axios from 'axios'
-import { CreateAxiosInstance } from '../../types/create-axios.type'
+import type { AxiosInstance } from 'axios'
+import { AxiosRequestConfigs } from '../index'
+/**
+ * 创建axios实例
+ * @param config
+ * return axios实例
+ */
+export type CreateAxiosInstance = (config: AxiosRequestConfigs) => AxiosInstance
+
 
 /**
  * 创建axios实例

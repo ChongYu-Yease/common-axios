@@ -1,10 +1,7 @@
 import axios, { Canceler } from 'axios'
 import * as qs from '../utils/index'
-import { AxiosRequestConfigs } from '../../types/index.types'
-// 修改 history.push 和 history.replace 方法
-import "./watch-routing"
+import { AxiosRequestConfigs } from '../index'
 
-import { debounce } from "../utils/index"
 
 export class AxiosDebounce {
     // axios 队列
@@ -13,42 +10,6 @@ export class AxiosDebounce {
     constructor() {
         // 初始化队列
         this.axiosQueue = new Map()
-        // 判断页面的url是不是hash模式
-        // if (window.location.hash) {
-        //     // 监听 hash 模式的路由
-        //     window.addEventListener('hashchange', (event) => {
-        //         debounce(() => {
-        //             console.log("页面地址发生变更,变更模式为hashchange", config);
-        //             axiosDebounceInstance.handleRemoveAxiosQueue(config)
-        //         }, 200)
-
-        //     })
-
-        // } else {
-        //     // 监听 history 模式的 back、forward、go 路由跳转方法
-        //     window.addEventListener('popstate', function (event) {
-        //         debounce(() => {
-        //             console.log('页面地址发生了变更 变更模式为popstate', config);
-        //             axiosDebounceInstance.handleRemoveAxiosQueue(config)
-        //         }, 200)
-        //     })
-
-        //     // 监听 history 模式的 pushState 路由跳转方法
-        //     window.addEventListener('pushState', function (e) {
-        //         debounce(() => {
-        //             console.log('页面地址发生了变更 变更模式为pushState', config);
-        //             axiosDebounceInstance.handleRemoveAxiosQueue(config)
-        //         }, 200)
-        //     })
-
-        //     // 监听 history模式的 replaceState 路由跳转方法
-        //     window.addEventListener('replaceState', function (e) {
-        //         debounce(() => {
-        //             console.log('页面地址发生了变更 变更模式为 replaceState', config);
-        //             axiosDebounceInstance.handleRemoveAxiosQueue(config)
-        //         }, 200)
-        //     })
-        // }
     }
 
     // 添加axios 队列

@@ -190,18 +190,5 @@ export class Message {
             messageDom.style.top = `${64 * i + 20}px`
         }
     }
-    // 终止移除message节点
-    stopRemoveMessage(targetId: number) {
-        // const startIndex = this.messageQueue.findIndex(
-        //     (message) => message.id === targetId
-        // )
-        // this.messageQueue.splice(startIndex, 1)
-        // this.updateMessageDom(startIndex)
-        // this.setCurrentMessageDom()
 
-    }
-    // 继续移除message节点
-    continueRemoveMessage(targetId: number) {
-
-    }
 }

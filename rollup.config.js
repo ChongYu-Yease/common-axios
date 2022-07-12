@@ -88,7 +88,7 @@ const initConfig = () => {
 
             nodeResolve({
                 browser: true,
-                extensions: ['.jsx', '.js']
+                extensions: ['.jsx', '.js', '.ts', '.tsx']
             }),
 
             nodePolyfills(),

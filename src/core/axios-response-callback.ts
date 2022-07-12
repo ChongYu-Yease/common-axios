@@ -1,12 +1,27 @@
-import {
-    AxiosErrorCallback,
-    AxiosResponseCallback,
-} from '../../types/axios-callback.type'
+import { AxiosResponse } from 'axios'
+import { AxiosRequestConfigs } from '../index'
+/**
+ * axios 请求后成功的回调
+ */
+export type AxiosResponseCallback = <T = any, R = AxiosResponse<T>>(
+    axiosResponse: AxiosResponse
+) => Promise<R> | Promise<T>
 
-// 修改 history.push 和 history.replace 方法
-import "./watch-routing"
+/**
+ * axios 请求配置回调
+ */
+export type AxiosRequestCallback = (
+    config: AxiosRequestConfigs
+) => AxiosRequestConfigs
 
-import { AxiosRequestConfigs } from '../../types/index.types'
+/**
+ * axios 请求前 请求后的错误回调 的声明
+ */
+export type AxiosErrorCallback = (error: Error) => Promise<Error>
+
+
+
+
 
 import axios from 'axios'
 

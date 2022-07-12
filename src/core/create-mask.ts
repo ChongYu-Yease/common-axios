@@ -1,4 +1,4 @@
-import { AxiosRequestConfigs } from '../../types/index.types'
+import { AxiosRequestConfigs } from '../index'
 // 引入遮罩层的样式
 import '../css/mask.css'
 
