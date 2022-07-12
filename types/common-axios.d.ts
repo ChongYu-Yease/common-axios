@@ -25,7 +25,7 @@ export declare type AxiosMethods = 'get' | 'post' | 'put' | 'delete' | 'head' | 
  * 添加 axiosResponseCallback 代表响应拦截器成功的回调
  * 添加 axiosRequestCallback 代表请求拦截器成功的回调
  */
-export declare type AxiosRequestConfigs = AxiosRequestConfig & successStatusKeyAndsuccessStatusKeyValue & errorStatusKeyAnderrorStatusKeyValue & AxiosRequestContentType & {
+export declare type AxiosRequestConfigs = AxiosRequestConfig & SuccessStatusKeyAndsuccessStatusKeyValue & ErrorStatusKeyAnderrorStatusKeyValue & AxiosRequestContentType & {
     needLoading?: boolean;
     loadingText?: string;
     axiosDebounce?: boolean;
@@ -63,7 +63,8 @@ export declare type AxiosRequestContentType = {
 export declare type CreateAxios = (axiosRequestConfigs: AxiosRequestConfigs) => AxiosHelpers;
 
 /**
- * @param AxiosRequestConfigs
+ * @param {AxiosRequestConfigs}initAxiosRequestConfig
+ * @returns {}
  */
 export declare const createAxios: CreateAxios;
 
@@ -71,7 +72,7 @@ export declare const createAxios: CreateAxios;
  * 错误 消息 配置
  * errorStatusKey 和 errorStatusKeyValue 要么全部都有 要么一个没有
  */
-export declare type errorStatusKeyAnderrorStatusKeyValue = {
+export declare type ErrorStatusKeyAnderrorStatusKeyValue = {
     errorStatusKey?: never;
     errorStatusKeyValue?: never;
 } | {
@@ -103,7 +104,7 @@ export declare type ParamsInParamsOrDataHelper = <T = any>(url: string, params: 
  * 成功 消息 配置
  * successStatusKey 和 successStatusKeyValue 要么全部都有 要么一个没有
  */
-export declare type successStatusKeyAndsuccessStatusKeyValue = {
+export declare type SuccessStatusKeyAndsuccessStatusKeyValue = {
     successStatusKey?: never;
     successStatusKeyValue?: never;
 } | {
