@@ -1,6 +1,5 @@
 import { AxiosRequestConfig, AxiosResponse } from 'axios'
-import { Mask } from "./core/create-mask"
-import { AxiosDebounce } from "./core/axios-debounce"
+import { Mask } from "@/core/create-mask"
 /**
  * axios的请求方法
  */
@@ -185,9 +184,7 @@ export type CreateAxios = (
 
 
 /* 创建axios实例 */
-import { createAxiosInstance } from './core/create-axios'
-
-
+import { createAxiosInstance } from '@/core/create-axios'
 
 /* 创建axioshelper */
 import {
@@ -200,21 +197,21 @@ import {
 import {
     axiosRequestCallback,
     axiosRequestErrorCallback,
-} from "./core/axios-request-callback"
+} from "@/core/axios-request-callback"
 
 /* axios response 所有的回调函数 */
 import {
     axiosResponseCallback,
     axiosResponseErrorCallback,
-} from './core/axios-response-callback'
+} from '@/core/axios-response-callback'
 
 
 
 /**
  * @param {AxiosRequestConfigs}initAxiosRequestConfig
- * @returns {}
+ * @returns {AxiosHelpers} {}
  */
-export const createAxios: CreateAxios = (initAxiosRequestConfig) => {
+export const createAxios: CreateAxios = (initAxiosRequestConfig): AxiosHelpers => {
     /* 创建axios实例 */
     const axiosInstance = createAxiosInstance(initAxiosRequestConfig)
 
@@ -230,7 +227,7 @@ export const createAxios: CreateAxios = (initAxiosRequestConfig) => {
         (error) => axiosResponseErrorCallback(error)
     )
 
-    const axiosHelpers: AxiosHelpers = {
+    return {
         get: createParamsInParamsHelper(axiosInstance, 'get'),
 
         head: createParamsInParamsHelper(axiosInstance, 'head'),
@@ -245,6 +242,4 @@ export const createAxios: CreateAxios = (initAxiosRequestConfig) => {
 
         patch: createParamsInDataHelper(axiosInstance, 'patch'),
     }
-
-    return axiosHelpers
 }

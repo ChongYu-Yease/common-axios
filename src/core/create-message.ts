@@ -51,16 +51,14 @@ export class Message {
         messageDom.appendChild(p)
     }
 
-    // 移除message 节点
-    removeMessage(messageDom: HTMLDivElement, targetId: number) {
+    // 移除 message 节点
+    private removeMessage(messageDom: HTMLDivElement, targetId: number) {
 
-        const startIndex = this.messageQueue.findIndex(
-            (message) => message.id === targetId
-        )
+        const startIndex = this.messageQueue.findIndex((message) => message.id === targetId)
+
         this.updateMessageDom(startIndex)
+
         this.messageQueue.splice(startIndex, 1)
-
-
 
         //增加移除动画
         messageDom.classList.add('common-axios_message_leave')
@@ -70,7 +68,7 @@ export class Message {
         }, 400)
     }
 
-    createMessage(messageOptions: {
+    public createMessage(messageOptions: {
         message?: string
         messageType?: '' | 'info' | 'warning' | 'error' | 'success'
         messagePosition?: 'left' | "center" | 'right' | undefined,
@@ -89,25 +87,39 @@ export class Message {
         messageDom.classList.add(`common-axios_message_${messageOptions.messagePosition || "left"}`)
 
         // 给节点添加鼠标划入的事件
-        messageDom.addEventListener("mouseenter", (event: MouseEvent) => {
-
+        messageDom.addEventListener("mouseenter", (_event: MouseEvent) => {
             // 鼠标划入终止message节点的移除
             window.clearTimeout(this.timeId)
-
         })
+
         // 给节点添加鼠标划出的事件
         messageDom.addEventListener("mouseleave", (event: MouseEvent) => {
             // 鼠标划出继续移除message节点
             this.timeId = window.setTimeout(() => {
+
                 const targetDom = event.target as HTMLDivElement
+
                 const targetDomStyle = window.getComputedStyle(targetDom)
+
                 // 从队列中移除
                 const currentIndex = this.messageQueue.findIndex((messageOption) => {
+
                     const messageDomStyle = window.getComputedStyle(messageOption.messageDom)
+
                     return JSON.stringify(messageDomStyle) === JSON.stringify(targetDomStyle)
+
                 })
-                const id = this.messageQueue[currentIndex].id
-                this.removeMessage(messageDom, id)
+
+                const messageQueueOPtion = this.messageQueue[currentIndex]
+
+                if (messageQueueOPtion) {
+
+                    const id = messageQueueOPtion.id
+
+                    this.removeMessage(messageDom, id)
+
+                }
+
             }, this.messageDuration)
         })
 
@@ -126,10 +138,10 @@ export class Message {
         // 创建文本节点
         this.createTextDom(messageDom, messageOptions.message)
 
-        // 设置当前message节点的 zIndex、top
+        // 设置当前 message 节点的 zIndex、top
         this.setCurrentMessageDom()
 
-        // 将message节点添加到body当中
+        // 将 message 节点添加到body当中
         this.body.appendChild(messageDom)
 
         //增加新增动画
@@ -149,17 +161,17 @@ export class Message {
             ? this.messageDuration
             : Number(messageOptions.messageDuration)
 
-        // 如果duration为0则不需要setTimeout
+
 
         if (messageDuration !== 0) {
+            // 如果duration为0则不需要setTimeout
             this.timeId = window.setTimeout(() => {
                 this.removeMessage(messageDom, targetId)
             }, messageDuration)
         }
 
         if (messageOptions.showClose === true) {
-            // @ts-ignore
-            i.addEventListener('click', () => {
+            i?.addEventListener('click', () => {
                 this.removeMessage(messageDom, targetId)
                 if (targetId !== -1) {
                     window.clearTimeout(this.timeId)
@@ -167,8 +179,7 @@ export class Message {
             })
         }
 
-        // 更新id
-        this.id++
+        this.id++  // 更新id
     }
 
     // 设置当前创建的 message节点的 zIndex、top

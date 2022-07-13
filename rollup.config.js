@@ -101,6 +101,7 @@ const initConfig = () => {
             commonjs(),
 
             nodeResolve({
+                dedupe: ['vue'], // 解决 npm link 造成多个 版本vue的问题
                 browser: true,
                 extensions: ['.jsx', '.js', '.ts', '.tsx']
             }),
