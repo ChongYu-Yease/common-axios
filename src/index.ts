@@ -1,6 +1,6 @@
 import { AxiosRequestConfig, AxiosResponse } from 'axios'
 import { Mask } from "./core/create-mask"
-
+import { AxiosDebounce } from "./core/axios-debounce"
 /**
  * axios的请求方法
  */
@@ -78,6 +78,7 @@ export type AxiosRequestConfigs =
     ErrorStatusKeyAnderrorStatusKeyValue &
     AxiosRequestContentType &
     {
+        // 遮罩层实例
         maskInstance?: typeof Mask
 
         /* 是否创建遮罩层，默认为false */

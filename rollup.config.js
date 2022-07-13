@@ -4,6 +4,7 @@ import autoprefixer from 'autoprefixer'
 import {
     terser
 } from 'rollup-plugin-terser'
+import path from "path"
 import {
     nodeResolve
 } from '@rollup/plugin-node-resolve' //将外部引入的js打包进来
@@ -15,6 +16,7 @@ import del from 'rollup-plugin-delete'
 import json from '@rollup/plugin-json'
 import commonjs from '@rollup/plugin-commonjs' // 将CommonJS模块转换为ES6, 方便rollup直接调用
 import livereload from 'rollup-plugin-livereload'
+import alias from "@rollup/plugin-alias"
 
 const isProduction = process.env.NODE_ENV === 'production'
 
@@ -81,7 +83,14 @@ const initConfig = () => {
             isProduction && del({
                 targets: ['dist']
             }),
+            alias({
+                entries: [{
+                        find: '@',
+                        replacement: path.resolve(__dirname, "./src")
+                    },
 
+                ]
+            }),
             babel({
                 skipPreflightCheck: true,
                 exclude: 'node_modules/**',

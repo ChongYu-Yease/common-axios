@@ -1,5 +1,5 @@
 
-import { AxiosMethods, } from '../index'
+import { AxiosMethods, } from '@/index'
 import { AxiosInstance, } from 'axios'
 import {
     ParamsInParamsHelper,

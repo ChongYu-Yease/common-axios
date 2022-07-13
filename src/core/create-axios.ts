@@ -1,6 +1,6 @@
 import axios from 'axios'
 import type { AxiosInstance } from 'axios'
-import { AxiosRequestConfigs } from '../index'
+import { AxiosRequestConfigs } from '@/index'
 /**
  * 创建axios实例
  * @param config

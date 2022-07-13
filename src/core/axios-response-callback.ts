@@ -1,5 +1,5 @@
 import { AxiosResponse } from 'axios'
-import { AxiosRequestConfigs } from '../index'
+import { AxiosRequestConfigs } from '@/index'
 /**
  * axios 请求后成功的回调
  */
@@ -27,21 +27,20 @@ import axios from 'axios'
 // 遮罩层实例
 // const maskInstance = new Mask()
 
-import { Message } from './create-message'
+import { Message } from '@/core/create-message'
 
 // 创建message实例
 const messageInstance = new Message()
 
-import { getValueByKeyInOpject } from "../utils/index"
+import { getValueByKeyInOpject } from "@/utils/index"
 
 
 /**
- *
- * @param axiosResponse 请求返回成功回调
+ * 请求返回成功回调
+ * @param {AxiosResponse} axiosResponse 
  * @returns
  */
 export const axiosResponseCallback: AxiosResponseCallback = (axiosResponse) => {
-    // console.log(axiosResponse.config);
 
     // 关闭遮罩层
     // maskInstance.removeLoading(axiosResponse.config as AxiosRequestConfigs)

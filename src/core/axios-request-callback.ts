@@ -1,5 +1,5 @@
 import { AxiosResponse } from 'axios'
-import type { AxiosRequestConfigs } from '../index'
+import type { AxiosRequestConfigs } from '@/index'
 /**
  * axios 请求后成功的回调
  */
@@ -19,25 +19,20 @@ export type AxiosRequestCallback = (
  */
 export type AxiosErrorCallback = (error: Error) => Promise<Error>
 
-
 // axios  防抖
 import { AxiosDebounce } from './axios-debounce'
+
+import { Mask } from '@/core/create-mask'
+
+import { Message } from './create-message'
 
 // 创建防抖实例
 const axiosDebounceInstance = new AxiosDebounce()
 
-
-import { Mask } from './create-mask'
-
-// 遮罩层实例
-const maskInstance = new Mask()
-
-import { Message } from './create-message'
-
 /**
  * 请求前成功回调
- * @param config
- * @returns config
+ * @param {AxiosRequestCallback} config
+ * @returns {AxiosRequestCallback} config
  */
 export const axiosRequestCallback: AxiosRequestCallback = (config) => {
 
@@ -56,12 +51,13 @@ export const axiosRequestCallback: AxiosRequestCallback = (config) => {
 
     // 创建遮罩层
     if (needLoading || loadingText) {
+        // 遮罩层实例
+        const maskInstance = new Mask()
+        console.log("maskInstance", maskInstance);
+
         // maskInstance.createLoading(config)
 
         // config.maskInstance = maskInstance
-
-
-
 
     }
 

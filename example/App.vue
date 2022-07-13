@@ -11,7 +11,7 @@ import { createAxios, } from "common-axios"
 const axios = createAxios({
   baseURL: "http://plutus-api.vdian.net",
   withCredentials: true,
-  // needLoading: true,
+  needLoading: true,
   // loadingText: "数据加载中"
 })
 

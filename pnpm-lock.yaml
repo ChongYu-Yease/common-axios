@@ -3,6 +3,7 @@ lockfileVersion: 5.4
 specifiers:
   '@babel/core': ^7.16.7
   '@microsoft/api-extractor': ^7.28.3
+  '@rollup/plugin-alias': ^3.1.9
   '@rollup/plugin-babel': ^5.3.1
   '@rollup/plugin-commonjs': ^21.0.1
   '@rollup/plugin-json': ^4.1.0
@@ -32,6 +33,7 @@ specifiers:
 devDependencies:
   '@babel/core': 7.18.6
   '@microsoft/api-extractor': 7.28.4
+  '@rollup/plugin-alias': 3.1.9_rollup@2.76.0
   '@rollup/plugin-babel': 5.3.1_ayiqorrx7dutx4scyxuyyyvhga
   '@rollup/plugin-commonjs': 21.1.0_rollup@2.76.0
   '@rollup/plugin-json': 4.1.0_rollup@2.76.0
@@ -407,6 +409,16 @@ packages:
 
   /@polka/url/1.0.0-next.21:
     resolution: {integrity: sha512-a5Sab1C4/icpTZVzZc5Ghpz88yQtGOyNqYXcZgOssB2uuAr+wF/MvN6bgtW32q7HHrvBki+BsZ0OuNv6EV3K9g==}
+    dev: true
+
+  /@rollup/plugin-alias/3.1.9_rollup@2.76.0:
+    resolution: {integrity: sha512-QI5fsEvm9bDzt32k39wpOwZhVzRcL5ydcffUHMyLVaVaLeC70I8TJZ17F1z1eMoLu4E/UOcH9BWVkKpIKdrfiw==}
+    engines: {node: '>=8.0.0'}
+    peerDependencies:
+      rollup: ^1.20.0||^2.0.0
+    dependencies:
+      rollup: 2.76.0
+      slash: 3.0.0
     dev: true
 
   /@rollup/plugin-babel/5.3.1_ayiqorrx7dutx4scyxuyyyvhga:
