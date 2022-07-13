@@ -7,11 +7,12 @@
 <script lang='ts' setup>
 import { onMounted } from "vue"
 import { createAxios, } from "common-axios"
+// 创建common-axios 实例
 const axios = createAxios({
   baseURL: "http://plutus-api.vdian.net",
   withCredentials: true,
-  needLoading: true,
-  loadingText: "数据加载中"
+  // needLoading: true,
+  // loadingText: "数据加载中"
 })
 
 const handleGetSlowTableData = async () => {
@@ -31,7 +32,8 @@ const handleGetSlowTableData = async () => {
       successStatusKey: "code",
       successStatusKeyValue: "000000",
       successMessageContentKey: "status",
-      successMessageDuration: 5000,
+      successMessageDuration: 2000,
+      successMessagePosition: "right",
       axiosDebounce: true,
     }
   );
@@ -76,7 +78,7 @@ const handleGetSlowTableData = async () => {
 // };
 onMounted(() => {
 
-  handleGetSlowTableData();
+  // handleGetSlowTableData();
   // handleGetSlowTableData();
   // handleGetSlowTableData();
   // handleGetSlowTableData();

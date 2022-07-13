@@ -1,4 +1,5 @@
 import { AxiosRequestConfig, AxiosResponse } from 'axios'
+import { Mask } from "./core/create-mask"
 
 /**
  * axios的请求方法
@@ -77,6 +78,8 @@ export type AxiosRequestConfigs =
     ErrorStatusKeyAnderrorStatusKeyValue &
     AxiosRequestContentType &
     {
+        maskInstance?: typeof Mask
+
         /* 是否创建遮罩层，默认为false */
         needLoading?: boolean
 

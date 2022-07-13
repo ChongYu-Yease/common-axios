@@ -2,11 +2,12 @@ import { AxiosRequestConfigs } from '../index'
 // 引入遮罩层的样式
 import '../css/mask.css'
 
-// 创建遮罩层
+// 遮罩层
 export class Mask {
     maskDom: HTMLElement | null
+
     // 遮罩层队列
-    private maskQueue: Array<AxiosRequestConfigs>
+    maskQueue: Array<AxiosRequestConfigs>
 
     constructor() {
         // 初始化遮罩层队列
@@ -15,7 +16,7 @@ export class Mask {
     }
 
     // 更新遮罩层的文本
-    private uploadMaskContent(config: AxiosRequestConfigs): void {
+    uploadMaskContent(config: AxiosRequestConfigs): void {
         const maskTextDom: HTMLSpanElement =
             document.querySelector('.common-axios_text')!
         maskTextDom.textContent = config.loadingText
@@ -24,7 +25,7 @@ export class Mask {
     }
 
     // 创建或者更新遮罩层
-    private uploadMask(): void {
+    uploadMask(): void {
         const config = this.maskQueue[this.maskQueue.length - 1]
         const hasMaskDom = document.querySelector(
             '.common-axios_mask'
@@ -37,13 +38,15 @@ export class Mask {
     }
 
     // 向遮罩层队列中添加记录
-    private addMask(config: AxiosRequestConfigs) {
+    addMask(config: AxiosRequestConfigs) {
         this.maskQueue.push(config)
         this.uploadMask()
     }
 
+
+
     // 向遮罩层队列中删除记录
-    private removeMask(config: AxiosRequestConfigs): void {
+    removeMask(config: AxiosRequestConfigs): void {
         const index = this.maskQueue.findIndex(
             (itemConfig) =>
                 JSON.stringify(itemConfig) === JSON.stringify(config)
@@ -56,13 +59,10 @@ export class Mask {
         }
     }
     // 创建节点方法
-    private createDom = (tagName: string, className: string, innerText?: string): HTMLElement => {
+    createDom = (tagName: string, className: string, innerText?: string): HTMLElement => {
         const dom = document.createElement(tagName)
-
-
         dom.classList.add(className)
         if (innerText) {
-            console.log("创建节点方法", innerText);
             dom.innerText = innerText
         }
         return dom
@@ -70,7 +70,7 @@ export class Mask {
 
 
     // 创建loading dom节点
-    private createLoadingDom = (config: AxiosRequestConfigs): void => {
+    createLoadingDom = (config: AxiosRequestConfigs): void => {
 
         // loading文本
         const { loadingText } = config
@@ -97,7 +97,7 @@ export class Mask {
     }
 
     // 移除遮罩层
-    private removeLoadingDom = (): void => {
+    removeLoadingDom = (): void => {
         // 延迟300毫秒关闭
         setTimeout(() => {
             const loadingDom = document.querySelector(

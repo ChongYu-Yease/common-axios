@@ -8,7 +8,9 @@ import {
     nodeResolve
 } from '@rollup/plugin-node-resolve' //将外部引入的js打包进来
 import nodePolyfills from 'rollup-plugin-polyfill-node'
-import babel from 'rollup-plugin-babel'
+import {
+    babel
+} from '@rollup/plugin-babel'
 import del from 'rollup-plugin-delete'
 import json from '@rollup/plugin-json'
 import commonjs from '@rollup/plugin-commonjs' // 将CommonJS模块转换为ES6, 方便rollup直接调用
@@ -17,7 +19,9 @@ import livereload from 'rollup-plugin-livereload'
 const isProduction = process.env.NODE_ENV === 'production'
 
 const initConfig = () => {
+
     const flexibleOutput = []
+
     const flexiblePlugins = []
 
     if (isProduction) {
@@ -74,11 +78,12 @@ const initConfig = () => {
         external: ['axios', 'qs'],
 
         plugins: [
-            del({
+            isProduction && del({
                 targets: ['dist']
             }),
 
             babel({
+                skipPreflightCheck: true,
                 exclude: 'node_modules/**',
                 extensions: ['.js', '.jsx'],
                 babelHelpers: 'bundled',

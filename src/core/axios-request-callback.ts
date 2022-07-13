@@ -20,8 +20,6 @@ export type AxiosRequestCallback = (
 export type AxiosErrorCallback = (error: Error) => Promise<Error>
 
 
-
-
 // axios  防抖
 import { AxiosDebounce } from './axios-debounce'
 
@@ -35,9 +33,6 @@ import { Mask } from './create-mask'
 const maskInstance = new Mask()
 
 import { Message } from './create-message'
-
-// 创建message实例
-const messageInstance = new Message()
 
 /**
  * 请求前成功回调
@@ -54,18 +49,20 @@ export const axiosRequestCallback: AxiosRequestCallback = (config) => {
         axiosRequestCallback,
     } = config
 
-    if (axiosRequestCallback && typeof axiosRequestCallback === 'function') {
-        axiosRequestCallback(config)
-    }
+    if (axiosRequestCallback && typeof axiosRequestCallback === 'function') axiosRequestCallback(config)
 
     // 先判断是否需要防抖 如果需要 需要防抖的话 如果接口被取消 就不再需要遮罩层
-    if (axiosDebounce) {
-        axiosDebounceInstance.handleAxiosDebounce(config)
-    }
+    if (axiosDebounce) axiosDebounceInstance.handleAxiosDebounce(config)
 
     // 创建遮罩层
     if (needLoading || loadingText) {
-        maskInstance.createLoading(config)
+        // maskInstance.createLoading(config)
+
+        // config.maskInstance = maskInstance
+
+
+
+
     }
 
     // 修改content-type

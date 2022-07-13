@@ -20,22 +20,17 @@ export type AxiosRequestCallback = (
 export type AxiosErrorCallback = (error: Error) => Promise<Error>
 
 
-
-
-
 import axios from 'axios'
 
-import { Mask } from './create-mask'
+// import { Mask } from './create-mask'
 
 // 遮罩层实例
-const maskInstance = new Mask()
+// const maskInstance = new Mask()
 
 import { Message } from './create-message'
 
 // 创建message实例
 const messageInstance = new Message()
-
-// console.log("创建的messageInstance", messageInstance);
 
 import { getValueByKeyInOpject } from "../utils/index"
 
@@ -46,15 +41,15 @@ import { getValueByKeyInOpject } from "../utils/index"
  * @returns
  */
 export const axiosResponseCallback: AxiosResponseCallback = (axiosResponse) => {
+    // console.log(axiosResponse.config);
 
     // 关闭遮罩层
-    maskInstance.removeLoading(axiosResponse.config as AxiosRequestConfigs)
+    // maskInstance.removeLoading(axiosResponse.config as AxiosRequestConfigs)
 
     // 获取配置
     const {
         messagePosition,
         messageDuration,
-
         errorStatusKey,
         errorStatusKeyValue,
         dataKey,
@@ -62,21 +57,17 @@ export const axiosResponseCallback: AxiosResponseCallback = (axiosResponse) => {
         errorMessageDuration,
         errorMessagePosition,
         errorMessageContent,
-
         successStatusKey,
         successStatusKeyValue,
         successMessageContentKey,
         successMessageDuration,
         successMessagePosition,
         successMessageContent,
-
         axiosResponseCallback,
     } = axiosResponse.config as AxiosRequestConfigs
 
     // 执行自定义事件
-    if (axiosResponseCallback && typeof axiosResponseCallback == 'function') {
-        axiosResponseCallback(axiosResponse)
-    }
+    if (axiosResponseCallback && typeof axiosResponseCallback == 'function') axiosResponseCallback(axiosResponse)
 
     // 处理 错误 提示
     if (errorStatusKey && errorStatusKeyValue) {
