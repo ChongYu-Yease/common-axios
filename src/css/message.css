@@ -10,6 +10,7 @@
     left: 50%;
     top: 20px;
     transition: opacity 0.3s, transform 0.4s, top 0.4s;
+    /* transition: opacity 3s, transform 4s, top 4s; */
     padding: 15px 15px 15px 20px;
     display: flex;
     align-items: center;

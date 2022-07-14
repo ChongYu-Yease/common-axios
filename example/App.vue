@@ -4,7 +4,7 @@
     <button class="test-button slow" @click="handleGetSlowTableData">请求一个慢接口</button>
     <button class="test-button slow" @click="handleSyncGetMoreSlowTableData">同步请求多个慢接口</button>
     <button class="test-button slow" @click="handleASyncGetMoreSlowTableData">异步请求多个慢接口</button>
-    <button class="test-button fast" @click="handleGetFastTableData">请求一个快接口</button>
+    <button class="test-button fast" @click="handleOnceGetFastTableData">请求一个快接口</button>
     <button class="test-button fast" @click="handleSyncGetFastTableData">同步请求多个快接口</button>
     <button class="test-button fast" @click="handleASyncGetFastTableData">异步请求多个快接口</button>
   </div>
@@ -70,7 +70,7 @@ const handleASyncGetMoreSlowTableData = () => {
 /**
  * 测试用的快接口 用于测试默认配置
  */
-const handleGetFastTableData = async () => {
+const handleGetFastTableData = async (errorMessageContent: string) => {
   const result = await commonAxios.post<{}>(
     "/api/matter/record/v1/checkout/page",
     {
@@ -97,34 +97,40 @@ const handleGetFastTableData = async () => {
       errorMessageContentKey: "message",
       errorMessageDuration: 2000,
       errorMessagePosition: "center", //测试错误提示位置
-      errorMessageContent: "失败了哈哈哈",
+      errorMessageContent: errorMessageContent,
       needLoading: true,
       dataKey: "",
     }
   );
 }
 
+const handleOnceGetFastTableData = () => {
+  handleGetFastTableData('哈哈哈失败了1')
+}
+
 /**
  * 同步请求多个快接口
  */
 const handleSyncGetFastTableData = async () => {
-  await handleGetFastTableData()
-  await handleGetFastTableData()
-  await handleGetFastTableData()
+  await handleGetFastTableData('哈哈哈失败了1')
+  await handleGetFastTableData('哈哈哈失败了2')
+  await handleGetFastTableData('哈哈哈失败了3')
 }
 
 /**
  * 异步请求多个快接口
  */
 const handleASyncGetFastTableData = () => {
-  handleGetFastTableData()
-  handleGetFastTableData()
-  handleGetFastTableData()
+  // handleGetFastTableData()
+  // handleGetFastTableData()
+  // handleGetFastTableData()
 }
 
 </script>
 <style lang='less' scoped>
 .test-buttons {
+  z-index: 101;
+
   .test-button {
     margin-right: 5px;
     color: #fff;
