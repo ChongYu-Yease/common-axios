@@ -69,7 +69,9 @@ export class AxiosDebounce {
     public handleAxiosDebounce(config: AxiosRequestConfigs) {
         // 在请求开始前，对之前的请求做检查取消操作
         this.handleRemoveAxiosQueue(config)
+
         // 将当前请求添加到 pending 中
         this.handleAddAxiosQueue(config)
+
     }
 }

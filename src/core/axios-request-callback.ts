@@ -53,7 +53,6 @@ export const axiosRequestCallback: AxiosRequestCallback = (config) => {
     if (needLoading || loadingText) {
         // 遮罩层实例
         const maskInstance = new Mask()
-        console.log("maskInstance", maskInstance);
 
         // maskInstance.createLoading(config)
 

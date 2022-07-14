@@ -17,9 +17,9 @@
     overflow: hidden;
 }
 
-.common-axios_message:hover {
+/* .common-axios_message:hover {
     cursor: pointer;
-}
+} */
 
 .common-axios_message_left {
     justify-content: flex-start;

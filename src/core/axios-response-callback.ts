@@ -36,7 +36,7 @@ import { getValueByKeyInOpject } from "@/utils/index"
 
 
 /**
- * 请求返回成功回调
+ * @desc 请求返回成功回调
  * @param {AxiosResponse} axiosResponse 
  * @returns
  */
@@ -135,9 +135,9 @@ export const axiosResponseCallback: AxiosResponseCallback = (axiosResponse) => {
 }
 
 /**
- *
- * @param axiosResponse 请求返回错误回调
- * @returns
+ * @desc 请求返回错误回调
+ * @param {Error} error 
+ * @returns void
  */
 export const axiosResponseErrorCallback: AxiosErrorCallback = (error) => {
     if (axios.isCancel(error)) {

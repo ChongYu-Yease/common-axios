@@ -1,82 +1,70 @@
 // 引入message 样式
 import '@/css/message.css'
 
+
+export interface MessageOptions {
+    message?: string
+    messageType?: '' | 'info' | 'warning' | 'error' | 'success'
+    messagePosition?: 'left' | "center" | 'right' | undefined,
+    messageDuration?: number
+    showClose?: boolean
+}
+
+
 // 创建message
 export class Message {
     // 消息队列
-    private messageQueue: Array<{ messageDom: HTMLDivElement; id: number }>
+    private messageQueue: Array<{ messageDom: HTMLDivElement; id: number }> = []
 
-    // 消息内容
-    private message: string
+    private bodyElement: HTMLBodyElement | null = document.querySelector('body')
 
-    // 消息类型
-    private messageType: '' | 'success' | 'warning' | 'error' | 'info'
-
-    // 消息节点消失的时间间隔
-    private messageDuration: number
-
-    // body节点
-    private body: HTMLBodyElement
-
-    // id
-    private id: number
+    private id: number = 0
 
     // 定时器的id
-    timeId: number
+    timeId: number = 0
 
-    // 初始化属性
-    constructor() {
-        // 消息队列
-        this.messageQueue = []
-        this.message = ''
-        this.messageType = ''
-        this.messageDuration = 2000
-        this.body = document.querySelector('body')!
-        this.id = 0
-        this.timeId = 0
-    }
+    constructor() { }
 
-    // 通过type 设置dom节点的class
-    private setMessageType(messageDom: HTMLDivElement, messageType?: string) {
-        messageType = messageType ? messageType : 'info'
+
+    /**
+     * @desc 通过 type 设置 当前 message 外层节点的class
+     * @param {HTMLDivElement} messageDom 
+     * @param {MessageOptions} messageOption 
+     * @returns void
+     */
+    private setCurrentMessageDomClass(messageDom: HTMLDivElement, messageOption: MessageOptions): void {
+
+        const messageType = messageOption.messageType ? messageOption.messageType : 'info'
+
         const className = `common-axios_message_${messageType}`
+
         messageDom.classList.add(className)
     }
 
-    // 创建文本节点
-    private createTextDom(messageDom: HTMLDivElement, message: string) {
+
+    /**
+     * @desc 创建文本节点
+     * @param {HTMLDivElement} messageDom 
+     * @param {MessageOptions} messageOption 
+     * @returns void
+     */
+    private createTextDom(messageDom: HTMLDivElement, messageOption: MessageOptions): void {
+
         const p = document.createElement('p')
+
         p.classList.add('common-axios_message_content')
-        p.textContent = message || this.message
+
+        p.textContent = messageOption.message!
+
         messageDom.appendChild(p)
     }
 
-    // 移除 message 节点
-    private removeMessage(messageDom: HTMLDivElement, targetId: number) {
-
-        const startIndex = this.messageQueue.findIndex((message) => message.id === targetId)
-
-        this.updateMessageDom(startIndex)
-
-        this.messageQueue.splice(startIndex, 1)
-
-        //增加移除动画
-        messageDom.classList.add('common-axios_message_leave')
-
-        setTimeout(() => {
-            this.body.removeChild(messageDom)
-        }, 400)
-    }
-
-    public createMessage(messageOptions: {
-        message?: string
-        messageType?: '' | 'info' | 'warning' | 'error' | 'success'
-        messagePosition?: 'left' | "center" | 'right' | undefined,
-        messageDuration?: number
-        showClose?: boolean
-    }) {
-        // 判断 messageOptions 配置
-        if (typeof messageOptions !== 'object' || messageOptions === null || messageOptions === undefined || !messageOptions.message) return
+    /**
+     * @desc 创建message组件外层组件节点
+     * @param {MessageOptions} messageOptions 
+     * @returns HTMLDivElement
+     */
+    private createMessageDom(messageOptions: MessageOptions): HTMLDivElement {
 
         const messageDom = document.createElement('div')
 
@@ -86,14 +74,29 @@ export class Message {
 
         messageDom.classList.add(`common-axios_message_${messageOptions.messagePosition || "left"}`)
 
+        return messageDom
+    }
+
+    /**
+     * @desc 为外层message节点添加鼠标滑入滑出事件
+     * @param {HTMLDivElement} messageDom
+     * @returns void
+     */
+    private addEventListenerForMessageDom(messageDom: HTMLDivElement, messageOptions: MessageOptions): void {
+
+        console.log('this.timeId', this.timeId);
+        return
         // 给节点添加鼠标划入的事件
         messageDom.addEventListener("mouseenter", (_event: MouseEvent) => {
+
             // 鼠标划入终止message节点的移除
             window.clearTimeout(this.timeId)
+
         })
 
         // 给节点添加鼠标划出的事件
         messageDom.addEventListener("mouseleave", (event: MouseEvent) => {
+
             // 鼠标划出继续移除message节点
             this.timeId = window.setTimeout(() => {
 
@@ -120,36 +123,50 @@ export class Message {
 
                 }
 
-            }, this.messageDuration)
+            }, messageOptions.messageDuration || 2000)
         })
+    }
 
-        const targetId = this.id
+    /**
+     * @desc 创建 message 节点
+     * @param {MessageOptions} messageOptions 
+     * @returns void
+     */
+    public createMessage(messageOptions: MessageOptions): void {
 
-        // 向消息队列当中添加消息数据
-        this.messageQueue.push({
-            id: targetId,
-            messageDom,
-        })
+        // 判断 messageOptions 配置
+        if (typeof messageOptions !== 'object' || messageOptions === null || messageOptions === undefined || !messageOptions.message) return
 
+        // 创建message组件最外层的节点
+        const messageDom = this.createMessageDom(messageOptions)
+
+        // 为外层message节点添加事件
+        // this.addEventListenerForMessageDom(messageDom, messageOptions)
+
+        // 记录当前id 避免执行异步操作 造成 id 不准确的问题
+        const currentId = this.id
 
         // 给dom节点添加class
-        this.setMessageType(messageDom, messageOptions.messageType)
+        this.setCurrentMessageDomClass(messageDom, messageOptions)
 
         // 创建文本节点
-        this.createTextDom(messageDom, messageOptions.message)
+        this.createTextDom(messageDom, messageOptions)
 
         // 设置当前 message 节点的 zIndex、top
-        this.setCurrentMessageDom()
+        this.setCurrentMessageDomStyle(messageDom)
 
-        // 将 message 节点添加到body当中
-        this.body.appendChild(messageDom)
+        // 将 message 节点添加到 body 当中
+        this.bodyElement?.appendChild(messageDom)
+
+        // 向消息队列当中添加消息数据
+        this.messageQueue.push({ id: currentId, messageDom })
 
         //增加新增动画
         window.setTimeout(() => {
             messageDom.classList.remove('common-axios_message_leave')
         }, 100)
 
-        let i = null
+        let i
 
         if (messageOptions.showClose === true) {
             i = document.createElement('i')
@@ -157,49 +174,81 @@ export class Message {
             messageDom.appendChild(i)
         }
 
-        const messageDuration = isNaN(Number(messageOptions.messageDuration))
-            ? this.messageDuration
-            : Number(messageOptions.messageDuration)
 
-
-
-        if (messageDuration !== 0) {
-            // 如果duration为0则不需要setTimeout
+        if (messageOptions.messageDuration !== 0) {
+            // 如果duration为 0 则不需要setTimeout
             this.timeId = window.setTimeout(() => {
-                this.removeMessage(messageDom, targetId)
-            }, messageDuration)
+                this.removeMessage(messageDom, currentId)
+            }, messageOptions.messageDuration)
         }
 
+        // 如果当前 message 组件支持关闭的话
         if (messageOptions.showClose === true) {
             i?.addEventListener('click', () => {
-                this.removeMessage(messageDom, targetId)
-                if (targetId !== -1) {
+                this.removeMessage(messageDom, currentId)
+                if (this.id !== -1) {
                     window.clearTimeout(this.timeId)
                 }
             })
         }
 
-        this.id++  // 更新id
+        this.id++
     }
 
-    // 设置当前创建的 message节点的 zIndex、top
-    private setCurrentMessageDom() {
-        const index = this.messageQueue.length - 1
-        const targetDom = this.messageQueue[index].messageDom
-        targetDom.style.zIndex = `${3000 + index}`
-        targetDom.style.top = `${64 * index + 20}px`
+    /**
+     * @desc 设置当前创建的 message节点的 zIndex、top
+     * @param {HTMLDivElement} messageDom
+     * @returns void
+     */
+    private setCurrentMessageDomStyle(messageDom: HTMLDivElement): void {
+
+        const currentIndex = this.messageQueue.length
+
+        messageDom.style.zIndex = `${3000 + currentIndex}`
+
+        messageDom.style.top = `${64 * currentIndex + 20}px`
     }
 
-    // 批量设置 message的样式
-    private updateMessageDom(startIndex: number) {
-        // 获取
+    /**
+     * @desc 批量更新 message 节点的样式
+     * @param {number} startIndex 
+     * @returns void
+     */
+    private updateMessageDomStyle(startIndex: number): void {
+
         for (let i = startIndex; i < this.messageQueue.length; i++) {
+
             const messageDom = this.messageQueue[i].messageDom
-            // 错误提示的优先级最好 应该放在最上面一层展示
+
+            // 错误提示的优先级最高 应该放在最上面一层展示
             messageDom.style.zIndex = `${3000 + i}`
+
             // 暂不支持换行功能，换行后获取上一个元素的height和top来更新下一个元素的top
             messageDom.style.top = `${64 * i + 20}px`
         }
     }
+
+    /**
+     * @desc  移除 message 节点
+     * @param {HTMLDivElement} messageDom 
+     * @param {number} targetId 
+     * @returns void
+     */
+    private removeMessage(messageDom: HTMLDivElement, targetId: number): void {
+        // return
+        const startIndex = this.messageQueue.findIndex((message) => message.id === targetId)
+
+        this.updateMessageDomStyle(startIndex)
+
+        this.messageQueue.splice(startIndex, 1)
+
+        // 增加移除动画
+        messageDom.classList.add('common-axios_message_leave')
+
+        setTimeout(() => {
+            this.bodyElement?.removeChild(messageDom)
+        }, 400)
+    }
+
 
 }
