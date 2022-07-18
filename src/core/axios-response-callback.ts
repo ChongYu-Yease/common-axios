@@ -27,7 +27,7 @@ import axios from 'axios'
 // 遮罩层实例
 // const maskInstance = new Mask()
 
-import { Message } from '@/core/create-message'
+import { Message } from 'web-message'
 
 // 创建message实例
 const messageInstance = new Message()
@@ -83,6 +83,7 @@ export const axiosResponseCallback: AxiosResponseCallback = (axiosResponse) => {
                     errorMessageContentKey,
                     axiosResponse.data
                 )
+
                 messageInstance.createMessage({
                     message: errorMessageContent || messageValue,
                     messageType: 'error',

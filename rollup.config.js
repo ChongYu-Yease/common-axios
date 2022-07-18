@@ -35,6 +35,7 @@ const initConfig = () => {
             globals: {
                 axios: 'axios',
                 qs: 'qs',
+                "web-message": "web-message"
             },
         }, {
             format: 'esm',
@@ -43,6 +44,7 @@ const initConfig = () => {
             globals: {
                 axios: 'axios',
                 qs: 'qs',
+                "web-message": "web-message"
             },
         })
 
@@ -57,6 +59,7 @@ const initConfig = () => {
             globals: {
                 axios: 'axios',
                 qs: 'qs',
+                "web-message": "web-message"
             },
         }, {
             format: 'esm',
@@ -65,6 +68,7 @@ const initConfig = () => {
             globals: {
                 axios: 'axios',
                 qs: 'qs',
+                "web-message": "web-message"
             },
         })
         flexiblePlugins.push(
@@ -77,7 +81,7 @@ const initConfig = () => {
     const defaultConfig = {
         input: './src/index.ts',
 
-        external: ['axios', 'qs'],
+        external: ['axios', 'qs', "web-message"],
 
         plugins: [
             isProduction && del({

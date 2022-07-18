@@ -70,7 +70,7 @@ const handleASyncGetMoreSlowTableData = () => {
 /**
  * 测试用的快接口 用于测试默认配置
  */
-const handleGetFastTableData = async (errorMessageContent: string) => {
+const handleGetFastTableData = async (errorMessageContent: string, messageDuration?: number) => {
   const result = await commonAxios.post<{}>(
     "/api/matter/record/v1/checkout/page",
     {
@@ -84,7 +84,7 @@ const handleGetFastTableData = async (errorMessageContent: string) => {
       // version: "2022-05",
     },
     {
-      messageDuration: 2000,
+      messageDuration: messageDuration || 2000,
       messagePosition: "right", //默认消息位置
       successStatusKey: "code",
       successStatusKeyValue: "000000",
@@ -95,7 +95,7 @@ const handleGetFastTableData = async (errorMessageContent: string) => {
       errorStatusKey: "code",
       errorStatusKeyValue: "999999",
       errorMessageContentKey: "message",
-      errorMessageDuration: 2000,
+      errorMessageDuration: messageDuration || 2000,
       errorMessagePosition: "center", //测试错误提示位置
       errorMessageContent: errorMessageContent,
       needLoading: true,
@@ -112,9 +112,9 @@ const handleOnceGetFastTableData = () => {
  * 同步请求多个快接口
  */
 const handleSyncGetFastTableData = async () => {
-  await handleGetFastTableData('哈哈哈失败了1')
-  await handleGetFastTableData('哈哈哈失败了2')
-  await handleGetFastTableData('哈哈哈失败了3')
+  await handleGetFastTableData('哈哈哈失败了1', 3000)
+  await handleGetFastTableData('哈哈哈失败了2', 2000)
+  await handleGetFastTableData('哈哈哈失败了3', 1000)
 }
 
 /**

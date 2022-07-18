@@ -24,7 +24,7 @@ import { AxiosDebounce } from './axios-debounce'
 
 import { Mask } from '@/core/create-mask'
 
-import { Message } from './create-message'
+import { Message } from 'web-message'
 
 // 创建防抖实例
 const axiosDebounceInstance = new AxiosDebounce()
